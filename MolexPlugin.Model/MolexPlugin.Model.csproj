@@ -55,23 +55,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ElectrodeSetValueOrExp.cs" />
-    <Compile Include="Electrode\AssembleModle.cs" />
-    <Compile Include="EleConditionModel.cs" />
-    <Compile Include="ElectrodeHeadModel.cs" />
-    <Compile Include="ElectrodePichModel.cs" />
-    <Compile Include="Electrode\AbstractAssembleModel.cs" />
-    <Compile Include="Electrode\ElectrodeAssembleModel.cs" />
+    <Compile Include="Electrode\AbstractModel.cs" />
+    <Compile Include="Electrode\ASMModel.cs" />
+    <Compile Include="Electrode\AssembleModel.cs" />
+    <Compile Include="Electrode\EDMModel.cs" />
     <Compile Include="Electrode\ElectrodeInfo.cs" />
-    <Compile Include="Electrode\WorkAssembleModel.cs" />
-    <Compile Include="Electrode\EDMAssembleModel.cs" />
-    <Compile Include="Electrode\AsmAssembleModel.cs" />
+    <Compile Include="Electrode\ElectrodeModel.cs" />
     <Compile Include="Electrode\MoldInfoModel.cs" />
+    <Compile Include="Electrode\WorkModel.cs" />
+    <Compile Include="Electrode\WorkpieceModel.cs" />
     <Compile Include="DatabaseModel\ControlEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DatabaseModel\Role.cs" />
     <Compile Include="DatabaseModel\UserInfo.cs" />
-    <Compile Include="Electrode\WorkPieceAssembleModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Basic\Basic.csproj">

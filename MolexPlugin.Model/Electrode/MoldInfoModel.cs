@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using NXOpen;
 using Basic;
 
+
 namespace MolexPlugin.Model
 {
     /// <summary>
-    /// 模具信息
+    /// 摸具信息
     /// </summary>
     public class MoldInfoModel
     {
@@ -57,11 +58,18 @@ namespace MolexPlugin.Model
             this.CreatorName = name;
             this.CreatedDate = data;
         }
+        /// <summary>
+        /// 通过part获取模具信息
+        /// </summary>
+        /// <param name="part"></param>
         public MoldInfoModel(Part part)
         {
             this.GetAttribute(part);
         }
-
+        /// <summary>
+        /// 设置模具信息属性
+        /// </summary>
+        /// <param name="part"></param>
         public virtual void SetAttribute(Part part)
         {
             AttributeUtils.AttributeOperation("MoldNumber", this.MoldNumber, part);
@@ -72,6 +80,10 @@ namespace MolexPlugin.Model
             AttributeUtils.AttributeOperation("CreatorName", this.CreatorName, part);
             AttributeUtils.AttributeOperation("CreatedDate", this.CreatedDate, part);
         }
+        /// <summary>
+        /// 读取模具属性
+        /// </summary>
+        /// <param name="part"></param>
         public void GetAttribute(Part part)
         {
             this.MoldNumber = AttributeUtils.GetAttrForString(part, "MoldNumber");

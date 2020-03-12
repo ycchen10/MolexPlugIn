@@ -19,10 +19,15 @@ namespace MolexPlugin
             //Body body1 = NXObjectManager.Get((Tag)51633) as Body;
             //Body body2 = NXObjectManager.Get((Tag)51611) as Body;
             //AnalysisUtils.SetInterference(body1, body2);
-            Tag face1 = (Tag)82809;
-            Tag face2 = (Tag)82803;
-            Tag face3;
-            theUFSession.Modl.IntersectBodiesWithRetainedOptions(face1, face2, false, false, out face3);
+            //Tag face1 = (Tag)82809;
+            //Tag face2 = (Tag)82803;
+            //Tag face3;
+            //theUFSession.Modl.IntersectBodiesWithRetainedOptions(face1, face2, false, false, out face3);
+
+            Tag partTag = (Tag)43795;
+            Part part = NXObjectManager.Get(partTag) as Part;
+            Part parent = part.OwningComponent.Parent.Prototype as Part;
+            LogMgr.WriteLog(parent.Tag.ToString());
         }
 
 

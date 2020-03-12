@@ -55,21 +55,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddEdmAsmBuilder.cs" />
+    <Compile Include="AddWorkBuilder.cs" />
     <Compile Include="Analyze\AnalyzeBuilder.cs" />
-    <Compile Include="AssembleCollection.cs" />
-    <Compile Include="ElectrodeFactory.cs" />
-    <Compile Include="AssembleInstance.cs" />
-    <Compile Include="ELectrodeName.cs" />
-    <Compile Include="ElectrodePart.cs" />
-    <Compile Include="ElectrodePreviewBuilder.cs" />
-    <Compile Include="ElectrodeSketchBuilder.cs" />
-    <Compile Include="Electrode\AddWorkBuilder.cs" />
-    <Compile Include="Electrode\ElectrodeAssembleCollection.cs" />
-    <Compile Include="Electrode\AddEdmAsmBuilder.cs" />
     <Compile Include="Analyze\AnalyzeFaceSlopeAndRadius.cs" />
+    <Compile Include="AssembleSingleton.cs" />
     <Compile Include="BOX\SuperBoxCylinder.cs" />
+    <Compile Include="CreateElectrodePart .cs" />
+    <Compile Include="CreateWorkpiecePart.cs" />
+    <Compile Include="CreateWorkPart.cs" />
+    <Compile Include="CreateEdmPart.cs" />
+    <Compile Include="CreateAsmPart.cs" />
     <Compile Include="Data\ControlValue.cs" />
-    <Compile Include="EletrodePreparation.cs" />
+    <Compile Include="FindElectrodeAndWork.cs" />
+    <Compile Include="ICreateAssmblePart.cs" />
     <Compile Include="Move\MoveObjectFactory.cs" />
     <Compile Include="Move\MoveObjectBasic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,7 +91,9 @@
       <Name>MolexPlugin.Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Electrode\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
