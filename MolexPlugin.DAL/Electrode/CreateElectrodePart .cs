@@ -11,25 +11,26 @@ using NXOpen.Assemblies;
 
 namespace MolexPlugin.DAL
 {
-    public class CreateElectrodePart : ICreateAssmblePart
+    public class CreateElectrodePart
     {
         public ElectrodeModel Model { get; private set; }
 
-        public CreateElectrodePart(string filePath, int workNum, ElectrodeInfo info, MoldInfoModel moldInfo, Matrix4 mat, Point3d center)
+        public CreateElectrodePart(string filePath, int workNum, ElectrodeInfo info, MoldInfoModel moldInfo, Matrix4 mat)
         {
-            Model = new ElectrodeModel(filePath, workNum, info, moldInfo, mat, center);
+            Model = new ElectrodeModel(filePath, workNum, info, moldInfo, mat);
         }
-        public bool CreatePart()
-        {          
-            return true;
-        }
+
         public bool Add(ref AssembleSingleton singleton)
         {
             return singleton.AddElectrode(this.Model);
         }
-        public Component Load(Part part)
+        /// <summary>
+        /// 创建装配
+        /// </summary>
+        /// <returns></returns>
+        public Component Create()
         {
-            return Model.CreateCompPart(); 
+            return Model.CreateCompPart();
         }
     }
 }

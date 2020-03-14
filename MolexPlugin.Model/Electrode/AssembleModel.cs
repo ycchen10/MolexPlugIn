@@ -13,22 +13,21 @@ namespace MolexPlugin.Model
     /// </summary>
     public class AssembleModel
     {
-        private Part part;
+      
         private string moldAndWorkpieceNum;
         public ASMModel Asm { get; private set; }
 
-        public List<WorkModel> Works { get; private set; }
+        public List<WorkModel> Works { get; private set; } = new List<WorkModel>();
 
         public EDMModel Edm { get; private set; }
 
-        public List<ElectrodeModel> Electrodes { get; private set; }
+        public List<ElectrodeModel> Electrodes { get; private set; } = new List<ElectrodeModel>();
 
 
-        public AssembleModel(Part part)
+        public AssembleModel(string moldAndWorkpieceNum)
         {
-            this.part = part;
-            MoldInfoModel info = new MoldInfoModel(part);
-            this.moldAndWorkpieceNum = info.MoldNumber + "-" + info.WorkpieceNumber;
+            
+            this.moldAndWorkpieceNum = moldAndWorkpieceNum;
             GetAssembleInfo();
         }
         /// <summary>
@@ -42,18 +41,18 @@ namespace MolexPlugin.Model
                 {
                     if (moldAndWorkpieceNum.Equals(pt.Name.Substring(0, moldAndWorkpieceNum.Length))) //判断是否一个模号
                     {
-                        string partType = AttributeUtils.GetAttrForString(part, "PartType");
+                        string partType = AttributeUtils.GetAttrForString(pt, "PartType");
 
                         switch (partType)
                         {
-                            case "Asm":
+                            case "ASM":
                                 {
                                     ASMModel asm = new ASMModel();
                                     asm.GetModelForPart(pt);
                                     this.Asm = asm;
                                     break;
                                 }
-                            case "Edm":
+                            case "EDM":
                                 {
                                     EDMModel edm = new EDMModel();
                                     edm.GetModelForPart(pt);

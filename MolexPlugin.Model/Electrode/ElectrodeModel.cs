@@ -13,7 +13,7 @@ namespace MolexPlugin.Model
     /// <summary>
     /// 电极
     /// </summary>
-    public class ElectrodeModel : AbstractModel
+    public class ElectrodeModel : AbstractModel, IComparable<ElectrodeModel>
     {
 
         public int WorkNumber { get; set; }
@@ -26,7 +26,7 @@ namespace MolexPlugin.Model
         /// </summary>
         public Matrix4 EleMatr { get; set; }
         /// <summary>
-        /// 电极中心点在work位置点
+        /// 电极中心点在work位置点(绝对点)
         /// </summary>
         public Point3d CenterPt { get; set; }
 
@@ -34,13 +34,13 @@ namespace MolexPlugin.Model
         {
 
         }
-        public ElectrodeModel(string filePath, int workNum, ElectrodeInfo info, MoldInfoModel mold, Matrix4 mat, Point3d center)
+        public ElectrodeModel(string filePath, int workNum, ElectrodeInfo info, MoldInfoModel mold, Matrix4 mat)
         {
             this.PartType = "Electrode";
             this.EleInfo = info;
             this.MoldInfo = mold;
             this.EleMatr = mat;
-            this.CenterPt = center;
+            this.CenterPt = GetMatrCenter(mat);
             GetAssembleName();
             this.WorkpieceDirectoryPath = filePath;
             this.WorkpiecePath = filePath + this.AssembleName + ".prt";
@@ -65,18 +65,12 @@ namespace MolexPlugin.Model
             this.WorkpiecePath = part.FullPath;
             this.WorkpieceDirectoryPath = Path.GetDirectoryName(WorkpiecePath) + "\\";
             this.AssembleName = Path.GetFileNameWithoutExtension(this.WorkpiecePath);
-            Matrix4 inver = this.EleMatr.GetInversMatrix();
-            Point3d ceneter = new Point3d(0, 0, 0);
-            inver.ApplyPos(ref ceneter);
-            this.CenterPt = ceneter;
+            this.CenterPt = GetMatrCenter(this.EleMatr);
         }
 
         public override Component Load(Part parentPart)
         {
-            Point3d temp = new Point3d(this.CenterPt.X, this.CenterPt.Y, this.CenterPt.Z);
-            Matrix4 invers = this.EleMatr.GetInversMatrix();
-            invers.ApplyPos(ref temp);  //转成绝对坐标
-            return Basic.AssmbliesUtils.PartLoad(parentPart, this.WorkpiecePath, this.AssembleName, this.EleMatr, temp);
+            return Basic.AssmbliesUtils.PartLoad(parentPart, this.WorkpiecePath, this.AssembleName, this.EleMatr, this.CenterPt);
         }
         protected override void GetAttribute(Part part)
         {
@@ -110,7 +104,10 @@ namespace MolexPlugin.Model
             NXObject obj = AssmbliesUtils.CreateNew(this.AssembleName, WorkpiecePath);
             NXOpen.Assemblies.Component comp = obj as NXOpen.Assemblies.Component;
             this.PartTag = obj.Prototype as Part;
-            SetAttribute();
+            if (this.PartTag != null)
+            {
+                SetAttribute();
+            }
             CsysUtils.SetWcsToAbs();
             return comp;
         }
@@ -164,6 +161,18 @@ namespace MolexPlugin.Model
                 }
             }
             return new Matrix4(temp);
+        }
+        private Point3d GetMatrCenter(Matrix4 mat)
+        {
+            Matrix4 inver = mat.GetInversMatrix();
+            Point3d ceneter = new Point3d(0, 0, 0);
+            inver.ApplyPos(ref ceneter);
+            return ceneter;
+        }
+
+        public int CompareTo(ElectrodeModel other)
+        {
+            return this.EleInfo.EleNumber.CompareTo(other.EleInfo.EleNumber);
         }
     }
 }

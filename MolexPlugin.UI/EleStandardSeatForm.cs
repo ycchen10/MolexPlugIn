@@ -18,17 +18,16 @@ namespace MolexPlugin
 {
     public partial class EleStandardSeatForm : Form
     {
-        private EleConditionModel model;
-        private ElectrodeHeadModel head;
-        private ElectrodePreviewBuilder preview;
+        private CreateConditionModel model;
+        private CreateElectrodeBuilder builde;
+        EletrodePreparation pre;
 
         private ElectrodeInfo eleInfo = new ElectrodeInfo();
-        public EleStandardSeatForm(EleConditionModel model)
+        public EleStandardSeatForm(CreateConditionModel model)
         {
             InitializeComponent();
             this.model = model;
-            head = new ElectrodeHeadModel(model);
-            preview = new ElectrodePreviewBuilder(model, head);
+            builde = new CreateElectrodeBuilder(model);
             InitializeForm();
         }
 
@@ -60,7 +59,7 @@ namespace MolexPlugin
 
         private void textBox_pitchX_KeyPress(object sender, KeyPressEventArgs e)
         {
-            InputDouble(e);
+            InputPlusDouble(e);
         }
 
         private void textBox_pitchY_KeyPress(object sender, KeyPressEventArgs e)
@@ -70,7 +69,7 @@ namespace MolexPlugin
 
         private void textBox_eleX_KeyPress(object sender, KeyPressEventArgs e)
         {
-            InputDouble(e);
+            InputPlusDouble(e);
         }
 
         private void textBox_eleY_KeyPress(object sender, KeyPressEventArgs e)
@@ -145,7 +144,7 @@ namespace MolexPlugin
 
         private void textBox_Ext_KeyPress(object sender, KeyPressEventArgs e)
         {
-            InputPlusDouble(e);
+            InputDouble(e);
         }
         #endregion
 
@@ -222,7 +221,7 @@ namespace MolexPlugin
             textBox_CH.Text = "18";
             textBox_Ext.Text = "1";
             SetPichContrShow();
-            this.textBox_name.Text = ElectrodeName.GetEleName();
+            this.textBox_name.Text = builde.GetEleName();
             CreatePreview();
         }
         /// <summary>
@@ -251,30 +250,35 @@ namespace MolexPlugin
         /// </summary>
         private void CreatePreview()
         {
-            preview.Preview(this.textBox_pitchX.Text, this.textBox_pitchXNum.Text, this.textBox_pitchY.Text, this.textBox_pitchYNum.Text);
-            Point3d value = preview.pichModel.GetEleSetValue(checkBox1.Checked);
-            Point3d max = preview.pichModel.GetMaxOutline(checkBox1.Checked);
+            double x = Convert.ToDouble(this.textBox_pitchX.Text);
+            int xNumber = Convert.ToInt32(this.textBox_pitchXNum.Text);
+            double y = Convert.ToDouble(this.textBox_pitchY.Text);
+            int yNumber = Convert.ToInt32(this.textBox_pitchYNum.Text);
+            builde.CreatePreveiw(x, xNumber, y, yNumber);
+            Point3d value = builde.GetSetValue(Math.Abs(x), xNumber, Math.Abs(y), yNumber, checkBox1.Checked);
+            double[] pre = builde.GetPreparation(x, xNumber, y, yNumber, checkBox1.Checked);
+
+
             this.textBox_eleX.Text = value.X.ToString();
             this.textBox_eleY.Text = value.Y.ToString();
             this.textBox_eleZ.Text = value.Z.ToString();
 
-            this.textBox_preparationX.Text = max.X.ToString();
-            this.textBox_preparationY.Text = max.Y.ToString();
-            this.textBox_preparationZ.Text = max.Z.ToString();
+            this.textBox_preparationX.Text = pre[0].ToString();
+            this.textBox_preparationY.Text = pre[1].ToString();
+            this.textBox_preparationZ.Text = pre[2].ToString();
         }
         /// <summary>
         /// 设置PICH控件显示
         /// </summary>
         private void SetPichContrShow()
         {
-            double anleX = UMathUtils.Angle(this.model.Work.Matr.GetXAxis(), this.model.Vec);
-            double anleY = UMathUtils.Angle(this.model.Work.Matr.GetYAxis(), this.model.Vec);
-            if (UMathUtils.IsEqual(anleX, 0) || UMathUtils.IsEqual(anleX, Math.PI))
+
+            if (model.VecName.Equals("X+") || model.VecName.Equals("X-"))
             {
                 this.textBox_pitchX.Enabled = false;
                 this.textBox_pitchXNum.Enabled = false;
             }
-            if (UMathUtils.IsEqual(anleY, 0) || UMathUtils.IsEqual(anleY, Math.PI))
+            if (model.VecName.Equals("Y+") || model.VecName.Equals("Y-"))
             {
                 this.textBox_pitchY.Enabled = false;
                 this.textBox_pitchYNum.Enabled = false;
@@ -288,9 +292,9 @@ namespace MolexPlugin
 
             eleInfo.EleName = this.textBox_name.Text;
 
-            eleInfo.PitchX = double.Parse(this.textBox_pitchX.Text);
+            eleInfo.PitchX = Math.Abs(double.Parse(this.textBox_pitchX.Text));
             eleInfo.PitchXNum = int.Parse(this.textBox_pitchXNum.Text);
-            eleInfo.PitchY = double.Parse(this.textBox_pitchY.Text);
+            eleInfo.PitchY = Math.Abs(double.Parse(this.textBox_pitchY.Text));
             eleInfo.PitchYNum = int.Parse(this.textBox_pitchYNum.Text);
 
             eleInfo.EleSetValue[0] = double.Parse(this.textBox_eleX.Text);
@@ -355,33 +359,31 @@ namespace MolexPlugin
             eleInfo.Technology = this.comboBox_technology.Text;
             eleInfo.Remarks = this.comboBox_remarks.Text;
 
-            eleInfo.EleNumber = ElectrodeName.GetEleNumber(this.textBox_name.Text);
+            eleInfo.EleNumber = builde.GetEleNumber(this.textBox_name.Text);
             eleInfo.ZDatum = this.checkBox1.Checked;
         }
 
         private void buttOK_Click(object sender, EventArgs e)
         {
+            builde.DelePreveiw();
             if (comboBox_eleType.Text == null || comboBox_eleType.Text == "")
             {
                 UI.GetUI().NXMessageBox.Show("错误！", NXMessageBox.DialogType.Error, "请选择电极类型！");
                 return;
             }
-            this.preview.DeleBuilder();
             GetEleInfo();
-            EletrodePreparation pre = new EletrodePreparation();
             int x = int.Parse(this.textBox_preparationX.Text);
             int y = int.Parse(this.textBox_preparationY.Text);
             int z = int.Parse(this.textBox_preparationZ.Text);
             int[] tem = new int[2] { x, y };
             eleInfo.IsPreparation = pre.GetPreparation(ref tem);
-            ElectrodeFactory factory = new ElectrodeFactory(head, eleInfo);
-            factory.CreateEle();
+            builde.CreateEle(eleInfo);
             this.Close();
         }
 
         private void buttCancel_Click(object sender, EventArgs e)
         {
-            preview.DeleBuilder();
+            builde.DelePreveiw();
             this.Close();
         }
 
@@ -433,7 +435,15 @@ namespace MolexPlugin
 
         private void comboBox_eleType_Leave(object sender, EventArgs e)
         {
-            EletrodePreparation pre = new EletrodePreparation();
+
+            if (this.comboBox_material.Text.Equals("紫铜"))
+            {
+                pre = new EletrodePreparation("CuLength", "CuWidth");
+            }
+            else
+            {
+                pre = new EletrodePreparation("WuLength", "WuWidth");
+            }
             int x = int.Parse(this.textBox_preparationX.Text);
             int y = int.Parse(this.textBox_preparationY.Text);
             int z = int.Parse(this.textBox_preparationZ.Text);

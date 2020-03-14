@@ -170,19 +170,20 @@ namespace MolexPlugin
             try
             {
                 //---- Enter your callback code here -----
-               
+
                 Session.UndoMarkId markId = Session.GetSession().SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "删除电极");
-                ElectrodeAssembleModel ele = new ElectrodeAssembleModel();
+                ElectrodeModel ele = new ElectrodeModel();
                 NXOpen.Assemblies.Component eleComp = this.selection_Ele.GetSelectedObjects()[0] as NXOpen.Assemblies.Component;
                 Part elePart = eleComp.Prototype as Part;
-                ele.GetPart(elePart);
-                int ok = theUI.NXMessageBox.Show("删除", NXOpen.NXMessageBox.DialogType.Question, elePart.Name + "电极是否删除");             
+                ele.GetModelForPart(elePart);
+                int ok = theUI.NXMessageBox.Show("删除", NXOpen.NXMessageBox.DialogType.Question, elePart.Name + "电极是否删除");
                 if (ok == 1)
                 {
                     string path = elePart.FullPath;
                     // elePart.Close(NXOpen.BasePart.CloseWholeTree.False, NXOpen.BasePart.CloseModified.UseResponses, null);
                     AssmbliesUtils.DeleteComponent(eleComp);
                     LayerUtils.MoveDisplayableObject(ele.EleInfo.EleNumber + 10, LayerUtils.GetAllObjectsOnLayer(ele.EleInfo.EleNumber + 100));
+                    elePart.Close(NXOpen.BasePart.CloseWholeTree.False, NXOpen.BasePart.CloseModified.UseResponses, null);
                     if (File.Exists(path))
                         File.Delete(path);
                 }

@@ -17,7 +17,7 @@ namespace MolexPlugin.DAL
 
         private static AssembleSingleton instance = null;
 
-        private static object singletonLock;
+        private static object singletonLock=new object();
         private AssembleSingleton()
         {
 
@@ -40,15 +40,15 @@ namespace MolexPlugin.DAL
         /// 获取装配
         /// </summary>
         /// <returns></returns>
-        public AssembleModel GetAssemble()
+        public AssembleModel GetAssemble(string moldAndWorkpieceNum)
         {
-            string asm = GetAsmName();
+            string asm = moldAndWorkpieceNum+"-ASM";
             if (AssembleSingleton.Assembles.ContainsKey(asm))
                 return AssembleSingleton.Assembles[asm];
             else
             {
-                Part workPart = Session.GetSession().Parts.Work;
-                AssembleModel model = new AssembleModel(workPart);
+               
+                AssembleModel model = new AssembleModel(moldAndWorkpieceNum);
                 Assembles.Add(asm, model);
                 return model;
 
@@ -100,15 +100,6 @@ namespace MolexPlugin.DAL
             }
             return false;
         }
-        /// <summary>
-        /// 获取ASM
-        /// </summary>
-        /// <returns></returns>
-        private string GetAsmName()
-        {
-            Part workPart = Session.GetSession().Parts.Work;
-            MoldInfoModel info = new MoldInfoModel(workPart);
-            return info.MoldNumber + "-" + info.WorkpieceNumber + "-ASM";
-        }
+     
     }
 }

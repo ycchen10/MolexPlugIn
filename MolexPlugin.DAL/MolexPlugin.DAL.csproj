@@ -55,20 +55,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddEdmAsmBuilder.cs" />
-    <Compile Include="AddWorkBuilder.cs" />
+    <Compile Include="Electrode\AbstractElectrodeSetValue.cs" />
+    <Compile Include="Electrode\CreateElectrodeBuilder.cs" />
+    <Compile Include="Electrode\ElectrodePart.cs" />
+    <Compile Include="Electrode\ElectrodePreveiw.cs" />
+    <Compile Include="Electrode\ElectrodeSetValueFactory.cs" />
+    <Compile Include="Electrode\ElectrodeSketch.cs" />
+    <Compile Include="Electrode\AddEdmAsmBuilder.cs" />
+    <Compile Include="Electrode\AddWorkBuilder.cs" />
     <Compile Include="Analyze\AnalyzeBuilder.cs" />
     <Compile Include="Analyze\AnalyzeFaceSlopeAndRadius.cs" />
-    <Compile Include="AssembleSingleton.cs" />
+    <Compile Include="Electrode\AssembleSingleton.cs" />
     <Compile Include="BOX\SuperBoxCylinder.cs" />
-    <Compile Include="CreateElectrodePart .cs" />
-    <Compile Include="CreateWorkpiecePart.cs" />
-    <Compile Include="CreateWorkPart.cs" />
-    <Compile Include="CreateEdmPart.cs" />
-    <Compile Include="CreateAsmPart.cs" />
+    <Compile Include="Electrode\CreateElectrodePart .cs" />
+    <Compile Include="Electrode\CreateWorkpiecePart.cs" />
+    <Compile Include="Electrode\CreateWorkPart.cs" />
+    <Compile Include="Electrode\CreateEdmPart.cs" />
+    <Compile Include="Electrode\CreateAsmPart.cs" />
     <Compile Include="Data\ControlValue.cs" />
-    <Compile Include="FindElectrodeAndWork.cs" />
-    <Compile Include="ICreateAssmblePart.cs" />
+    <Compile Include="Electrode\ElectrodeExp.cs" />
+    <Compile Include="Electrode\ElectrodeHeadInfo.cs" />
+    <Compile Include="Electrode\EletrodePreparation.cs" />
+    <Compile Include="Electrode\FindElectrodeAndWork.cs" />
+    <Compile Include="Electrode\ICreateAssmblePart.cs" />
     <Compile Include="Move\MoveObjectFactory.cs" />
     <Compile Include="Move\MoveObjectBasic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -76,6 +85,11 @@
     <Compile Include="BOX\AbstractSuperBox.cs" />
     <Compile Include="BOX\BoxTrimBodyBuilder.cs" />
     <Compile Include="Data\UserInfoSingleton.cs" />
+    <Compile Include="Electrode\XNegativeElectrodeSetValue .cs" />
+    <Compile Include="Electrode\YNegativeElectrodeSetValue.cs" />
+    <Compile Include="Electrode\YPositiveElectrodeSetValue.cs" />
+    <Compile Include="Electrode\XPositiveElectrodeSetValue .cs" />
+    <Compile Include="Electrode\ZPositiveElectrodeSetValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Basic\Basic.csproj">
@@ -91,9 +105,7 @@
       <Name>MolexPlugin.Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Electrode\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

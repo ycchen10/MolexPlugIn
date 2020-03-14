@@ -218,9 +218,9 @@ namespace Basic
         public Matrix4 GetInversMatrix()
         {
             double[] mat = {matrix[0,0],matrix[0,1],matrix[0,2],matrix[0,3],
-						  matrix[1,0],matrix[1,1],matrix[1,2],matrix[1,3],
-						  matrix[2,0],matrix[2,1],matrix[2,2],matrix[2,3],
-						  matrix[3,0],matrix[3,1],matrix[3,2],matrix[3,3]};
+                          matrix[1,0],matrix[1,1],matrix[1,2],matrix[1,3],
+                          matrix[2,0],matrix[2,1],matrix[2,2],matrix[2,3],
+                          matrix[3,0],matrix[3,1],matrix[3,2],matrix[3,3]};
             double[] inversMat = new double[16];
 
 
@@ -314,7 +314,7 @@ namespace Basic
             Matrix4 mat2 = new Matrix4();
             mat2.SetRow(0, vx);
             mat2.SetRow(1, vy);
-            mat2.SetRow(2, vx^vy);
+            mat2.SetRow(2, vx ^ vy);
             mat2.SetRow(3, pt);
             /*mat2.SetCol(0, vx);
             mat2.SetCol(1, vy);
@@ -352,7 +352,7 @@ namespace Basic
             PostMultiply(mat2.GetOrthInvers());
         }
 
-        public void TransformToCsys(CoordinateSystem csys,ref Matrix4 mat)
+        public void TransformToCsys(CoordinateSystem csys, ref Matrix4 mat)
         {
             mat.Identity();
             Vector3d xVec = new Vector3d();
@@ -501,13 +501,13 @@ namespace Basic
         public Vector3d GetXAxis()
         {
             Vector3d xAxis = new Vector3d();
-            
+
             xAxis.X = this.matrix[0, 0];
             xAxis.Y = this.matrix[1, 0];
             xAxis.Z = this.matrix[2, 0];
 
             return xAxis;
-         
+
         }
         public Vector3d GetYAxis()
         {
@@ -549,7 +549,19 @@ namespace Basic
 
             return mat;
         }
+        /// <summary>
+        /// 获取矩阵圆心点
+        /// </summary>
+        /// <param name="mat"></param>
+        /// <returns></returns>
+        public Point3d GetCenter(Matrix4 mat)
+        {
+            Point3d temp = new Point3d(0, 0, 0);
+            Matrix4 inver = mat.GetInversMatrix();
+            inver.ApplyPos(ref temp);
+            return temp;
 
+        }
         public double Xx
         {
             get { return this.matrix[0, 0]; }

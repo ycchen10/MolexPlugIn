@@ -61,8 +61,8 @@ namespace MolexPlugin
         private NXOpen.BlockStyler.Group group;// Block type: Group
         private NXOpen.BlockStyler.DoubleBlock double_x;// Block type: Double
         private NXOpen.BlockStyler.DoubleBlock double_y;// Block type: Double
-        private WorkAssembleModel work = new WorkAssembleModel();
-        private AssembleCollection collection;
+        private WorkModel work = new WorkModel();
+        private AssembleModel assemble;
         //------------------------------------------------------------------------------
         //Constructor for NX Styler class
         //------------------------------------------------------------------------------
@@ -98,14 +98,28 @@ namespace MolexPlugin
         {
             try
             {
+
                 string partType = AttributeUtils.GetAttrForString(workPart, "PartType");
                 if (!partType.Equals("Work"))
                 {
                     theUI.NXMessageBox.Show("错误！", NXMessageBox.DialogType.Error, "请切换到Work档下！");
                     return 0;
                 }
-                work.GetPart(workPart);
-                this.collection = AssembleInstance.GetInstance().GetAssembleModle();
+                work.GetModelForPart(workPart);
+                string asm = work.MoldInfo.MoldNumber + "-" + work.MoldInfo.WorkpieceNumber + "-ASM";
+                string name = work.MoldInfo.MoldNumber + "-" + work.MoldInfo.WorkpieceNumber;
+                foreach (Part part in theSession.Parts)
+                {
+                    if(part.Name .Equals(asm))
+                    {
+                        assemble = AssembleSingleton.Instance().GetAssemble(name);
+                    }
+                }
+                if(assemble==null)
+                {
+                    theUI.NXMessageBox.Show("错误！", NXMessageBox.DialogType.Error, "无法找到ASM档！");
+                    return 0;
+                }            
                 theDialog.Show();
             }
             catch (Exception ex)
@@ -195,15 +209,15 @@ namespace MolexPlugin
                     this.StrName.Value = "";
                     return 0;
                 }
-                Session.UndoMarkId markId = Session.GetSession().SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "删除电极");
+                Session.UndoMarkId markId = Session.GetSession().SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "电极跑位");
 
-                ElectrodeAssembleModel eleModel = new ElectrodeAssembleModel();
-                eleModel.GetPart(eleComp.Prototype as Part);
+                ElectrodeModel eleModel = new ElectrodeModel();
+                eleModel.GetModelForPart(eleComp.Prototype as Part);
                 name = work.WorkpieceDirectoryPath + name + ".prt";
                 Point3d movePt = new Point3d(double_x.Value, double_y.Value, 0);
-                NXOpen.Assemblies.Component copyComp = AssmbliesUtils.MoveCompCopyPart(eleComp, movePt, work.Matr);
+                NXOpen.Assemblies.Component copyComp = AssmbliesUtils.MoveCompCopyPart(eleComp, movePt, work.WorkMatr);
                 AssmbliesUtils.MakeUnique(copyComp, name);
-                ElectrodeAssembleModel copyEle = new ElectrodeAssembleModel(this.SetEleInfo(eleModel.EleInfo), eleModel.MoldInfo, copyComp.Prototype as Part);
+                AttributeUtils.AttributeOperation("Positioning", this.StrName.Value.ToUpper());
             }
             catch (Exception ex)
             {
@@ -323,7 +337,7 @@ namespace MolexPlugin
         private bool EleDuplicationOfName(string name)
         {
 
-            foreach (ElectrodeAssembleModel eleModel in collection.Modle.EleModel)
+            foreach (ElectrodeModel eleModel in assemble.Electrodes)
             {
                 if (name.Equals(eleModel.AssembleName))
                 {

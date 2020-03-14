@@ -12,29 +12,32 @@ namespace Basic
     /// </summary>
     public class PointUtils : ClassItem
     {
-        public static NXObject CreatePointFeature(Point point)
+        public static Point CreatePointFeature(Point3d point)
         {
             Part workPart = theSession.Parts.Work;
             NXOpen.Features.Feature nullNXOpen_Features_Feature = null;
             NXOpen.Features.PointFeatureBuilder pointFeatureBuilder1;
             pointFeatureBuilder1 = workPart.BaseFeatures.CreatePointFeatureBuilder(nullNXOpen_Features_Feature);
-            pointFeatureBuilder1.Point = point;
-            NXOpen.NXObject nXObject1;
+            Point pt = workPart.Points.CreatePoint(point);
+            pointFeatureBuilder1.Point = pt;
+
             try
             {
-                nXObject1 = pointFeatureBuilder1.Commit();
-                return nXObject1;
+                NXOpen.Features.Feature pf = pointFeatureBuilder1.CommitFeature();
+                return pf.GetEntities()[0] as Point;
+
             }
             catch
             {
-                LogMgr.WriteLog("CycPointUtils:CreatePointFeature  创建点错误");
+                LogMgr.WriteLog("PointUtils:CreatePointFeature  创建点错误");
+                return null;
             }
             finally
             {
                 pointFeatureBuilder1.Destroy();
 
             }
-            return null;
+
         }
 
     }

@@ -15,8 +15,8 @@ namespace MolexPlugin.DAL
         public static void CreateBuilder(MoldInfoModel moldInfo)
         {
             Part workPart = Session.GetSession().Parts.Work;
-            NXOpen.Assemblies.Component[] ct = workPart.ComponentAssembly.RootComponent.GetChildren();
-            if (ct.Length == 0 || ct == null)
+            NXOpen.Assemblies.Component ct = workPart.ComponentAssembly.RootComponent;
+            if (ct != null)
             {
                 UI.GetUI().NXMessageBox.Show("错误！", NXMessageBox.DialogType.Error, "工件是装配关系");
                 return;

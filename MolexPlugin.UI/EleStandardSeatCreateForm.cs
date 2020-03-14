@@ -16,16 +16,18 @@ namespace MolexPlugin
     public class EleStandardSeatCreateForm
     {
         private Part workPart;
-        private static UFSession theUFSession;
-        private string vecName;
-        private EleConditionModel model;
+        private static UFSession theUFSession;     
+        private CreateConditionModel model;
 
         public EleStandardSeatCreateForm(string vec)
         {
             theUFSession = UFSession.GetUFSession();
             workPart = Session.GetSession().Parts.Work;
-            model = new EleConditionModel();
-            this.vecName = vec.ToUpper();
+            MoldInfoModel moldInfo = new MoldInfoModel(workPart);
+            string name = moldInfo.MoldNumber + "-" + moldInfo.WorkpieceNumber;
+            model = new CreateConditionModel();
+            model.Assemble = AssembleSingleton.Instance().GetAssemble(name);
+            model.VecName = vec.ToUpper();
 
         }
 
@@ -114,26 +116,9 @@ namespace MolexPlugin
             int workNumber = AttributeUtils.GetAttrForInt(workPart, "WorkNumber");
             if (workNumber != 0)
             {
-                WorkAssembleModel work = new WorkAssembleModel();
-                work.GetPart(workPart);
+                WorkModel work = new WorkModel();
+                work.GetModelForPart(workPart);
                 this.model.Work = work;
-                if (vecName == "Z+")
-                    this.model.Vec = this.model.Work.Matr.GetZAxis();
-                if (vecName == "X+")
-                    this.model.Vec = this.model.Work.Matr.GetXAxis();
-                if (vecName == "X-")
-                {
-                    Vector3d vec = this.model.Work.Matr.GetXAxis();
-                    this.model.Vec = new Vector3d(-vec.X, -vec.Y, -vec.Z);
-                }
-
-                if (vecName == "Y+")
-                    this.model.Vec = this.model.Work.Matr.GetYAxis();
-                if (vecName == "Y-")
-                {
-                    Vector3d vec = this.model.Work.Matr.GetYAxis();
-                    this.model.Vec = new Vector3d(-vec.X, -vec.Y, -vec.Z);
-                }
                 return true;
             }
             else
@@ -143,19 +128,19 @@ namespace MolexPlugin
 
         private bool AskAssembleJudge()
         {
-            AssembleInstance inst = AssembleInstance.GetInstance();
-            AssembleCollection coll = inst.GetAssembleModle();
-            if (coll.Modle.AsmModel == null)
+
+            if (this.model.Assemble.Asm == null)
             {
                 UI.GetUI().NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, "无法找到ASM装配档！");
                 return false;
             }
-            if (coll.Modle.EdmModel != null)
+            if (this.model.Assemble.Edm == null)
             {
                 UI.GetUI().NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, "无法找到EDM装配档！");
                 return false;
             }
             return true;
         }
+
     }
 }

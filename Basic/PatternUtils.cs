@@ -36,11 +36,7 @@ namespace Basic
             Direction yDirection;
             Vector3d x = mat.GetXAxis();
             Vector3d y = mat.GetYAxis();
-            Point3d origin = new Point3d(0, 0, 0);
-            Matrix4 invers = mat.GetInversMatrix();
-            invers.ApplyPos(ref origin);
-            invers.ApplyVec(ref x);
-            invers.ApplyVec(ref y);
+            Point3d origin = mat.GetCenter(mat);        
             bool added1 = patternGeometryBuilder1.GeometryToPattern.Add(obj); //设置要阵列的对象
 
             patternGeometryBuilder1.PatternService.RectangularDefinition.UseYDirectionToggle = true;
@@ -48,18 +44,14 @@ namespace Basic
             patternGeometryBuilder1.ReferencePoint.Point = workPart.Points.CreatePoint(origin); //指定参考点
 
             xDirection = workPart.Directions.CreateDirection(origin, x, SmartObject.UpdateOption.WithinModeling);   //方向
-            patternGeometryBuilder1.PatternService.RectangularDefinition.XSpacing.NCopies.RightHandSide = xNCopies;  //要阵列的个数（包括本身）
-            patternGeometryBuilder1.PatternService.RectangularDefinition.XSpacing.NCopies.SetName("xNCopies");
-            patternGeometryBuilder1.PatternService.RectangularDefinition.XSpacing.PitchDistance.RightHandSide = xPitchDistance; //设置节距
-            patternGeometryBuilder1.PatternService.RectangularDefinition.XSpacing.PitchDistance.SetName("xPitchDistance");
-            patternGeometryBuilder1.PatternService.RectangularDefinition.XDirection = xDirection;
-
             yDirection = workPart.Directions.CreateDirection(origin, y, SmartObject.UpdateOption.WithinModeling);   //方向
-            patternGeometryBuilder1.PatternService.RectangularDefinition.YSpacing.NCopies.SetName("yNCopies");
-            patternGeometryBuilder1.PatternService.RectangularDefinition.YSpacing.PitchDistance.SetName("yPitchDistance");
+            patternGeometryBuilder1.PatternService.RectangularDefinition.XDirection = xDirection;         
+            patternGeometryBuilder1.PatternService.RectangularDefinition.YDirection = yDirection;
+            patternGeometryBuilder1.PatternService.RectangularDefinition.XSpacing.NCopies.RightHandSide = xNCopies;  //要阵列的个数（包括本身）                                                                                                                     
+            patternGeometryBuilder1.PatternService.RectangularDefinition.XSpacing.PitchDistance.RightHandSide = xPitchDistance; //设置节距                                                                                                                           
             patternGeometryBuilder1.PatternService.RectangularDefinition.YSpacing.NCopies.RightHandSide = yNCopies;  //要阵列的个数（包括本身）
             patternGeometryBuilder1.PatternService.RectangularDefinition.YSpacing.PitchDistance.RightHandSide = yPitchDistance; //设置节距
-            patternGeometryBuilder1.PatternService.RectangularDefinition.YDirection = yDirection;
+
 
             try
             {

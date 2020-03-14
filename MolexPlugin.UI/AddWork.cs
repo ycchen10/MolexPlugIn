@@ -66,13 +66,14 @@ namespace MolexPlugin
         private NXOpen.BlockStyler.Button button_X;// Block type: Button
         private NXOpen.BlockStyler.Button button_Y;// Block type: Button
         private NXOpen.BlockStyler.Button button_Z;// Block type: Button
-        private Part asmPart;
+        private Part workPart;
         private List<int> numbers;
         private MoveObjectBasic moveObjectBasic = null;
         private Point selectionPt = null;
         private Face selectionFace = null;
         private List<NXObject> nxObjects = new List<NXObject>();
         private List<NXObject> points = new List<NXObject>();
+        public AddWorkBuilder builder;
         //------------------------------------------------------------------------------
         //Constructor for NX Styler class
         //------------------------------------------------------------------------------
@@ -108,12 +109,14 @@ namespace MolexPlugin
         {
             try
             {
-                asmPart = ElectrodeAssembleCollection.GetAsmCollection();
-                if (asmPart == null)
+                workPart = theSession.Parts.Work;
+                string type = AttributeUtils.GetAttrForString(workPart, "PartType");
+                if (type != "ASM")
                 {
-                    theUI.NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, "无法找到ASM档!");
+                    theUI.NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, "请切换ASM档为工作部件!");
                     return 0;
                 }
+                builder = new AddWorkBuilder(workPart);
                 theDialog.Show();
             }
             catch (Exception ex)
@@ -207,7 +210,7 @@ namespace MolexPlugin
             {
                 //---- Enter your callback code here -----
                 addOrModify.Value = true;
-                this.numbers = AddWorkBuilder.GetWorkNumber(asmPart);
+                this.numbers = builder.GetWorkNumber();
                 numbers.Sort();
                 string[] members = { "WORK" + (numbers[numbers.Count - 1] + 1).ToString() };
                 workNumber.Enable = false;
@@ -233,27 +236,21 @@ namespace MolexPlugin
                 Part workPart = theSession.Parts.Work;
 
                 CoordinateSystem wcs = workPart.WCS.CoordinateSystem;
-               
+
                 Matrix4 matr = new Matrix4();
                 matr.Identity();
                 matr.TransformToCsys(wcs, ref matr);
                 string number = this.workNumber.ValueAsString.Substring(4);
-               
+
                 if (addOrModify.Value)
                 {
-                    AddWorkBuilder.CreateWork(matr, Convert.ToInt32(number), asmPart);
+                    builder.CreateBuilder(matr, Convert.ToInt32(number));
                 }
                 else
                 {
-                    AddWorkBuilder.AlterMatr(matr, Convert.ToInt32(number), asmPart);
+                    builder.AlterMatr(matr, Convert.ToInt32(number));
                 }
-                CartesianCoordinateSystem csys = workPart.WCS.Save();
-
-                csys.Name = this.workNumber.ValueAsString;
-                csys.Layer = 200;
-                csys.Color = 186;
-                
-                PartUtils.SetPartDisplay(asmPart);
+               
                 CsysUtils.SetWcsToAbs();
                 DeleteObject.Delete(this.points.ToArray());
                 bool anyPartsModified1;
@@ -385,8 +382,8 @@ namespace MolexPlugin
         //------------------------------------------------------------------------------
         public int filter_cb(NXOpen.BlockStyler.UIBlock block, NXOpen.TaggedObject selectedObject)
         {
-            Model.MoldInfoModel info = new Model.MoldInfoModel();
-            info.GetAttribute(asmPart);
+            Model.MoldInfoModel info = builder.Model.Asm.MoldInfo;
+
             if (this.selePart.GetSelectedObjects().Length != 0)
             {
                 Part part = (this.selePart.GetSelectedObjects()[0] as NXOpen.Assemblies.Component).Prototype as Part;

@@ -54,7 +54,7 @@ namespace MolexPlugin.DAL
         /// <summary>
         /// 获取倒扣
         /// </summary>
-        private void GetBackOff()
+        public void GetBackOff()
         {
             analyze.Sort();//排序（最后一个为底面）
             if (analyze.Count == 1)

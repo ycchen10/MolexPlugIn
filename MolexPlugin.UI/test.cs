@@ -23,11 +23,11 @@ namespace MolexPlugin
             //Tag face2 = (Tag)82803;
             //Tag face3;
             //theUFSession.Modl.IntersectBodiesWithRetainedOptions(face1, face2, false, false, out face3);
-
-            Tag partTag = (Tag)43795;
-            Part part = NXObjectManager.Get(partTag) as Part;
-            Part parent = part.OwningComponent.Parent.Prototype as Part;
-            LogMgr.WriteLog(parent.Tag.ToString());
+            Part workPart = Session.GetSession().Parts.Work;
+            Point3d origin = new Point3d(0, 0, 0);
+            Vector3d x = new Vector3d(1, 0, 0);
+            Direction xDirection = workPart.Directions.CreateDirection(origin, x, SmartObject.UpdateOption.WithinModeling);
+            xDirection.Highlight();
         }
 
 
