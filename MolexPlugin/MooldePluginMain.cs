@@ -109,6 +109,10 @@ namespace MolexPlugin
                 PositionEle posit = new PositionEle();
                 posit.Show();
             }
+            if (args[0] == "MENU_WorkpieceDrawing")
+            {
+
+            }
             test.ces();
             return 1;
         }

@@ -71,6 +71,7 @@
     <Compile Include="EleStandardSeatForm.Designer.cs">
       <DependentUpon>EleStandardSeatForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interference.cs" />
     <Compile Include="MoveObjectOfCenter.cs" />
     <Compile Include="MoveObject.cs" />
     <Compile Include="PositionEle.cs" />
@@ -84,6 +85,13 @@
     <Compile Include="test.cs" />
     <Compile Include="UIUtils.cs" />
     <Compile Include="WindowWrapper.cs" />
+    <Compile Include="WorkpieceDrawingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WorkpieceDrawingForm.Designer.cs">
+      <DependentUpon>WorkpieceDrawingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WorkpieceDrawingCreateForm.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Basic\Basic.csproj">
@@ -106,6 +114,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WorkpieceDrawingForm.resx">
+      <DependentUpon>WorkpieceDrawingForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

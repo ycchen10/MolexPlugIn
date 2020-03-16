@@ -13,7 +13,7 @@ namespace MolexPlugin.Model
     /// </summary>
     public class AssembleModel
     {
-      
+
         private string moldAndWorkpieceNum;
         public ASMModel Asm { get; private set; }
 
@@ -23,12 +23,13 @@ namespace MolexPlugin.Model
 
         public List<ElectrodeModel> Electrodes { get; private set; } = new List<ElectrodeModel>();
 
+        public List<Part> Workpieces { get; private set; } = new List<Part>();
 
         public AssembleModel(string moldAndWorkpieceNum)
         {
-            
             this.moldAndWorkpieceNum = moldAndWorkpieceNum;
             GetAssembleInfo();
+            GetWorkpiece();
         }
         /// <summary>
         /// 获取全部装配
@@ -78,6 +79,18 @@ namespace MolexPlugin.Model
 
                         }
                     }
+                }
+            }
+        }
+
+        private void GetWorkpiece()
+        {
+            NXOpen.Assemblies.Component edmComp = this.Edm.PartTag.ComponentAssembly.RootComponent;
+            if(edmComp!=null)
+            {
+                foreach(NXOpen.Assemblies.Component ct in edmComp.GetChildren())
+                {
+                    Workpieces.Add(ct.Prototype as Part);
                 }
             }
         }

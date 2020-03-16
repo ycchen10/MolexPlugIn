@@ -81,6 +81,18 @@ namespace MolexPlugin.Model
         /// <param name="parentPart"></param>
         /// <returns></returns>
         public abstract NXOpen.Assemblies.Component Load(Part parentPart);
+        /// <summary>
+        /// 获取装配档下Occs值
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public NXOpen.Assemblies.Component GetPartComp(Part parent)
+        {
+            Tag[] elePartOccsTag;
+            NXOpen.UF.UFSession theUFSession = NXOpen.UF.UFSession.GetUFSession();
+            theUFSession.Assem.AskOccsOfPart(parent.Tag, this.PartTag.Tag, out elePartOccsTag);
+            return NXOpen.Utilities.NXObjectManager.Get(elePartOccsTag[0]) as NXOpen.Assemblies.Component;
+        }
 
     }
 }

@@ -16,7 +16,7 @@ namespace MolexPlugin
     public class EleStandardSeatCreateForm
     {
         private Part workPart;
-        private static UFSession theUFSession;     
+        private static UFSession theUFSession;
         private CreateConditionModel model;
 
         public EleStandardSeatCreateForm(string vec)
@@ -61,6 +61,12 @@ namespace MolexPlugin
                 bodys = SelectObject();
                 if (bodys == null || bodys.Count == 0)
                     return;
+                if (ElectrodeHeadAnalye.Analye(bodys, this.model.Work.WorkMatr, this.model.VecName))
+                {
+                    int ok = UI.GetUI().NXMessageBox.Show("注意", NXMessageBox.DialogType.Question, "电极有倒扣");
+                    if (ok != 1)
+                        return;
+                }
                 this.model.Bodys = bodys;
                 ShowForm();
             }
