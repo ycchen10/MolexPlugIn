@@ -62,5 +62,27 @@ namespace Basic
             }
 
         }
+
+        public static void DeleteParms(params NXObject[] obj)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            NXOpen.Features.RemoveParametersBuilder removeParametersBuilder1;
+            removeParametersBuilder1 = workPart.Features.CreateRemoveParametersBuilder();
+            bool added1 = removeParametersBuilder1.Objects.Add(obj);
+            try
+            {
+                NXObject nXObject1;
+                nXObject1 = removeParametersBuilder1.Commit();
+            }
+            catch (Exception ex)
+            {
+                LogMgr.WriteLog("DeleteObject.DeleteParms:删除参数失败！" + ex.Message);
+            }
+            finally
+            {
+                removeParametersBuilder1.Destroy();
+            }
+
+        }
     }
 }

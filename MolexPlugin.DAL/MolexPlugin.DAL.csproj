@@ -55,6 +55,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WorkForWorkpieceDrawing.cs" />
+    <Compile Include="WorkpieceDrawing.cs" />
     <Compile Include="Electrode\ElectrodeHeadAnalye.cs" />
     <Compile Include="Electrode\AbstractElectrodeSetValue.cs" />
     <Compile Include="Electrode\CreateElectrodeBuilder.cs" />
@@ -79,7 +81,8 @@
     <Compile Include="Electrode\EletrodePreparation.cs" />
     <Compile Include="Electrode\FindElectrodeAndWork.cs" />
     <Compile Include="Electrode\ICreateAssmblePart.cs" />
-    <Compile Include="InterferenceBuilder.cs" />
+    <Compile Include="Electrode\Interference.cs" />
+    <Compile Include="Electrode\InterferenceBuilder.cs" />
     <Compile Include="Move\MoveObjectFactory.cs" />
     <Compile Include="Move\MoveObjectBasic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -92,6 +95,7 @@
     <Compile Include="Electrode\YPositiveElectrodeSetValue.cs" />
     <Compile Include="Electrode\XPositiveElectrodeSetValue .cs" />
     <Compile Include="Electrode\ZPositiveElectrodeSetValue.cs" />
+    <Compile Include="WorkpieceInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Basic\Basic.csproj">
@@ -107,7 +111,9 @@
       <Name>MolexPlugin.Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Drawing\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

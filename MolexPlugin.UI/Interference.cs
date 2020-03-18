@@ -35,9 +35,11 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using NXOpen;
 using NXOpen.BlockStyler;
 using Basic;
+using MolexPlugin.DAL;
 namespace MolexPlugin
 {
 
@@ -131,6 +133,15 @@ namespace MolexPlugin
             {
                 group0 = (NXOpen.BlockStyler.Group)theDialog.TopBlock.FindBlock("group0");
                 selection_Work = (NXOpen.BlockStyler.SelectObject)theDialog.TopBlock.FindBlock("selection_Work");
+
+                Selection.MaskTriple maskComp = new Selection.MaskTriple()
+                {
+                    Type = 63,
+                    Subtype = 1,
+                    SolidBodySubtype = 0
+                };
+                Selection.MaskTriple[] masks = { maskComp };
+                selection_Work.SetSelectionFilter(Selection.SelectionAction.ClearAndEnableSpecific, masks);//过滤只选择组件
             }
             catch (Exception ex)
             {
@@ -166,6 +177,14 @@ namespace MolexPlugin
             try
             {
                 //---- Enter your callback code here -----
+                NXOpen.Assemblies.Component ct = selection_Work.GetSelectedObjects()[0] as NXOpen.Assemblies.Component;
+                InterferenceBuilder builder = new InterferenceBuilder(ct.Prototype as Part);
+                builder.CreateInterferenceBody();
+
+                builder.CreateInterferenceFace();
+                // SewUtils.SewFeatureUF(GetSheetBodyOFPart(workPart));
+                //  DeleteObject.DeleteParms(GetSheetBodyOFPart(workPart).ToArray());
+
             }
             catch (Exception ex)
             {
@@ -221,11 +240,13 @@ namespace MolexPlugin
         //------------------------------------------------------------------------------
         public int filter_cb(NXOpen.BlockStyler.UIBlock block, NXOpen.TaggedObject selectedObject)
         {
-            Part part = (selectedObject as NXOpen.Assemblies.Component).Prototype as Part;
-            string partType = AttributeUtils.GetAttrForString(part, "PartType");
-            if (!partType.Equals("Work"))
-                return NXOpen.UF.UFConstants.UF_UI_SEL_REJECT;
-
+            if (selectedObject is NXOpen.Assemblies.Component)
+            {
+                Part part = (selectedObject as NXOpen.Assemblies.Component).Prototype as Part;
+                string partType = AttributeUtils.GetAttrForString(part, "PartType");
+                if (!partType.Equals("Work"))
+                    return NXOpen.UF.UFConstants.UF_UI_SEL_REJECT;
+            }
             return (NXOpen.UF.UFConstants.UF_UI_SEL_ACCEPT);
         }
 
@@ -248,5 +269,19 @@ namespace MolexPlugin
             return plist;
         }
 
+        private List<Body> GetSheetBodyOFPart(Part part)
+        {
+            List<Body> sheetBody = new List<Body>();
+            foreach (Body body in part.Bodies)
+            {
+                if (body.IsSheetBody)
+                {
+                    sheetBody.Add(body);
+                    body.Color = 47;
+                    body.Layer = 251;
+                }
+            }
+            return sheetBody;
+        }
     }
 }

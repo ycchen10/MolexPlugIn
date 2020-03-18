@@ -129,6 +129,7 @@ namespace MolexPlugin.DAL
         /// </summary>
         private void CreateCenterPoint()
         {
+            UFSession theUFSession = UFSession.GetUFSession();
             Part workPart = Session.GetSession().Parts.Work;
             Point3d center = GetCenter();
             Matrix4 inver = head.ConditionModel.Work.WorkMatr.GetInversMatrix();
@@ -137,6 +138,8 @@ namespace MolexPlugin.DAL
             Point pt = PointUtils.CreatePointFeature(center);
             pt.Color = 186;
             pt.Layer = 254;
+            theUFSession.Obj.SetName(pt.Tag, "SetValuePoint");
+            
         }
         /// <summary>
         /// 获取最低面

@@ -63,6 +63,7 @@
     <Compile Include="DeleteObject.cs" />
     <Compile Include="ClassItem.cs" />
     <Compile Include="CsysUtils.cs" />
+    <Compile Include="DrawingUtils.cs" />
     <Compile Include="EdgeUtils.cs" />
     <Compile Include="ExpressionUtils.cs" />
     <Compile Include="ExtrudedUtils.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="SelectionRule\SelectionBdoyRule .cs" />
     <Compile Include="SelectionRule\SelectionFaceRule.cs" />
     <Compile Include="SelectionRule\SelectionCurveRule.cs" />
+    <Compile Include="SewUtils.cs" />
     <Compile Include="SketchUtils.cs" />
     <Compile Include="ToolingBoxFeature.cs" />
     <Compile Include="TraceARay.cs" />

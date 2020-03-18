@@ -316,13 +316,13 @@ namespace Basic
     /// <summary>
     /// 面的数据（AskFaceData 函数的封装）
     /// </summary>
-    public class FaceData
+    public class FaceData : IEquatable<FaceData>
     {
         /// <summary>
         /// 面类型
         /// </summary>
         public int FaceType;
-       
+
         public Point3d Point { get; set; }
         public Vector3d Dir { get; set; }
         /// <summary>
@@ -346,6 +346,49 @@ namespace Basic
         public Point3d GetBoxCenter()
         {
             return new Point3d(0.5 * (BoxMinCorner.X + BoxMaxCorner.X), 0.5 * (BoxMinCorner.Y + BoxMaxCorner.Y), 0.5 * (BoxMinCorner.Z + BoxMaxCorner.Z));
+        }
+
+        public bool Equals(FaceData other)
+        {
+            double[] ptOnObj1 = new double[3];
+            double[] ptOnObj2 = new double[3];
+
+            double minDis = AnalysisUtils.AskMinimumDist(this.Face.Tag, other.Face.Tag, out ptOnObj1, out ptOnObj2);
+            double anlge = UMathUtils.Angle(this.Dir, other.Dir);
+            Point3d pt1 = new Point3d(ptOnObj1[0], ptOnObj1[1], ptOnObj1[2]);
+            Point3d pt2 = new Point3d(ptOnObj2[0], ptOnObj2[1], ptOnObj2[2]);
+            List<Edge> edges1 = GetPointOnEdge(this.Face, ptOnObj1);
+            List<Edge> edges2 = GetPointOnEdge(other.Face, ptOnObj2);
+            bool edgeBool = false;
+            if (edges1.Count > 0 && edges2.Count > 0)
+            {
+                foreach (Edge ed in edges1)
+                {
+                    foreach (Edge ed1 in edges2)
+                    {
+                        if (ed.Tag == ed1.Tag)
+                            edgeBool = true;
+                    }
+                }
+            }
+            if ((this.FaceType == other.FaceType) && UMathUtils.IsEqual(anlge, Math.PI) && (this.IntNorm == -other.IntNorm) &&
+                UMathUtils.IsEqual(minDis, 0) && UMathUtils.IsEqual(pt1, pt2) && !edgeBool)
+                return true;
+            else
+                return false;
+        }
+        private List<Edge> GetPointOnEdge(Face face, double[] pt)
+        {
+            UFSession theUFSession = UFSession.GetUFSession();
+            List<Edge> edges = new List<Edge>();
+            foreach (Edge edge1 in this.Face.GetEdges()) //判断是否you
+            {
+                int ptStatus;
+                theUFSession.Modl.AskPointContainment(pt, edge1.Tag, out ptStatus);
+                if (ptStatus == 3)
+                    edges.Add(edge1);
+            }
+            return edges;
         }
     }
 

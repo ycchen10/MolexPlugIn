@@ -180,10 +180,9 @@ namespace MolexPlugin
                 if (ok == 1)
                 {
                     string path = elePart.FullPath;
-                    // elePart.Close(NXOpen.BasePart.CloseWholeTree.False, NXOpen.BasePart.CloseModified.UseResponses, null);
+                    elePart.Close(NXOpen.BasePart.CloseWholeTree.False, NXOpen.BasePart.CloseModified.UseResponses, null);
                     AssmbliesUtils.DeleteComponent(eleComp);
                     LayerUtils.MoveDisplayableObject(ele.EleInfo.EleNumber + 10, LayerUtils.GetAllObjectsOnLayer(ele.EleInfo.EleNumber + 100));
-                    elePart.Close(NXOpen.BasePart.CloseWholeTree.False, NXOpen.BasePart.CloseModified.UseResponses, null);
                     if (File.Exists(path))
                         File.Delete(path);
                 }

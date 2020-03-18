@@ -15,11 +15,11 @@ namespace MolexPlugin.Model
     {
 
         private string moldAndWorkpieceNum;
-        public ASMModel Asm { get; private set; }
+        public ASMModel Asm { get; private set; } = null;
 
         public List<WorkModel> Works { get; private set; } = new List<WorkModel>();
 
-        public EDMModel Edm { get; private set; }
+        public EDMModel Edm { get; private set; } = null;
 
         public List<ElectrodeModel> Electrodes { get; private set; } = new List<ElectrodeModel>();
 
@@ -85,12 +85,15 @@ namespace MolexPlugin.Model
 
         private void GetWorkpiece()
         {
-            NXOpen.Assemblies.Component edmComp = this.Edm.PartTag.ComponentAssembly.RootComponent;
-            if(edmComp!=null)
+            if (this.Edm != null)
             {
-                foreach(NXOpen.Assemblies.Component ct in edmComp.GetChildren())
+                NXOpen.Assemblies.Component edmComp =this.Edm.GetPartComp(Asm.PartTag);
+                if (edmComp != null)
                 {
-                    Workpieces.Add(ct.Prototype as Part);
+                    foreach (NXOpen.Assemblies.Component ct in edmComp.GetChildren())
+                    {
+                        Workpieces.Add(ct.Prototype as Part);
+                    }
                 }
             }
         }

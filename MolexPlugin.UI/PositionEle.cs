@@ -110,16 +110,16 @@ namespace MolexPlugin
                 string name = work.MoldInfo.MoldNumber + "-" + work.MoldInfo.WorkpieceNumber;
                 foreach (Part part in theSession.Parts)
                 {
-                    if(part.Name .Equals(asm))
+                    if (part.Name.Equals(asm))
                     {
                         assemble = AssembleSingleton.Instance().GetAssemble(name);
                     }
                 }
-                if(assemble==null)
+                if (assemble == null)
                 {
                     theUI.NXMessageBox.Show("错误！", NXMessageBox.DialogType.Error, "无法找到ASM档！");
                     return 0;
-                }            
+                }
                 theDialog.Show();
             }
             catch (Exception ex)
@@ -217,7 +217,8 @@ namespace MolexPlugin
                 Point3d movePt = new Point3d(double_x.Value, double_y.Value, 0);
                 NXOpen.Assemblies.Component copyComp = AssmbliesUtils.MoveCompCopyPart(eleComp, movePt, work.WorkMatr);
                 AssmbliesUtils.MakeUnique(copyComp, name);
-                AttributeUtils.AttributeOperation("Positioning", this.StrName.Value.ToUpper());
+                ElectrodeInfo newInfo = this.SetEleInfo(eleModel.EleInfo);
+                newInfo.SetAttribute(copyComp.Prototype as Part);
             }
             catch (Exception ex)
             {
@@ -327,6 +328,7 @@ namespace MolexPlugin
             info.Positioning = this.StrName.Value.ToUpper();
             info.EleSetValue[0] = info.EleSetValue[0] + this.double_x.Value;
             info.EleSetValue[1] = info.EleSetValue[1] + this.double_y.Value;
+            info.Positioning = this.StrName.Value.ToUpper();
             return info;
         }
         /// <summary>

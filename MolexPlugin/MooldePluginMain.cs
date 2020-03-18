@@ -109,11 +109,16 @@ namespace MolexPlugin
                 PositionEle posit = new PositionEle();
                 posit.Show();
             }
+            if (args[0] == "MENU_Interference")
+            {
+                Interference inter = new Interference();
+                inter.Show();
+            }
             if (args[0] == "MENU_WorkpieceDrawing")
             {
-
+                new WorkpieceDrawingCreateForm().Show();
             }
-            test.ces();
+           // test.ces();
             return 1;
         }
         /// <summary>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NXOpen;
+using NXOpen.UF;
 using Basic;
 
 namespace Basic
@@ -29,10 +30,14 @@ namespace Basic
             simpleInterference1.SecondBody.Value = body2;
             NXOpen.GeometricAnalysis.SimpleInterference.Result result1;
             result1 = simpleInterference1.PerformCheck();
-            NXObject[] objs = simpleInterference1.GetInterferenceResults();
-            foreach (NXObject obj in objs)
+            if (result1 == NXOpen.GeometricAnalysis.SimpleInterference.Result.InterferenceExists)
             {
-                bodys.Add(obj as Body);
+                NXObject[] objs = simpleInterference1.GetInterferenceResults();
+
+                foreach (NXObject obj in objs)
+                {
+                    bodys.Add(obj as Body);
+                }
             }
             NXOpen.NXObject nXObject1;
             nXObject1 = simpleInterference1.Commit();
@@ -55,7 +60,7 @@ namespace Basic
             simpleInterference1.FaceInterferenceType = NXOpen.GeometricAnalysis.SimpleInterference.FaceInterferenceMethod.AllPairs;
             simpleInterference1.FirstBody.Value = body1;
             simpleInterference1.SecondBody.Value = body2;
-            NXOpen.GeometricAnalysis.SimpleInterference.Result result1;
+            simpleInterference1.PerformCheck();
             NXObject[] objs = simpleInterference1.GetInterferenceResults();
             foreach (NXObject obj in objs)
             {
@@ -63,6 +68,18 @@ namespace Basic
             }
             simpleInterference1.Destroy();
             return faces;
+        }
+        public static double AskMinimumDist(Tag obj1, Tag obj2, out double[] ptOnObj1, out double[] ptOnObj2)
+        {
+            UFSession theUFSession = UFSession.GetUFSession();
+            double[] guess1 = new double[3];
+            double[] guess2 = new double[3];
+            double minDist = -1;
+            ptOnObj1 = new double[3];
+            ptOnObj2 = new double[3];
+            double accuracy;
+            theUFSession.Modl.AskMinimumDist2(obj1, obj2, 0, guess1, 0, guess2, out minDist, ptOnObj1, ptOnObj2, out accuracy);
+            return minDist;
         }
 
     }

@@ -156,6 +156,59 @@ namespace Basic
         }
 
         /// <summary>
+        /// 链接到工作部件中(关联)
+        /// </summary>
+        /// <param name="seleObj">要链接的face</param>
+        /// <returns></returns>
+        public static NXOpen.Features.Feature WaveFace(params Face[] seleObj)
+        {
+            Part workPart = theSession.Parts.Work;
+            NXOpen.Features.Feature nullNXOpen_Features_Feature = null;
+            NXOpen.Features.WaveLinkBuilder waveLinkBuilder1;
+            waveLinkBuilder1 = workPart.BaseFeatures.CreateWaveLinkBuilder(nullNXOpen_Features_Feature);
+            NXOpen.Features.ExtractFaceBuilder extractFaceBuilder1;
+            extractFaceBuilder1 = waveLinkBuilder1.ExtractFaceBuilder;
+            waveLinkBuilder1.Type = NXOpen.Features.WaveLinkBuilder.Types.FaceLink;
+            extractFaceBuilder1.FaceOption = NXOpen.Features.ExtractFaceBuilder.FaceOptionType.SingleFace;
+            extractFaceBuilder1.ParentPart = NXOpen.Features.ExtractFaceBuilder.ParentPartType.OtherPart;
+            extractFaceBuilder1.Associative = true;
+
+            extractFaceBuilder1.MakePositionIndependent = false;
+
+            extractFaceBuilder1.FixAtCurrentTimestamp = false;
+
+            extractFaceBuilder1.HideOriginal = false;
+
+            extractFaceBuilder1.DeleteHoles = false;
+
+            extractFaceBuilder1.InheritDisplayProperties = false;
+
+            NXOpen.SelectDisplayableObjectList selectDisplayableObjectList1;
+            selectDisplayableObjectList1 = extractFaceBuilder1.ObjectToExtract;
+            extractFaceBuilder1.Associative = false;
+
+            bool added1;
+            added1 = selectDisplayableObjectList1.Add(seleObj);
+            try
+            {
+
+                return waveLinkBuilder1.CommitFeature();
+            }
+            catch (Exception ex)
+            {
+                LogMgr.WriteLog("AssmbliesUtils:WaveFace:" + ex.Message);
+                return null;
+            }
+            finally
+            {
+
+                waveLinkBuilder1.Destroy();
+            }
+
+
+        }
+
+        /// <summary>
         /// 移动部件并复制部件
         /// </summary>
         /// <param name="compObj"></param>
@@ -319,7 +372,7 @@ namespace Basic
             bool added1;
             added1 = makeUniquePartBuilder1.SelectedComponents.Add(component);
             Tag partTag = theUFSession.Assem.AskPrototypeOfOcc(component.Tag);
-            
+
             try
             {
                 NXOpen.Part part1 = (Part)NXObjectManager.Get(partTag);
