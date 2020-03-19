@@ -21,7 +21,7 @@ namespace MolexPlugin
         {
             InitializeComponent();
             this.assemble = assemble;
-
+            assemble.Works.Sort();
             foreach (WorkModel work in assemble.Works)
             {
                 ListViewItem lv = new ListViewItem();

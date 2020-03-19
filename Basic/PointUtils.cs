@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NXOpen;
+using NXOpen.Utilities;
 
 namespace Basic
 {
@@ -39,6 +40,13 @@ namespace Basic
             }
 
         }
+        public static Point CreatePoint(Point3d point)
+        {
+            Tag pointTag = Tag.Null;
+            theUFSession.Curve.CreatePoint(new double[3] { point.X, point.Y, point.Z }, out pointTag);
+            return NXObjectManager.Get(pointTag) as Point;
+        }
+
 
     }
 }

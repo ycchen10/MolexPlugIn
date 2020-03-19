@@ -72,11 +72,22 @@ namespace Basic
         {
             Part workPart = theSession.Parts.Work;
             Part displayPart = theSession.Parts.Display;
-            NXOpen.PartLoadStatus partLoadStatus1;
-            theSession.Parts.SetWorkComponent(comp, NXOpen.PartCollection.RefsetOption.Entire, NXOpen.PartCollection.WorkComponentOption.Visible, out partLoadStatus1);
+            NXOpen.PartLoadStatus partLoadStatus1 = null;
+            try
+            {
+                theSession.Parts.SetWorkComponent(comp, NXOpen.PartCollection.RefsetOption.Entire, NXOpen.PartCollection.WorkComponentOption.Visible, out partLoadStatus1);
+            }
+            catch (Exception ex)
+            {
+                LogMgr.WriteLog("PartUtils.SetPartWork" + ex.Message);
+            }
+            finally
+            {
+                workPart = theSession.Parts.Work;
+                if (partLoadStatus1 != null)
+                    partLoadStatus1.Dispose();
+            }
 
-            workPart = theSession.Parts.Work; 
-            partLoadStatus1.Dispose();
         }
 
         /// <summary>

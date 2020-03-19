@@ -43,7 +43,7 @@ namespace Basic
             {
                 NXOpen.NXObject nXObject1;
                 nXObject1 = drawingSheetBuilder1.Commit();
-                theUFSession.Draw.RenameDrawing(nXObject1.Tag, drawName);
+                nXObject1.SetName(drawName);
                 return nXObject1 as NXOpen.Drawings.DrawingSheet;
             }
             catch (Exception ex)
@@ -163,7 +163,7 @@ namespace Basic
         /// <param name="viewName"></param>
         /// <param name="point"></param>
         /// <returns></returns>
-        public static BaseView CreateView(string viewName, Point3d point, double scaleNumerator, Matrix4 mat)
+        public static DraftingView CreateView(string viewName, Point3d point, double scaleNumerator, Matrix4 mat)
         {
             Part workPart = theSession.Parts.Work;
             Point3d origin = new Point3d(0, 0, 0);
@@ -185,11 +185,11 @@ namespace Basic
             baseViewBuilder1.Style.ViewStyleOrientation.Ovt.NormalDirection = zDir;
             baseViewBuilder1.Style.ViewStyleOrientation.Ovt.XDirection = xDir;
             baseViewBuilder1.Scale.Numerator = scaleNumerator;
-            baseViewBuilder1.Scale.Denominator = 1.0;           
+            baseViewBuilder1.Scale.Denominator = 1.0;
             baseViewBuilder1.Placement.Placement.SetValue(null, workPart.Views.WorkView, point);
             try
             {
-                return baseViewBuilder1.Commit() as BaseView;
+                return baseViewBuilder1.Commit() as DraftingView;
             }
             catch (Exception ex)
             {
@@ -208,7 +208,7 @@ namespace Basic
         /// <param name="baseView">主视图</param>
         /// <param name="scale">比例</param>
         /// <returns></returns>
-        public static BaseView CreateProjectedView(NXOpen.Drawings.BaseView baseView, Point3d origin, double scale)
+        public static DraftingView CreateProjectedView(NXOpen.Drawings.DraftingView baseView, Point3d origin, double scale)
         {
             Part workPart = theSession.Parts.Work;
             NXOpen.Drawings.ProjectedView nullNXOpen_Drawings_ProjectedView = null;
@@ -219,13 +219,13 @@ namespace Basic
             projectedViewBuilder1.Parent.View.Value = baseView;
             projectedViewBuilder1.Style.ViewStyleGeneral.Scale.Numerator = scale;
             projectedViewBuilder1.Style.ViewStyleBase.Arrangement.InheritArrangementFromParent = true;
-            
+
             projectedViewBuilder1.Placement.Placement.SetValue(null, workPart.Views.WorkView, origin);
             try
             {
-                return projectedViewBuilder1.Commit() as BaseView;
+                return projectedViewBuilder1.Commit() as DraftingView;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogMgr.WriteLog("DrawingUtils:CreateProjectedView" + ex.Message);
                 return null;
@@ -233,7 +233,7 @@ namespace Basic
             finally
             {
                 projectedViewBuilder1.Destroy();
-            }                    
+            }
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace Basic
         public static void UpdateViews(NXOpen.Drawings.DrawingSheet sheet)
         {
             Part workPart = theSession.Parts.Work;
-            List<NXOpen.Drawings.DraftingView> views = new List<DraftingView>();           
+            List<NXOpen.Drawings.DraftingView> views = new List<DraftingView>();
             foreach (DraftingView dv in sheet.GetDraftingViews())
             {
                 if (dv.IsOutOfDate)
@@ -697,7 +697,7 @@ namespace Basic
         /// </summary>
         /// <param name="baseView"></param>
         /// <param name="comp"></param>
-        public static void ShowComponent(NXOpen.Drawings.BaseView baseView, params NXOpen.Assemblies.Component[] comp)
+        public static void ShowComponent(NXOpen.Drawings.DraftingView baseView, params NXOpen.Assemblies.Component[] comp)
         {
             Part workPart = Session.GetSession().Parts.Work;
             NXOpen.Assemblies.ShowComponentBuilder showComponentBuilder1;
@@ -732,7 +732,7 @@ namespace Basic
         /// </summary>
         /// <param name="baseView"></param>
         /// <param name="comp"></param>
-        public static void HideComponent(NXOpen.Drawings.BaseView baseView, params NXOpen.Assemblies.Component[] comp)
+        public static void HideComponent(NXOpen.Drawings.DraftingView baseView, params NXOpen.Assemblies.Component[] comp)
         {
             Part workPart = Session.GetSession().Parts.Work;
             NXOpen.Assemblies.HideComponentBuilder hideComponentBuilder1;
@@ -754,6 +754,58 @@ namespace Basic
             {
                 hideComponentBuilder1.Destroy();
             }
+        }
+
+        /// <summary>
+        /// 设置层为可见
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="layers"></param>
+        public static void SetLayerVisible(int[] layers, params NXObject[] view)
+        {
+            Part workPart = theSession.Parts.Work;
+            NXOpen.Layer.StateInfo[] stateArray1 = new NXOpen.Layer.StateInfo[layers.Length];
+            for (int i = 0; i < layers.Length; i++)
+            {
+                stateArray1[i] = new NXOpen.Layer.StateInfo(layers[i], NXOpen.Layer.State.Visible);
+            }
+            for (int i = 0; i < view.Length; i++)
+            {
+                workPart.Layers.SetObjectsVisibilityOnLayer((NXOpen.Drawings.DraftingView)view[i], stateArray1, true);
+            }
+
+        }
+
+        /// <summary>
+        /// 设置所层不可见
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="layers"></param>
+        public static void SetLayerHidden(params NXObject[] view)
+        {
+            Part workPart = theSession.Parts.Work;
+            NXOpen.Layer.StateInfo[] stateArray1 = new NXOpen.Layer.StateInfo[256];
+            for (int i = 0; i < 256; i++)
+            {
+                stateArray1[i] = new NXOpen.Layer.StateInfo(i, NXOpen.Layer.State.Hidden);
+            }
+            for (int i = 0; i < view.Length; i++)
+            {
+                workPart.Layers.SetObjectsVisibilityOnLayer((NXOpen.Drawings.DraftingView)view[i], stateArray1, true);
+            }
+
+        }
+
+        public static NXOpen.Drawings.DrawingSheet DrawingSheetByName(string sheetName)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            DrawingSheet sheet = null;
+            foreach (DrawingSheet st in workPart.DrawingSheets)
+            {
+                if (st.Name.Equals(sheetName))
+                    sheet = st;
+            }
+            return sheet;
         }
     }
 }

@@ -394,5 +394,31 @@ namespace Basic
 
 
         }
+        /// <summary>
+        /// 通过父获得partComp
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="part"></param>
+        /// <returns></returns>
+        public static NXOpen.Assemblies.Component GetPartComp(Part parent, Part part)
+        {
+            Tag[] elePartOccsTag;
+            NXOpen.UF.UFSession theUFSession = NXOpen.UF.UFSession.GetUFSession();
+            theUFSession.Assem.AskOccsOfPart(parent.Tag, part.Tag, out elePartOccsTag);
+            return NXOpen.Utilities.NXObjectManager.Get(elePartOccsTag[0]) as NXOpen.Assemblies.Component;
+        }
+        /// <summary>
+        /// 获取obj的objOcc
+        /// </summary>
+        /// <param name="partOcc"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static NXObject GetNXObjectOfOcc(Tag partOcc, Tag obj)
+        {
+            Tag objOccTag = Tag.Null;
+            NXOpen.UF.UFSession theUFSession = NXOpen.UF.UFSession.GetUFSession();
+            objOccTag = theUFSession.Assem.FindOccurrence(partOcc, obj);
+            return NXObjectManager.Get(objOccTag) as NXObject;
+        }
     }
 }
