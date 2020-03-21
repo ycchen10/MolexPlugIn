@@ -66,7 +66,7 @@ namespace MolexPlugin.DAL
             Point pt = null;
             foreach (Point k in this.eleModel.PartTag.Points.ToArray())
             {
-                if (k.Name.Equals(("SetValuePoint").ToUpper()))
+                if (k.Name.ToUpper().Equals(("SetValuePoint").ToUpper()))
                     pt = k;
             }
             if (pt == null)

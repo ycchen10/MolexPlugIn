@@ -7,6 +7,7 @@ using System.IO;
 using NXOpen;
 using Basic;
 using NXOpen.Assemblies;
+using NXOpen.UF;
 
 namespace MolexPlugin.Model
 {
@@ -27,7 +28,7 @@ namespace MolexPlugin.Model
         {
 
         }
-        public WorkModel(string filePath,MoldInfoModel moldInfo, int workNumber, Matrix4 matr)
+        public WorkModel(string filePath, MoldInfoModel moldInfo, int workNumber, Matrix4 matr)
         {
             this.MoldInfo = moldInfo;
             this.WorkNumber = workNumber;
@@ -37,9 +38,9 @@ namespace MolexPlugin.Model
             this.WorkpieceDirectoryPath = filePath;
             this.WorkpiecePath = filePath + this.AssembleName + ".prt";
         }
-     
+
         public override void CreatePart()
-        {             
+        {
             Part part = PartUtils.NewFile(this.WorkpiecePath) as Part;
             this.PartTag = part;
             SetAttribute();
@@ -135,6 +136,96 @@ namespace MolexPlugin.Model
         public int CompareTo(WorkModel other)
         {
             return this.WorkNumber.CompareTo(other.WorkNumber);
+        }
+
+        /// <summary>
+        /// 画中心点和中心线
+        /// </summary>
+        /// <param name="disPt"></param>
+        public void CreatePointAndCenterLine(Point3d centerPt, Point3d disPt)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            if (workPart.Tag != PartTag.Tag)
+            {
+                NXOpen.Assemblies.Component ct = AssmbliesUtils.GetPartComp(workPart, PartTag);
+                PartUtils.SetPartWork(ct);
+            }
+            CreateCenterLine(centerPt, disPt);
+            CreateCenterPoint();
+            PartUtils.SetPartWork(null);
+        }
+
+        /// <summary>
+        /// 设置中心线
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <param name="line"></param>
+        private void SetLineObj(int layer, params Line[] line)
+        {
+            UFSession theUFSession = UFSession.GetUFSession();
+            foreach (Line temp in line)
+            {
+                theUFSession.Obj.SetColor(temp.Tag, 186);
+                theUFSession.Obj.SetLayer(temp.Tag, layer);
+                theUFSession.Obj.SetFont(temp.Tag, 7);
+            }
+
+        }
+        private void SetOrigin(int layer, params Point[] pt)
+        {
+            UFSession theUFSession = UFSession.GetUFSession();
+            foreach (Point i in pt)
+            {
+                theUFSession.Obj.SetColor(i.Tag, 186);
+                theUFSession.Obj.SetLayer(i.Tag, 20);
+                theUFSession.Obj.SetName(i.Tag, "CenterPoint");
+            }
+        }
+        /// <summary>
+        /// 创建中心线
+        /// </summary>
+        /// <param name="centerPt"></param>
+        /// <param name="disPt"></param>
+        private void CreateCenterLine(Point3d centerPt, Point3d disPt)
+        {
+
+            foreach (Line line in this.PartTag.Lines)
+            {
+                if (line.Color == 186 && line.Layer == 20)
+                    return;
+            }
+            Point3d minX = new Point3d(centerPt.X - disPt.X - 10, 0, 0);
+            Point3d maxX = new Point3d(centerPt.X + disPt.X + 10, 0, 0);
+            Point3d minY = new Point3d(0, centerPt.Y - disPt.Y - 10, 0);
+            Point3d maxY = new Point3d(0, centerPt.Y + disPt.Y + 10, 0);
+
+            Matrix4 inver = this.WorkMatr.GetInversMatrix();
+            inver.ApplyPos(ref minX);
+            inver.ApplyPos(ref maxX);
+            inver.ApplyPos(ref minY);
+            inver.ApplyPos(ref maxY);
+            Line line1 = this.PartTag.Curves.CreateLine(minX, maxX);
+            Line line2 = this.PartTag.Curves.CreateLine(minY, maxY);
+            SetLineObj(20, new Line[2] { line1, line2 });
+        }
+        /// <summary>
+        /// 创建中心点
+        /// </summary>
+        private void CreateCenterPoint()
+        {
+            foreach (Point pt in PartTag.Points)
+            {
+                if (pt.Name.ToUpper().Equals("CenterPoint".ToUpper()))
+                {
+                    return;
+                }
+            }
+            Point3d temp = new Point3d(0, 0, 0);
+            Matrix4 inver = this.WorkMatr.GetInversMatrix();
+            inver.ApplyPos(ref temp);
+            Point originPoint = PointUtils.CreatePoint(temp);
+            SetOrigin(20, originPoint);
+
         }
     }
 }

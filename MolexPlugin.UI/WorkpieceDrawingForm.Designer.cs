@@ -119,7 +119,7 @@
             this.Controls.Add(this.buttCancel);
             this.Controls.Add(this.buttOk);
             this.Controls.Add(this.buttAllSelet);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

@@ -176,18 +176,18 @@ namespace MolexPlugin.DAL
         private double GetScale(WorkpieceInfo info)
         {
             double x = 120 / (info.DisPt.X * 2);
-            double y = 180 / (info.DisPt.X * 2 + info.DisPt.Z * 2);
+            double y = 160 / (info.DisPt.Y * 2 + info.DisPt.Z * 2);
             if (x > y)
             {
                 if (y > 1)
-                    return Math.Round(y, 0);
+                    return Math.Floor(y);
                 else
                     return Math.Round(y, 1);
             }
             else
             {
                 if (x > 1)
-                    return Math.Round(x, 0);
+                    return Math.Floor(x);
                 else
                     return Math.Round(x, 1);
             }

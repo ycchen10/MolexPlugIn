@@ -28,7 +28,7 @@ namespace MolexPlugin.DAL
                     vec = (new Vector3d(-workMat.GetYAxis().X, -workMat.GetYAxis().Y, -workMat.GetYAxis().Z));
                     break;
                 case "Y-":
-                    vec = (workMat.GetZAxis());
+                    vec = (workMat.GetYAxis());
                     break;
                 default:
                     break;

@@ -250,7 +250,7 @@ namespace MolexPlugin
                 {
                     builder.AlterMatr(matr, Convert.ToInt32(number));
                 }
-               
+
                 CsysUtils.SetWcsToAbs();
                 DeleteObject.Delete(this.points.ToArray());
                 bool anyPartsModified1;
@@ -317,20 +317,23 @@ namespace MolexPlugin
                 }
                 else if (block == selePoint)
                 {
-                    TaggedObject obj = selePoint.GetSelectedObjects()[0];
-                    //---------Enter your code here-----------
-                    if (obj is Point)
-                        this.selectionPt = obj as Point;
-                    if (obj is Face)
-                        this.selectionFace = obj as Face;
-                    if (selectionPt != null)
+                    if (selePoint.GetSelectedObjects().Length != 0)
                     {
-                        Point3d temp;
-                        if (selectionFace != null)
-                            temp = moveObjectBasic.GetPointToFaceDis(selectionPt, selectionFace);
-                        else
-                            temp = selectionPt.Coordinates;
-                        CsysUtils.SetWcsOfCentePoint(temp);
+                        TaggedObject obj = selePoint.GetSelectedObjects()[0];
+                        //---------Enter your code here-----------
+                        if (obj is Point)
+                            this.selectionPt = obj as Point;
+                        if (obj is Face)
+                            this.selectionFace = obj as Face;
+                        if (selectionPt != null)
+                        {
+                            Point3d temp;
+                            if (selectionFace != null)
+                                temp = moveObjectBasic.GetPointToFaceDis(selectionPt, selectionFace);
+                            else
+                                temp = selectionPt.Coordinates;
+                            CsysUtils.SetWcsOfCentePoint(temp);
+                        }
                     }
                 }
                 else if (block == button_X)

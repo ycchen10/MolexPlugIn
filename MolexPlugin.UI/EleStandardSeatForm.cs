@@ -376,7 +376,8 @@ namespace MolexPlugin
             int y = int.Parse(this.textBox_preparationY.Text);
             int z = int.Parse(this.textBox_preparationZ.Text);
             int[] tem = new int[2] { x, y };
-            eleInfo.IsPreparation = pre.GetPreparation(ref tem);
+            pre.GetPreparation(ref tem);
+            eleInfo.IsPreparation = (tem[0] == x && tem[1] == y);
             builde.CreateEle(eleInfo);
             this.Close();
         }

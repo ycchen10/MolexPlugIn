@@ -55,8 +55,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WorkForWorkpieceDrawing.cs" />
-    <Compile Include="WorkpieceDrawing.cs" />
+    <Compile Include="Drawing\WorkForWorkpieceDrawing.cs" />
+    <Compile Include="Drawing\WorkpieceDrawing.cs" />
+    <Compile Include="ElectrodeDrawing.cs" />
+    <Compile Include="ElectrodeDrawingInfo.cs" />
     <Compile Include="Electrode\ElectrodeHeadAnalye.cs" />
     <Compile Include="Electrode\AbstractElectrodeSetValue.cs" />
     <Compile Include="Electrode\CreateElectrodeBuilder.cs" />
@@ -95,7 +97,7 @@
     <Compile Include="Electrode\YPositiveElectrodeSetValue.cs" />
     <Compile Include="Electrode\XPositiveElectrodeSetValue .cs" />
     <Compile Include="Electrode\ZPositiveElectrodeSetValue.cs" />
-    <Compile Include="WorkpieceInfo.cs" />
+    <Compile Include="Drawing\WorkpieceInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Basic\Basic.csproj">
@@ -111,9 +113,7 @@
       <Name>MolexPlugin.Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Drawing\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

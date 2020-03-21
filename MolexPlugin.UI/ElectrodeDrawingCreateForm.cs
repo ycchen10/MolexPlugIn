@@ -11,12 +11,12 @@ using MolexPlugin.DAL;
 
 namespace MolexPlugin
 {
-    public class WorkpieceDrawingCreateForm
+    public class ElectrodeDrawingCreateForm
     {
         private AssembleModel assemble;
         private void ShowForm()
         {
-            WorkpieceDrawingForm form = new WorkpieceDrawingForm(assemble);
+            ElectrodeDrawingForm form = new ElectrodeDrawingForm(assemble);
             IntPtr intPtr = NXOpenUI.FormUtilities.GetDefaultParentWindowHandle();
             NXOpenUI.FormUtilities.ReparentForm(form);
             NXOpenUI.FormUtilities.SetApplicationIcon(form);
@@ -32,16 +32,16 @@ namespace MolexPlugin
             if (type.Equals("ASM"))
             {
                 assemble = AssembleSingleton.Instance().GetAssemble(mold.MoldNumber + "-" + mold.WorkpieceNumber);
+
                 foreach (WorkModel work in assemble.Works)
                 {
                     if (!AttributeUtils.GetAttrForBool(work.PartTag, "Interference"))
                     {
-
-                        UI.GetUI().NXMessageBox.Show("提示", NXMessageBox.DialogType.Error, "WORK" + work.WorkNumber.ToString()
-                            + "没有检查电极");
+                        UI.GetUI().NXMessageBox.Show("提示", NXMessageBox.DialogType.Error, "WORK"+work.WorkNumber.ToString()
+                            +"没有检查电极");
                         return false;
-                    }
-                       
+                    } 
+
                 }
                 if (assemble.IsAssmbleOk())
                     return true;
@@ -53,6 +53,7 @@ namespace MolexPlugin
                 UI.GetUI().NXMessageBox.Show("提示", NXMessageBox.DialogType.Error, "请切换到ASM下");
                 return false;
             }
+
         }
         public void Show()
         {

@@ -87,7 +87,7 @@ namespace MolexPlugin.Model
         {
             if (this.Edm != null)
             {
-                NXOpen.Assemblies.Component edmComp =this.Edm.GetPartComp(Asm.PartTag);
+                NXOpen.Assemblies.Component edmComp = this.Edm.GetPartComp(Asm.PartTag);
                 if (edmComp != null)
                 {
                     foreach (NXOpen.Assemblies.Component ct in edmComp.GetChildren())
@@ -131,6 +131,41 @@ namespace MolexPlugin.Model
                 this.Electrodes.Remove(temp);
                 this.Electrodes.Add(ele);
             }
+        }
+        /// <summary>
+        /// 判断装配是否正确
+        /// </summary>
+        /// <returns></returns>
+        public bool IsAssmbleOk()
+        {
+            if (Asm == null)
+            {
+                UI.GetUI().NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, "无法找到ASM装配档");
+                return false;
+            }
+            if (Edm == null)
+            {
+                UI.GetUI().NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, "无法找到EDM装配档");
+                return false;
+            }
+            if (Works.Count == 0)
+            {
+                UI.GetUI().NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, "无法找到WORK装配档");
+                return false;
+            }
+            Part workpiecePart = null;
+            string name = this.Asm.MoldInfo.MoldNumber + "-" + this.Asm.MoldInfo.WorkpieceNumber + this.Asm.MoldInfo.EditionNumber;
+            foreach (Part part in Workpieces)
+            {
+                if (part.Name.Equals(name))
+                    workpiecePart = part;
+            }
+            if (workpiecePart == null)
+            {
+                UI.GetUI().NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, "无法找到工件装配档");
+                return false;
+            }
+            return true;
         }
     }
 }

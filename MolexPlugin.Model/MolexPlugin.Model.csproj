@@ -61,6 +61,7 @@
     <Compile Include="Electrode\CreateConditionModel.cs" />
     <Compile Include="Electrode\EDMModel.cs" />
     <Compile Include="Electrode\ElectrodeInfo.cs" />
+    <Compile Include="Electrode\ElectrodeDrawingModel .cs" />
     <Compile Include="Electrode\ElectrodeModel.cs" />
     <Compile Include="Electrode\MoldInfoModel.cs" />
     <Compile Include="Electrode\WorkModel.cs" />

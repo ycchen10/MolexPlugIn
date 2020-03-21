@@ -63,7 +63,21 @@
     <Compile Include="AddEdmAsm.cs" />
     <Compile Include="AddWork.cs" />
     <Compile Include="AnalyzeBodyAndFace.cs" />
+    <Compile Include="BomCreateForm.cs" />
+    <Compile Include="BomForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BomForm.Designer.cs">
+      <DependentUpon>BomForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DeleteEle.cs" />
+    <Compile Include="ElectrodeDrawingCreateForm.cs" />
+    <Compile Include="ElectrodeDrawingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ElectrodeDrawingForm.Designer.cs">
+      <DependentUpon>ElectrodeDrawingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EleStandardSeatCreateForm.cs" />
     <Compile Include="EleStandardSeatForm.cs">
       <SubType>Form</SubType>
@@ -108,6 +122,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BomForm.resx">
+      <DependentUpon>BomForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ElectrodeDrawingForm.resx">
+      <DependentUpon>ElectrodeDrawingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EleStandardSeatForm.resx">
       <DependentUpon>EleStandardSeatForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -118,7 +118,15 @@ namespace MolexPlugin
             {
                 new WorkpieceDrawingCreateForm().Show();
             }
-           // test.ces();
+            if (args[0] == "MENU_ElectrodeDrawing")
+            {
+                new ElectrodeDrawingCreateForm().Show();
+            }
+            if (args[0] == "MENU_Bom")
+            {
+                new BomCreateForm().Show();
+            }
+            // test.ces();
             return 1;
         }
         /// <summary>

@@ -179,8 +179,8 @@ namespace MolexPlugin
                 //---- Enter your callback code here -----
                 NXOpen.Assemblies.Component ct = selection_Work.GetSelectedObjects()[0] as NXOpen.Assemblies.Component;
                 InterferenceBuilder builder = new InterferenceBuilder(ct.Prototype as Part);
+                AttributeUtils.AttributeOperation("Interference", true, (ct.Prototype as Part));
                 builder.CreateInterferenceBody();
-
                 builder.CreateInterferenceFace();
                 // SewUtils.SewFeatureUF(GetSheetBodyOFPart(workPart));
                 //  DeleteObject.DeleteParms(GetSheetBodyOFPart(workPart).ToArray());

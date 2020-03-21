@@ -402,7 +402,7 @@ namespace Basic
         /// <param name="ori"></param>
         /// <param name="obj1"></param>
         /// <param name="obj2"></param>
-        public static void DimensionHorizontal(DraftingView view, Point3d ori, NXObject obj1, NXObject obj2, ref string errorMsg)
+        public static Dimension DimensionHorizontal(DraftingView view, Point3d ori, NXObject obj1, NXObject obj2, ref string errorMsg)
         {
             Session theSession = Session.GetSession();
             Part workPart = theSession.Parts.Work;
@@ -473,12 +473,13 @@ namespace Basic
                 //NXOpen.Annotations.LinearTolerance tolPre = horizontalDimension2.GetTolerance();
                 //tolPre.PrimaryDimensionDecimalPlaces = 2;
                 //horizontalDimension2.SetTolerance(tolPre);//设置小数点后两位
-
+                return horizontalDimension2;
             }
             catch (Exception ex)
             {
                 errorMsg = ex.Message;
                 LogMgr.WriteLog("DrawingUtils:DimensionHorizontal" + ex.Message);
+                return null;
             }
         }
 
@@ -489,7 +490,7 @@ namespace Basic
         /// <param name="ori"></param>
         /// <param name="obj1"></param>
         /// <param name="obj2"></param>
-        public static void DimensionVertical(DraftingView view, Point3d ori, NXObject obj1, NXObject obj2, ref string errorMsg)
+        public static Dimension DimensionVertical(DraftingView view, Point3d ori, NXObject obj1, NXObject obj2, ref string errorMsg)
         {
             Session theSession = Session.GetSession();
             Part workPart = theSession.Parts.Work;
@@ -550,11 +551,13 @@ namespace Basic
                 Point3d origin3 = new Point3d(ori.X, ori.Y, ori.Z);
                 verticalDimension2.AnnotationOrigin = origin3;
                 verticalDimension2.LeaderOrientation = LeaderOrientation.FromLeft;
+                return verticalDimension2;
             }
             catch (Exception ex)
             {
                 errorMsg = ex.Message;
                 LogMgr.WriteLog("DrawingUtils:DimensionVertical" + ex.Message);
+                return null;
             }
         }
 
@@ -806,6 +809,103 @@ namespace Basic
                     sheet = st;
             }
             return sheet;
+        }
+        /// <summary>
+        /// 添加尺寸注释
+        /// </summary>
+        /// <param name="dim"></param>
+        /// <param name="lineName"></param>
+        public static void AppendedTextDim(Dimension dim, params string[] lineName)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            NXOpen.Annotations.AppendedTextEditorBuilder appendedTextEditorBuilder1;
+            appendedTextEditorBuilder1 = workPart.Dimensions.CreateAppendedTextEditorBuilder(dim);
+            appendedTextEditorBuilder1.AppendedTextBuilder.SetBelow(lineName);
+            try
+            {
+                NXOpen.NXObject nXObject1;
+                nXObject1 = appendedTextEditorBuilder1.Commit();
+            }
+            catch (Exception ex)
+            {
+                LogMgr.WriteLog("DrawingUtils:AppendedTextDim" + ex.Message);
+            }
+            finally
+            {
+                appendedTextEditorBuilder1.Destroy();
+            }
+        }
+        /// <summary>
+        /// 标注公差
+        /// </summary>
+        /// <param name="dim"></param>
+        /// <param name="type">类型</param>
+        /// <param name="upTolerance">上公差</param>
+        /// <param name="lowerTolerance">下公差</param>
+        public static void ToleranceDim(Dimension dim, NXOpen.Annotations.ToleranceType type, double upTolerance, double lowerTolerance)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            NXOpen.DisplayableObject[] objects1 = new NXOpen.DisplayableObject[1];
+            objects1[0] = dim;
+            NXOpen.Annotations.EditSettingsBuilder editSettingsBuilder1;
+            editSettingsBuilder1 = workPart.SettingsManager.CreateAnnotationEditSettingsBuilder(objects1);
+
+            NXOpen.Drafting.BaseEditSettingsBuilder[] editsettingsbuilders1 = new NXOpen.Drafting.BaseEditSettingsBuilder[1];
+            editsettingsbuilders1[0] = editSettingsBuilder1;
+            workPart.SettingsManager.ProcessForMultipleObjectsSettings(editsettingsbuilders1);
+            editSettingsBuilder1.AnnotationStyle.DimensionStyle.ToleranceType = type;
+            editSettingsBuilder1.AnnotationStyle.DimensionStyle.UpperToleranceMetric = upTolerance;
+            editSettingsBuilder1.AnnotationStyle.DimensionStyle.LowerToleranceMetric = lowerTolerance;
+
+            try
+            {
+
+                NXOpen.NXObject nXObject1;
+                nXObject1 = editSettingsBuilder1.Commit();
+            }
+            catch (Exception ex)
+            {
+                LogMgr.WriteLog("DrawingUtils:ToleranceDim" + ex.Message);
+            }
+            finally
+            {
+                editSettingsBuilder1.Destroy();
+
+            }
+
+        }
+
+        public static NXObject SetNote(Point3d point, double size, params string[] text)
+        {
+            Part workPart = theSession.Parts.Work;
+            NXOpen.Annotations.SimpleDraftingAid nullNXOpen_Annotations_SimpleDraftingAid = null;
+            NXOpen.Annotations.DraftingNoteBuilder draftingNoteBuilder1;
+            draftingNoteBuilder1 = workPart.Annotations.CreateDraftingNoteBuilder(nullNXOpen_Annotations_SimpleDraftingAid);
+            int fontIndex1;
+            fontIndex1 = workPart.Fonts.AddFont("SimSun", NXOpen.FontCollection.Type.Standard);
+            draftingNoteBuilder1.Style.LetteringStyle.GeneralTextSize = size;
+            draftingNoteBuilder1.Style.LetteringStyle.AppendedTextFont = fontIndex1;
+            draftingNoteBuilder1.Style.LetteringStyle.GeneralTextColor = workPart.Colors.Find(6);
+            draftingNoteBuilder1.Text.TextBlock.SetText(text);
+            NXOpen.View nullNXOpen_View = null;
+            draftingNoteBuilder1.Origin.Origin.SetValue(null, nullNXOpen_View, point);
+            try
+            {
+                NXOpen.NXObject nXObject1;
+                nXObject1 = draftingNoteBuilder1.Commit();
+                return nXObject1;
+            }
+            catch (Exception ex)
+            {
+                LogMgr.WriteLog("DrawingUtils:SetNote" + ex.Message);
+                return null;
+            }
+            finally
+            {
+                draftingNoteBuilder1.Destroy();
+            }
+
+
         }
     }
 }
