@@ -55,7 +55,7 @@ namespace MolexPlugin.DAL
             BoundingBoxUtils.GetBoundingBoxInLocal(bodys.ToArray(), csys, workMat, ref centerPt, ref disPt);
             this.CenterPt = centerPt;
             this.DisPt = disPt;
-            this.DraModel.Work.CreatePointAndCenterLine(centerPt, disPt);
+            CreateLineAndOrinig();
         }
         private Part GetWorkpiecePart()
         {
@@ -91,10 +91,10 @@ namespace MolexPlugin.DAL
             Part workpiece = GetWorkpiecePart();
             foreach (NXOpen.Assemblies.Component workComp in workPart.ComponentAssembly.RootComponent.GetChildren())
             {
-                workComp.Unblank();              
+                workComp.Unblank();
                 foreach (NXOpen.Assemblies.Component ct in workComp.GetChildren())
                 {
-                    ct.Blank();
+                    ct.Unblank();
                     NXOpen.Assemblies.Component[] edm = ct.GetChildren();
                     if (edm.Length != 0)
                     {
@@ -123,7 +123,7 @@ namespace MolexPlugin.DAL
             Part workpiece = GetWorkpiecePart();
             foreach (NXOpen.Assemblies.Component workComp in workPart.ComponentAssembly.RootComponent.GetChildren())
             {
-                workComp.Blank();                    
+                workComp.Blank();
                 foreach (NXOpen.Assemblies.Component ct in workComp.GetChildren())
                 {
                     ct.Unblank();
@@ -193,6 +193,16 @@ namespace MolexPlugin.DAL
             return ele;
         }
 
-
+        public void CreateLineAndOrinig()
+        {
+            Point3d centerPt = new Point3d();
+            Point3d disPt = new Point3d();
+            Matrix4 workMat = this.DraModel.Work.WorkMatr;
+            Matrix4 invers = workMat.GetInversMatrix();
+            Part workpiecePart = GetWorkpiecePart();
+            CartesianCoordinateSystem csys = BoundingBoxUtils.CreateCoordinateSystem(workMat, invers);//坐标
+            BoundingBoxUtils.GetBoundingBoxInLocal(workpiecePart.Bodies.ToArray(), csys, workMat, ref centerPt, ref disPt);
+            this.DraModel.Work.CreatePointAndCenterLine(centerPt, disPt);
+        }
     }
 }

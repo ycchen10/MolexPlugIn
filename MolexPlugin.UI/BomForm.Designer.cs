@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.button_Cancel = new System.Windows.Forms.Button();
             this.button_OK = new System.Windows.Forms.Button();
             this.button_OutExcel = new System.Windows.Forms.Button();
@@ -92,6 +92,7 @@
             this.button_OutExcel.TabIndex = 13;
             this.button_OutExcel.Text = "导出BOM表";
             this.button_OutExcel.UseVisualStyleBackColor = true;
+            this.button_OutExcel.Click += new System.EventHandler(this.button_OutExcel_Click);
             // 
             // label3
             // 
@@ -151,14 +152,14 @@
             // 
             this.dataGridView.AllowUserToAddRows = false;
             this.dataGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.EleName,
@@ -191,24 +192,30 @@
             // 
             // EleName
             // 
+            this.EleName.DataPropertyName = "EleName";
             this.EleName.HeaderText = "电极名";
             this.EleName.Name = "EleName";
+            this.EleName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.EleName.Width = 160;
             // 
             // EleX
             // 
+            this.EleX.DataPropertyName = "EleSetValue";
             this.EleX.HeaderText = "X";
             this.EleX.Name = "EleX";
+            this.EleX.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.EleX.Width = 70;
             // 
             // EleY
             // 
+            this.EleY.DataPropertyName = "EleSetValue";
             this.EleY.HeaderText = "Y";
             this.EleY.Name = "EleY";
             this.EleY.Width = 70;
             // 
             // EleZ
             // 
+            this.EleZ.DataPropertyName = "EleSetValue";
             this.EleZ.HeaderText = "Z";
             this.EleZ.Name = "EleZ";
             this.EleZ.Width = 70;

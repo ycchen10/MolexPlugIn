@@ -25,6 +25,7 @@ namespace MolexPlugin.DAL
         {
             CreatDwgPart();
             CreateView();
+            Session.GetSession().ApplicationSwitchImmediate("UG_APP_DRAFTING");
         }
         private void CreatDwgPart()
         {
@@ -85,7 +86,7 @@ namespace MolexPlugin.DAL
             }
             else
             {
-                Basic.DrawingUtils.SetNote(new Point3d(130, 20, 0), 6, "标准铜料");
+                Basic.DrawingUtils.SetNote(new Point3d(130, 20, 0), 6, "非标准铜料");
             }
             Basic.DrawingUtils.SetNote(new Point3d(130, 30, 0), 4, this.draInfo.EleModel.EleInfo.ElePresentation);
             Basic.DrawingUtils.UpdateViews(sheet);
@@ -101,6 +102,7 @@ namespace MolexPlugin.DAL
             temp.Y = 230 - (draInfo.DisPt.Y * scale);
             return temp;
         }
+
         private void SetViewVisible(params NXOpen.Drawings.DraftingView[] views)
         {
             foreach (DraftingView dv in views)
@@ -111,24 +113,19 @@ namespace MolexPlugin.DAL
 
 
         }
+
         private double GetEleScale()
         {
             int[] pre = this.draInfo.DraModel.EleInfo.Preparation;
-            double x = 130 / (pre[0] + pre[1]);
-            double y = 150 / (pre[1] + pre[2]);
+            double x = 130.0 / (pre[0] + pre[1]) - 0.2;
+            double y = 150.0 / (pre[1] + pre[2]) - 0.2;
             if (x > y)
             {
-                if (y > 1)
-                    return Math.Round(y, 1);
-                else
-                    return Math.Round(y, 1);
+                return Math.Round(y, 1);
             }
             else
             {
-                if (x > 1)
-                    return Math.Round(x, 1);
-                else
-                    return Math.Round(x, 1);
+                return Math.Round(x, 1);
             }
         }
 
@@ -137,27 +134,22 @@ namespace MolexPlugin.DAL
             int[] pre = this.draInfo.DraModel.EleInfo.Preparation;
             Point3d temp = new Point3d(0, 0, 0);
             temp.Y = 230 - (pre[2] * scale + pre[1] * scale / 2);
-            temp.X = 260 + (pre[1] * scale + pre[0] * scale / 2);
+            temp.X = 270 + (pre[1] * scale + pre[0] * scale / 2);
             return temp;
         }
+
         private double GetScale()
         {
             this.draInfo.GetBoundingBox();
-            double x = 130 / (draInfo.DisPt.X * 2);
-            double y = 190 / (draInfo.DisPt.Y * 2 + draInfo.DisPt.Z * 2);
+            double x = 130.0 / (draInfo.DisPt.X * 2) - 0.3;
+            double y = 190.0 / (draInfo.DisPt.Y * 2 + draInfo.DisPt.Z * 2) - 0.3;
             if (x > y)
             {
-                if (y > 1)
-                    return Math.Round(y, 1);
-                else
-                    return Math.Round(y, 1);
+                return Math.Round(y, 1);
             }
             else
             {
-                if (x > 1)
-                    return Math.Round(x, 1);
-                else
-                    return Math.Round(x, 1);
+                return Math.Round(x, 1);
             }
         }
 
@@ -169,22 +161,22 @@ namespace MolexPlugin.DAL
             PointSort(ref elePoint, mat, "X");
             for (int i = 0; i < elePoint.Count; i++)
             {
-                Point3d dimPt = new Point3d(originPt.X + 10.0, originPt.Y + this.draInfo.DisPt.Y * scale + (8 * (i + 1)), 0);
+                Point3d dimPt = new Point3d(originPt.X + 10.0, originPt.Y + this.draInfo.DisPt.Y * scale + (10 * (i + 1)), 0);
                 NXOpen.Annotations.Dimension dim = Basic.DrawingUtils.DimensionHorizontal(topView, dimPt, workPoint, elePoint[i], ref err);
                 Basic.DrawingUtils.AppendedTextDim(dim, "EDM SETTING");
                 SetDimColor(dim);
-                Point3d temp = (elePoint[i].Prototype as Point).Coordinates;
-                if (temp.X != 0)
-                {
-                    double crude = -(this.draInfo.DraModel.Eles[0].EleInfo.CrudeInter);
-                    double fine = -(this.draInfo.DraModel.Eles[0].EleInfo.FineInter);
-                    if (crude != 0 && fine != 0)
-                        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, fine, crude);
-                    if (crude != 0 && fine == 0)
-                        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, 0, crude);
-                    if (crude == 0 && fine != 0)
-                        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, 0, fine);
-                }
+                //Point3d temp = (elePoint[i].Prototype as Point).Coordinates;
+                //if (temp.X != 0)
+                //{
+                //    double crude = -(this.draInfo.DraModel.Eles[0].EleInfo.CrudeInter);
+                //    double fine = -(this.draInfo.DraModel.Eles[0].EleInfo.FineInter);
+                //    if (crude != 0 && fine != 0)
+                //        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, fine, crude);
+                //    if (crude != 0 && fine == 0)
+                //        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, 0, crude);
+                //    if (crude == 0 && fine != 0)
+                //        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, 0, fine);
+                //}
             }
             PointSort(ref elePoint, mat, "Y");
             for (int i = 0; i < elePoint.Count; i++)
@@ -193,18 +185,18 @@ namespace MolexPlugin.DAL
                 NXOpen.Annotations.Dimension dim = Basic.DrawingUtils.DimensionVertical(topView, dimPt, workPoint, elePoint[i], ref err);
                 Basic.DrawingUtils.AppendedTextDim(dim, "EDM SETTING");
                 SetDimColor(dim);
-                Point3d temp = (elePoint[i].Prototype as Point).Coordinates;
-                if (temp.Y != 0)
-                {
-                    double crude = -(this.draInfo.DraModel.Eles[0].EleInfo.CrudeInter);
-                    double fine = -(this.draInfo.DraModel.Eles[0].EleInfo.FineInter);
-                    if (crude != 0 && fine != 0)
-                        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, fine, crude);
-                    if (crude != 0 && fine == 0)
-                        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, 0, crude);
-                    if (crude == 0 && fine != 0)
-                        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, 0, fine);
-                }
+                //Point3d temp = (elePoint[i].Prototype as Point).Coordinates;
+                //if (temp.Y != 0)
+                //{
+                //    double crude = -(this.draInfo.DraModel.Eles[0].EleInfo.CrudeInter);
+                //    double fine = -(this.draInfo.DraModel.Eles[0].EleInfo.FineInter);
+                //    if (crude != 0 && fine != 0)
+                //        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, fine, crude);
+                //    if (crude != 0 && fine == 0)
+                //        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, 0, crude);
+                //    if (crude == 0 && fine != 0)
+                //        Basic.DrawingUtils.ToleranceDim(dim, NXOpen.Annotations.ToleranceType.BilateralTwoLines, 0, fine);
+                //}
             }
 
         }
@@ -212,7 +204,7 @@ namespace MolexPlugin.DAL
         private void ProViewDimension(DraftingView topView, Point3d originPt, double scale, Point workPoint, List<Point> elePoint)
         {
             string err = "";
-            Point3d dimPt = new Point3d(originPt.X  - (this.draInfo.DisPt.X * scale + 10), originPt.Y+(this.draInfo.DisPt.X * scale), 0);
+            Point3d dimPt = new Point3d(originPt.X - (this.draInfo.DisPt.X * scale + 10), originPt.Y + (this.draInfo.DisPt.X * scale), 0);
             NXOpen.Annotations.Dimension dim = Basic.DrawingUtils.DimensionVertical(topView, dimPt, workPoint, elePoint[0], ref err);
             Basic.DrawingUtils.AppendedTextDim(dim, "EDM SETTING");
             SetDimColor(dim);
@@ -261,6 +253,7 @@ namespace MolexPlugin.DAL
                 return 1;
             });
         }
+
         /// <summary>
         /// 设置尺寸颜色
         /// </summary>

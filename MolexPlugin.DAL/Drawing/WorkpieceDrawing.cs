@@ -27,10 +27,12 @@ namespace MolexPlugin.DAL
         {
             Point3d projectedPt = new Point3d();
             projectedPt.X = originPt.X;
-            projectedPt.Y = originPt.Y - this.workpiece.DisPt.Y * scale - 2 * this.workpiece.DisPt.Z * scale - 20;
+            projectedPt.Y = originPt.Y - this.workpiece.DisPt.Y * scale - this.workpiece.DisPt.Z * scale - 30;
             double[] tableOrigin = new double[3] { originPt.X - 35, projectedPt.Y - this.workpiece.DisPt.Z * scale - 15, 0 };
             DraftingView topView = Basic.DrawingUtils.CreateView("TOP", originPt, scale, this.work.WorkMatr, this.workpiece.GetHideComp());
             DraftingView proView = Basic.DrawingUtils.CreateProjectedView(topView, projectedPt, scale);
+
+
             SetViewVisible(topView);
             SetViewVisible(proView);
             TopDimension(topView, originPt, scale);
@@ -115,7 +117,7 @@ namespace MolexPlugin.DAL
         {
             Basic.DrawingUtils.SetLayerHidden(view);
             Basic.DrawingUtils.SetLayerVisible(new int[2] { 1, 20 }, view);
-          //  Basic.DrawingUtils.ShowComponent(view, this.workpiece.workpieceComp);
+            //  Basic.DrawingUtils.ShowComponent(view, this.workpiece.workpieceComp);
         }
         /// <summary>
         /// 获取最小设定值
@@ -127,6 +129,8 @@ namespace MolexPlugin.DAL
             Point3d min = new Point3d();
             Point3d minPt = pointComp[0].Coordinates;
             Point3d maxPt = pointComp[1].Coordinates;
+            this.work.WorkMatr.ApplyPos(ref minPt);
+            this.work.WorkMatr.ApplyPos(ref maxPt);
             if (Math.Abs(minPt.X) > Math.Abs(maxPt.X))
                 min.X = maxPt.X;
             else
@@ -172,6 +176,15 @@ namespace MolexPlugin.DAL
             theUFSession.Tabnot.SetCellText(cellTag[2], Math.Round(-min.X, 3).ToString());
             theUFSession.Tabnot.SetCellText(cellTag[3], Math.Round(-min.Y, 3).ToString());
             theUFSession.Tabnot.SetCellText(cellTag[4], Math.Round(min.Z, 3).ToString());
+        }
+
+        private void SetViewSite(DraftingView topView, DraftingView proView, Point3d origin)
+        {
+            DrawingOperation topOper = new DrawingOperation(topView);
+            DrawingOperation proOper = new DrawingOperation(proView);
+
+
+
         }
     }
 }

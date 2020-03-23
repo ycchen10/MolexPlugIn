@@ -194,10 +194,10 @@ namespace MolexPlugin.Model
                 if (line.Color == 186 && line.Layer == 20)
                     return;
             }
-            Point3d minX = new Point3d(centerPt.X - disPt.X - 10, 0, 0);
-            Point3d maxX = new Point3d(centerPt.X + disPt.X + 10, 0, 0);
-            Point3d minY = new Point3d(0, centerPt.Y - disPt.Y - 10, 0);
-            Point3d maxY = new Point3d(0, centerPt.Y + disPt.Y + 10, 0);
+            Point3d minX = new Point3d(centerPt.X - disPt.X - 5.0, 0, 0);
+            Point3d maxX = new Point3d(centerPt.X + disPt.X + 5.0, 0, 0);
+            Point3d minY = new Point3d(0, centerPt.Y - disPt.Y - 5.0, 0);
+            Point3d maxY = new Point3d(0, centerPt.Y + disPt.Y + 5.0, 0);
 
             Matrix4 inver = this.WorkMatr.GetInversMatrix();
             inver.ApplyPos(ref minX);

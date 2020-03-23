@@ -181,7 +181,7 @@ namespace MolexPlugin
                 InterferenceBuilder builder = new InterferenceBuilder(ct.Prototype as Part);
                 AttributeUtils.AttributeOperation("Interference", true, (ct.Prototype as Part));
                 builder.CreateInterferenceBody();
-                builder.CreateInterferenceFace();
+               // builder.CreateInterferenceFace();
                 // SewUtils.SewFeatureUF(GetSheetBodyOFPart(workPart));
                 //  DeleteObject.DeleteParms(GetSheetBodyOFPart(workPart).ToArray());
 

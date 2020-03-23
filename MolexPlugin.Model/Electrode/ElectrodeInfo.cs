@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data;
 using NXOpen;
 using Basic;
 
@@ -226,6 +227,10 @@ namespace MolexPlugin.Model
             this.EleNumber = AttributeUtils.GetAttrForInt(obj, "EleNumber");
         }
 
-        
+        public DataTable GetDataTable()
+        {
+            DataTable table = new DataTable();
+            table.Rows.Add()
+        }
     }
 }

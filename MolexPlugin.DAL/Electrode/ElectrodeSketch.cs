@@ -109,7 +109,7 @@ namespace MolexPlugin.DAL
         {
             Tag sketchTag = SketchUtils.CreateShetch(zSetValue, "SKETCH_01");
             this.WaiLine = CreateRectangle(this.preparationLength, this.preparationWigth, this.zSetValue);
-            this.LeiLine = CreateRectangle(this.preparationLength - 1, this.preparationWigth - 1, this.zSetValue);
+            this.LeiLine = CreateRectangle(this.preparationLength - 2, this.preparationWigth - 2, this.zSetValue);
             Line[] centerLine = CreateCenterLine(this.zSetValue);
             Line[] centerLine2 = CreateCenterLine(0);
             SetLineObj(254, centerLine);
@@ -124,7 +124,7 @@ namespace MolexPlugin.DAL
             this.Center = CreateCenter(zSetValue);
             SetSketchConstraint(centerLine);
             SetSketch(this.WaiLine, centerLine, 0);
-            SetSketch(this.LeiLine, centerLine, 0.5);
+            SetSketch(this.LeiLine, centerLine, 1.0);
             theUFSession.Obj.SetLayer(sketchTag, 254);
             theUFSession.Obj.SetLayer(Center.Tag, 254);
             DisplayableObject[] disp = workPart.Datums.ToArray();

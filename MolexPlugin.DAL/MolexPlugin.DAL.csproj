@@ -55,10 +55,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drawing\DrawingOperation.cs" />
     <Compile Include="Drawing\WorkForWorkpieceDrawing.cs" />
     <Compile Include="Drawing\WorkpieceDrawing.cs" />
-    <Compile Include="ElectrodeDrawing.cs" />
-    <Compile Include="ElectrodeDrawingInfo.cs" />
+    <Compile Include="Drawing\ElectrodeDrawing.cs" />
+    <Compile Include="Drawing\ElectrodeDrawingInfo.cs" />
     <Compile Include="Electrode\ElectrodeHeadAnalye.cs" />
     <Compile Include="Electrode\AbstractElectrodeSetValue.cs" />
     <Compile Include="Electrode\CreateElectrodeBuilder.cs" />

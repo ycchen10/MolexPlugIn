@@ -75,8 +75,7 @@ namespace MolexPlugin.DAL
             NXOpen.Drawings.DrawingSheet sheet = Basic.DrawingUtils.DrawingSheetByName(workpiecePart.Name);
             if (sheet != null)
             {
-                DeleteObject.Delete(sheet);
-                DeleteObject.UpdateObject();
+                DeleteObject.Delete(sheet);            
             }
             sheet = Basic.DrawingUtils.DrawingSheet(workpieceDrawTemplate, 297, 420, workpiecePart.Name);
             this.CreateView(scale, this.GetFirstPoint(info, scale), info);
@@ -118,10 +117,10 @@ namespace MolexPlugin.DAL
         {
 
             Point3d temp = new Point3d(0, 0, 0);
-            Point3d minX = new Point3d(centerPt.X - disPt.X - 10, 0, 0);
-            Point3d maxX = new Point3d(centerPt.X + disPt.X + 10, 0, 0);
-            Point3d minY = new Point3d(0, centerPt.Y - disPt.Y - 10, 0);
-            Point3d maxY = new Point3d(0, centerPt.Y + disPt.Y + 10, 0);
+            Point3d minX = new Point3d(centerPt.X - disPt.X - 5.0, 0, 0);
+            Point3d maxX = new Point3d(centerPt.X + disPt.X + 5.0, 0, 0);
+            Point3d minY = new Point3d(0, centerPt.Y - disPt.Y - 5.0, 0);
+            Point3d maxY = new Point3d(0, centerPt.Y + disPt.Y + 5.0, 0);
 
             Matrix4 inver = this.work.WorkMatr.GetInversMatrix();
             inver.ApplyPos(ref temp);
@@ -202,7 +201,7 @@ namespace MolexPlugin.DAL
         {
             Point3d pt = new Point3d(0, 0, 0);
             pt.X = 50 + (info.DisPt.X) * scale;
-            pt.Y = 240 - (info.DisPt.Y) * scale;
+            pt.Y = 250 - (info.DisPt.Y) * scale;
             return pt;
         }
 
@@ -213,14 +212,12 @@ namespace MolexPlugin.DAL
             double length = 0;
             foreach (WorkpieceInfo wk in infos)
             {
-
                 length += 2 * wk.DisPt.X * scale;
             }
             NXOpen.Drawings.DrawingSheet sheet = Basic.DrawingUtils.DrawingSheetByName(infos[0].workpiece.Name);
             if (sheet != null)
             {
-                DeleteObject.Delete(sheet);
-                DeleteObject.UpdateObject();
+                DeleteObject.Delete(sheet);              
             }
             int k = 0;
             if (infos.Count == 1)

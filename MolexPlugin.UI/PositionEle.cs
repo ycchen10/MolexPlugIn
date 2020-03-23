@@ -208,9 +208,7 @@ namespace MolexPlugin
                 {
                     this.StrName.Value = "";
                     return 0;
-                }
-                Session.UndoMarkId markId = Session.GetSession().SetUndoMark(NXOpen.Session.MarkVisibility.Visible, "电极跑位");
-
+                }          
                 ElectrodeModel eleModel = new ElectrodeModel();
                 eleModel.GetModelForPart(eleComp.Prototype as Part);
                 name = work.WorkpieceDirectoryPath + name + ".prt";

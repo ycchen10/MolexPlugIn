@@ -110,8 +110,8 @@ namespace MolexPlugin.DAL
             bodys.AddRange(elePart.Model.PartTag.Bodies.ToArray());
             ElectrodeSketchBuilder builder = new ElectrodeSketchBuilder(eleInfo.Preparation[0], eleInfo.Preparation[1], -zHeigth);
             builder.CreateEleSketch();
-            NXOpen.Features.Feature ext1 = ExtrudedUtils.CreateExtruded(new Vector3d(0, 0, -1), "0", "3", null, builder.LeiLine);
-            NXOpen.Features.Feature ext2 = ExtrudedUtils.CreateExtruded(new Vector3d(0, 0, -1), "3", "20", null, builder.WaiLine);
+            NXOpen.Features.Feature ext1 = ExtrudedUtils.CreateExtruded(new Vector3d(0, 0, -1), "0", "2", null, builder.LeiLine);
+            NXOpen.Features.Feature ext2 = ExtrudedUtils.CreateExtruded(new Vector3d(0, 0, -1), "2", "20", null, builder.WaiLine);
             if (zDatum)
             {
                 NXOpen.Features.Feature ext3 = ExtrudedUtils.CreateExtruded(new Vector3d(0, 0, 1), "0", zHeigth.ToString(), null, builder.Center);
