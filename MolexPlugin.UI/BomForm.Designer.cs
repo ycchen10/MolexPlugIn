@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.button_Cancel = new System.Windows.Forms.Button();
             this.button_OK = new System.Windows.Forms.Button();
             this.button_OutExcel = new System.Windows.Forms.Button();
@@ -152,14 +152,14 @@
             // 
             this.dataGridView.AllowUserToAddRows = false;
             this.dataGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.EleName,
@@ -188,6 +188,8 @@
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.Size = new System.Drawing.Size(1221, 216);
             this.dataGridView.TabIndex = 4;
+            this.dataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView_CellBeginEdit);
+            this.dataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
             this.dataGridView.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridView_EditingControlShowing);
             // 
             // EleName
@@ -200,7 +202,7 @@
             // 
             // EleX
             // 
-            this.EleX.DataPropertyName = "EleSetValue";
+            this.EleX.DataPropertyName = "EleSetValueX";
             this.EleX.HeaderText = "X";
             this.EleX.Name = "EleX";
             this.EleX.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -208,80 +210,91 @@
             // 
             // EleY
             // 
-            this.EleY.DataPropertyName = "EleSetValue";
+            this.EleY.DataPropertyName = "EleSetValueY";
             this.EleY.HeaderText = "Y";
             this.EleY.Name = "EleY";
             this.EleY.Width = 70;
             // 
             // EleZ
             // 
-            this.EleZ.DataPropertyName = "EleSetValue";
+            this.EleZ.DataPropertyName = "EleSetValueZ";
             this.EleZ.HeaderText = "Z";
             this.EleZ.Name = "EleZ";
             this.EleZ.Width = 70;
             // 
             // PithX
             // 
+            this.PithX.DataPropertyName = "PitchX";
             this.PithX.HeaderText = "PH-X";
             this.PithX.Name = "PithX";
             this.PithX.Width = 70;
             // 
             // PitchNumber
             // 
+            this.PitchNumber.DataPropertyName = "PitchXNum";
             this.PitchNumber.HeaderText = "X个数";
             this.PitchNumber.Name = "PitchNumber";
             this.PitchNumber.Width = 70;
             // 
             // PitchY
             // 
+            this.PitchY.DataPropertyName = "PitchY";
             this.PitchY.HeaderText = "PH-Y";
             this.PitchY.Name = "PitchY";
             this.PitchY.Width = 70;
             // 
             // PitchYNumber
             // 
+            this.PitchYNumber.DataPropertyName = "PitchYNum";
             this.PitchYNumber.HeaderText = "Y个数";
             this.PitchYNumber.Name = "PitchYNumber";
             this.PitchYNumber.Width = 70;
             // 
             // CrudeInter
             // 
+            this.CrudeInter.DataPropertyName = "CrudeInter";
             this.CrudeInter.HeaderText = "粗间隙";
             this.CrudeInter.Name = "CrudeInter";
             this.CrudeInter.Width = 70;
             // 
             // CrudeNumber
             // 
+            this.CrudeNumber.DataPropertyName = "CrudeNum";
             this.CrudeNumber.HeaderText = "粗个数";
             this.CrudeNumber.Name = "CrudeNumber";
             this.CrudeNumber.Width = 70;
             // 
             // DuringInter
             // 
+            this.DuringInter.DataPropertyName = "DuringInter";
             this.DuringInter.HeaderText = "中间隙";
             this.DuringInter.Name = "DuringInter";
             this.DuringInter.Width = 70;
             // 
             // DuringNum
             // 
+            this.DuringNum.DataPropertyName = "DuringNum";
             this.DuringNum.HeaderText = "中个数";
             this.DuringNum.Name = "DuringNum";
             this.DuringNum.Width = 70;
             // 
             // FineInter
             // 
+            this.FineInter.DataPropertyName = "FineInter";
             this.FineInter.HeaderText = "精间隙";
             this.FineInter.Name = "FineInter";
             this.FineInter.Width = 70;
             // 
             // FineNum
             // 
+            this.FineNum.DataPropertyName = "FineNum";
             this.FineNum.HeaderText = "精个数";
             this.FineNum.Name = "FineNum";
             this.FineNum.Width = 70;
             // 
             // EleType
             // 
+            this.EleType.DataPropertyName = "EleType";
             this.EleType.HeaderText = "电极类型";
             this.EleType.Name = "EleType";
             this.EleType.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -290,12 +303,14 @@
             // 
             // CH
             // 
+            this.CH.DataPropertyName = "Ch";
             this.CH.HeaderText = "CH";
             this.CH.Name = "CH";
             this.CH.Width = 70;
             // 
             // Material
             // 
+            this.Material.DataPropertyName = "Material";
             this.Material.HeaderText = "材料";
             this.Material.Name = "Material";
             this.Material.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -304,6 +319,7 @@
             // 
             // Condition
             // 
+            this.Condition.DataPropertyName = "Condition";
             this.Condition.HeaderText = "放电条件";
             this.Condition.Name = "Condition";
             this.Condition.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -312,24 +328,28 @@
             // 
             // PreparationX
             // 
+            this.PreparationX.DataPropertyName = "PreparationX";
             this.PreparationX.HeaderText = "备料长";
             this.PreparationX.Name = "PreparationX";
             this.PreparationX.Width = 70;
             // 
             // PreparationY
             // 
+            this.PreparationY.DataPropertyName = "PreparationY";
             this.PreparationY.HeaderText = "备料宽";
             this.PreparationY.Name = "PreparationY";
             this.PreparationY.Width = 70;
             // 
             // PreparationZ
             // 
+            this.PreparationZ.DataPropertyName = "PreparationZ";
             this.PreparationZ.HeaderText = "备料高";
             this.PreparationZ.Name = "PreparationZ";
             this.PreparationZ.Width = 70;
             // 
             // BorrowEle
             // 
+            this.BorrowEle.DataPropertyName = "BorrowName";
             this.BorrowEle.HeaderText = "借用电极";
             this.BorrowEle.Name = "BorrowEle";
             this.BorrowEle.Width = 160;

@@ -60,6 +60,7 @@
     <Compile Include="Drawing\WorkpieceDrawing.cs" />
     <Compile Include="Drawing\ElectrodeDrawing.cs" />
     <Compile Include="Drawing\ElectrodeDrawingInfo.cs" />
+    <Compile Include="ElectrodeBomBuilder.cs" />
     <Compile Include="Electrode\ElectrodeHeadAnalye.cs" />
     <Compile Include="Electrode\AbstractElectrodeSetValue.cs" />
     <Compile Include="Electrode\CreateElectrodeBuilder.cs" />

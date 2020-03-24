@@ -117,15 +117,21 @@ namespace MolexPlugin.DAL
         private double GetEleScale()
         {
             int[] pre = this.draInfo.DraModel.EleInfo.Preparation;
-            double x = 130.0 / (pre[0] + pre[1]) - 0.2;
-            double y = 150.0 / (pre[1] + pre[2]) - 0.2;
+            double x = 130.0 / (pre[0] + pre[1]);
+            double y = 150.0 / (pre[1] + pre[2]);
             if (x > y)
             {
-                return Math.Round(y, 1);
+                if (y > 1)
+                    return Math.Round(y, 1) - 0.4;
+                else
+                    return Math.Round(y, 1) - 0.2;
             }
             else
             {
-                return Math.Round(x, 1);
+                if (y > 1)
+                    return Math.Round(x, 1) - 0.4;
+                else
+                    return Math.Round(x, 1) - 0.2;
             }
         }
 

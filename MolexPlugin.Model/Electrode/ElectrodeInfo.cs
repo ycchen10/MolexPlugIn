@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using System.Data;
 using NXOpen;
 using Basic;
+using System.Reflection;
 
 namespace MolexPlugin.Model
 {
     public class ElectrodeInfo
-    {  
+    {
         /// <summary>
         /// 电极名
         /// </summary>
@@ -147,7 +148,7 @@ namespace MolexPlugin.Model
         /// 设置属性
         /// </summary>
         public void SetAttribute(Part obj)
-        {   
+        {
             AttributeUtils.AttributeOperation("EleName", this.EleName, obj);
             AttributeUtils.AttributeOperation("BorrowName", this.BorrowName, obj);
 
@@ -185,7 +186,7 @@ namespace MolexPlugin.Model
         /// 读取属性
         /// </summary>
         public void GetAttribute(Part obj)
-        {          
+        {
             this.EleName = AttributeUtils.GetAttrForString(obj, "EleName");
             this.BorrowName = AttributeUtils.GetAttrForString(obj, "BorrowName");
 
@@ -227,10 +228,66 @@ namespace MolexPlugin.Model
             this.EleNumber = AttributeUtils.GetAttrForInt(obj, "EleNumber");
         }
 
-        public DataTable GetDataTable()
+        private static DataTable CreateDataTable()
         {
-            DataTable table = new DataTable();
-            table.Rows.Add()
+            DataTable dataTable = new DataTable(typeof(ElectrodeInfo).Name);
+            foreach (PropertyInfo propertyInfo in typeof(ElectrodeInfo).GetProperties())
+            {
+                dataTable.Columns.Add(new DataColumn(propertyInfo.Name, propertyInfo.PropertyType));
+            }
+
+            dataTable.Columns.Add("EleSetValueX", Type.GetType("System.Double"));
+            dataTable.Columns.Add("EleSetValueY", Type.GetType("System.Double"));
+            dataTable.Columns.Add("EleSetValueZ", Type.GetType("System.Double"));
+
+            dataTable.Columns.Add("PreparationX", Type.GetType("System.Double"));
+            dataTable.Columns.Add("PreparationY", Type.GetType("System.Double"));
+            dataTable.Columns.Add("PreparationZ", Type.GetType("System.Double"));
+            return dataTable;
+        }
+
+        public static DataTable GetDataTable(List<ElectrodeInfo> infos)
+        {
+            DataTable dt = CreateDataTable();
+            foreach (ElectrodeInfo ei in infos)
+            {
+                DataRow row = dt.NewRow();
+                foreach (PropertyInfo propertyInfo in typeof(ElectrodeInfo).GetProperties())
+                {
+                    row[propertyInfo.Name] = propertyInfo.GetValue(ei, null);
+                }
+                row["EleSetValueX"] = ei.EleSetValue[0];
+                row["EleSetValueY"] = ei.EleSetValue[1];
+                row["EleSetValueZ"] = ei.EleSetValue[2];
+
+                row["PreparationX"] = ei.Preparation[0];
+                row["PreparationY"] = ei.Preparation[1];
+                row["PreparationZ"] = ei.Preparation[2];
+                dt.Rows.Add(row);
+            }
+
+            return dt;
+        }
+
+        public static ElectrodeInfo GetEleInfo(DataRow dr)
+        {
+            ElectrodeInfo model = new ElectrodeInfo();
+            for (int i = 0; i < dr.Table.Columns.Count; i++)
+            {
+
+                PropertyInfo propertyInfo = model.GetType().GetProperty(dr.Table.Columns[i].ColumnName);
+                if (propertyInfo != null && dr[i] != DBNull.Value)
+                    propertyInfo.SetValue(model, dr[i], null);
+            }
+            model.EleSetValue[0] = Convert.ToDouble(dr["EleSetValueX"]);
+            model.EleSetValue[1] = Convert.ToDouble(dr["EleSetValueY"]);
+            model.EleSetValue[2] = Convert.ToDouble(dr["EleSetValueZ"]);
+
+            model.Preparation[0] = Convert.ToInt32(dr["PreparationX"]);
+            model.Preparation[1] = Convert.ToInt32(dr["PreparationY"]);
+            model.Preparation[2] = Convert.ToInt32(dr["PreparationZ"]);
+
+            return model;
         }
     }
 }
