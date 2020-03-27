@@ -180,8 +180,13 @@ namespace MolexPlugin
                 NXOpen.Assemblies.Component ct = selection_Work.GetSelectedObjects()[0] as NXOpen.Assemblies.Component;
                 InterferenceBuilder builder = new InterferenceBuilder(ct.Prototype as Part);
                 AttributeUtils.AttributeOperation("Interference", true, (ct.Prototype as Part));
-                builder.CreateInterferenceBody();
-               // builder.CreateInterferenceFace();
+              if(  builder.CreateInterferenceBody())
+                {
+                    theUI.NXMessageBox.Show("提示", NXMessageBox.DialogType.Error, "电极无过切");
+                }
+              else
+                    theUI.NXMessageBox.Show("提示", NXMessageBox.DialogType.Error, "电极有过切");
+                // builder.CreateInterferenceFace();
                 // SewUtils.SewFeatureUF(GetSheetBodyOFPart(workPart));
                 //  DeleteObject.DeleteParms(GetSheetBodyOFPart(workPart).ToArray());
 

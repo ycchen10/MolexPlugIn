@@ -23,6 +23,7 @@ namespace MolexPlugin.DAL
         }
         public void CreateDrawing()
         {
+            Session.GetSession().ApplicationSwitchImmediate("UG_APP_MODELING");
             CreatDwgPart();
             CreateView();
             Session.GetSession().ApplicationSwitchImmediate("UG_APP_DRAFTING");
@@ -124,14 +125,14 @@ namespace MolexPlugin.DAL
                 if (y > 1)
                     return Math.Round(y, 1) - 0.4;
                 else
-                    return Math.Round(y, 1) - 0.2;
+                    return Math.Round(y, 1) ;
             }
             else
             {
-                if (y > 1)
+                if (x > 1)
                     return Math.Round(x, 1) - 0.4;
                 else
-                    return Math.Round(x, 1) - 0.2;
+                    return Math.Round(x, 1);
             }
         }
 
@@ -147,8 +148,8 @@ namespace MolexPlugin.DAL
         private double GetScale()
         {
             this.draInfo.GetBoundingBox();
-            double x = 130.0 / (draInfo.DisPt.X * 2) - 0.3;
-            double y = 190.0 / (draInfo.DisPt.Y * 2 + draInfo.DisPt.Z * 2) - 0.3;
+            double x = 130.0 / (draInfo.DisPt.X * 2) - 0.1;
+            double y = 190.0 / (draInfo.DisPt.Y * 2 + draInfo.DisPt.Z * 2) - 0.1;
             if (x > y)
             {
                 return Math.Round(y, 1);

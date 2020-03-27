@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using NXOpen;
 using NXOpen.UF;
 using Basic;
@@ -69,7 +70,7 @@ namespace MolexPlugin.DAL
                 oldPt.X = oldPt.X - eleInfo.PitchX * (eleInfo.PitchXNum - 1);
             if (eleInfo.PitchY != 0 && eleInfo.PitchYNum > 1)
                 oldPt.Y = oldPt.Y - eleInfo.PitchY * (eleInfo.PitchYNum - 1);
-            Point3d newPt = new Point3d(0, 0, eleInfo.Preparation[2]);
+            Point3d newPt = new Point3d(oldPt.X, oldPt.Y, oldPt.Z);
             if (x != 0 && xNumber > 1)
             {
                 newPt.X = oldPt.X + x * (xNumber - 1);
@@ -193,13 +194,15 @@ namespace MolexPlugin.DAL
                     ele = em;
             }
             string path = ele.WorkpieceDirectoryPath + ele.EleInfo.EleName + "_dwg.prt";
-            Part dwg = PartUtils.OpenPartFile(path);
-            ele.EleInfo.SetAttribute(dwg);
-            foreach (NXOpen.Drawings.DrawingSheet sh in dwg.DrawingSheets)
+            if (File.Exists(path))
             {
-                Basic.DrawingUtils.UpdateViews(sh);
+                Part dwg = PartUtils.OpenPartFile(path);
+                ele.EleInfo.SetAttribute(dwg);
+                foreach (NXOpen.Drawings.DrawingSheet sh in dwg.DrawingSheets)
+                {
+                    Basic.DrawingUtils.UpdateViews(sh);
+                }
             }
-
         }
     }
 }

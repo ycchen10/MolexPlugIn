@@ -42,7 +42,7 @@ namespace MolexPlugin
         }
         private void button_OutExcel_Click(object sender, EventArgs e)
         {
-
+            OutPutBom.CreateBomExecl(assemble);
         }
         /// <summary>
         /// 初始化
@@ -63,6 +63,7 @@ namespace MolexPlugin
             dataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.Beige; //交替行不同颜色
             dataGridView.Columns[1].Frozen = true; //冻结首列
             dataGridView.AutoGenerateColumns = false;
+            assemble.Electrodes.Sort();
             List<ElectrodeInfo> infos = new List<ElectrodeInfo>();
             foreach (ElectrodeModel model in assemble.Electrodes)
             {

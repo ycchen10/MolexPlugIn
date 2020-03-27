@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using MolexPlugin.Model;
 using MolexPlugin.DAL;
 using Basic;
+using NXOpen;
 
 namespace MolexPlugin
 {
@@ -80,9 +81,11 @@ namespace MolexPlugin
                     string workNum = listView.Items[i].SubItems[1].Text.ToString();
                     dra = new ElectrodeDrawing(this.assemble, int.Parse(workNum));
                     dra.CreateDrawing();
+                    
                 }
             }
             PartUtils.SetPartDisplay(this.assemble.Asm.PartTag);
+            Session.GetSession().ApplicationSwitchImmediate("UG_APP_MODELING");
             this.Close();
         }
     }

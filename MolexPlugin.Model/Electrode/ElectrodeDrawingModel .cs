@@ -108,17 +108,11 @@ namespace MolexPlugin.Model
         /// <returns></returns>
         public Point GetWorkCompPoint()
         {
-            Part workPart = Session.GetSession().Parts.Work;
+            Part workPart = Session.GetSession().Parts.Work;        
             UFSession theUFSession = UFSession.GetUFSession();
             Component ct = AssmbliesUtils.GetPartComp(workPart, Work.PartTag);
-            foreach (Point pt in Work.PartTag.Points)
-            {
-                if (pt.Name.ToUpper().Equals("CenterPoint".ToUpper()))
-                {
-                    return AssmbliesUtils.GetNXObjectOfOcc(ct.Tag, pt.Tag) as Point;
-                }
-            }
-            return null;
+            Point pt = Work.CreateCenterPoint();
+            return AssmbliesUtils.GetNXObjectOfOcc(ct.Tag, pt.Tag) as Point;
         }
     }
 }

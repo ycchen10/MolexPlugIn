@@ -30,19 +30,36 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NXOpen">
+    <Reference Include="NPOI">
+      <HintPath>..\..\Managed\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\..\Managed\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>..\..\Managed\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>..\..\Managed\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="NXOpen, Version=11.0.2.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Managed\NXOpen.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpen.Guide">
+    <Reference Include="NXOpen.Guide, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Managed\NXOpen.Guide.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpen.UF">
+    <Reference Include="NXOpen.UF, Version=11.0.2.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Managed\NXOpen.UF.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpen.Utilities">
+    <Reference Include="NXOpen.Utilities, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Managed\NXOpen.Utilities.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpenUI">
+    <Reference Include="NXOpenUI, Version=11.0.2.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Managed\NXOpenUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -60,16 +77,19 @@
     <Compile Include="AttributeUtils.cs" />
     <Compile Include="BooleanUtils.cs" />
     <Compile Include="BoundingBoxUtils.cs" />
+    <Compile Include="CAMUtils.cs" />
     <Compile Include="DeleteObject.cs" />
     <Compile Include="ClassItem.cs" />
     <Compile Include="CsysUtils.cs" />
     <Compile Include="DrawingUtils.cs" />
     <Compile Include="EdgeUtils.cs" />
+    <Compile Include="ExcelUtils.cs" />
     <Compile Include="ExpressionUtils.cs" />
     <Compile Include="ExtrudedUtils.cs" />
     <Compile Include="FaceLoopUtils.cs" />
     <Compile Include="FaceUtils.cs" />
     <Compile Include="LayerUtils.cs" />
+    <Compile Include="OperationUtils.cs" />
     <Compile Include="PartUtils.cs" />
     <Compile Include="PatternUtils.cs" />
     <Compile Include="PlaneUtils.cs" />

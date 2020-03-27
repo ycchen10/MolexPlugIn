@@ -14,10 +14,10 @@ namespace MolexPlugin.DAL
         {
             Part workPart = Session.GetSession().Parts.Work;
             DisplayableObject[] dispObj = workPart.ModelingViews.WorkView.AskVisibleObjects();
-            List<NXObject> objs = new List<NXObject>();
+            List<NXObject> objs = new List<NXObject>();          
             foreach (DisplayableObject dis in dispObj)
             {
-                if (!(dis is Face) && !(dis is Edge))
+                if (!(dis is Face) && !(dis is Edge)&&!(dis is CoordinateSystem))
                     objs.Add(dis);
             }
             MoveObjectBasic move = new MoveObjectBasic(objs);

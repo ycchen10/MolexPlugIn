@@ -126,7 +126,7 @@ namespace MolexPlugin
             {
                 new BomCreateForm().Show();
             }
-            // test.ces();
+            test.ces();
             return 1;
         }
         /// <summary>

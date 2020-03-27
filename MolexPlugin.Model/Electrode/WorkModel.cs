@@ -211,13 +211,13 @@ namespace MolexPlugin.Model
         /// <summary>
         /// 创建中心点
         /// </summary>
-        private void CreateCenterPoint()
+        public Point CreateCenterPoint()
         {
             foreach (Point pt in PartTag.Points)
             {
                 if (pt.Name.ToUpper().Equals("CenterPoint".ToUpper()))
                 {
-                    return;
+                    return pt;
                 }
             }
             Point3d temp = new Point3d(0, 0, 0);
@@ -225,7 +225,7 @@ namespace MolexPlugin.Model
             inver.ApplyPos(ref temp);
             Point originPoint = PointUtils.CreatePoint(temp);
             SetOrigin(20, originPoint);
-
+            return originPoint;
         }
     }
 }

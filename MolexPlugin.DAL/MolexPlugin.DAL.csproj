@@ -30,19 +30,39 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NXOpen">
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\Managed\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI">
+      <HintPath>..\..\Managed\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\..\Managed\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>..\..\Managed\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>..\..\Managed\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="NXOpen, Version=1903.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Managed\NXOpen.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpen.Guide">
+    <Reference Include="NXOpen.Guide, Version=1903.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Managed\NXOpen.Guide.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpen.UF">
+    <Reference Include="NXOpen.UF, Version=1899.1700.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Managed\NXOpen.UF.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpen.Utilities">
+    <Reference Include="NXOpen.Utilities, Version=1903.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Managed\NXOpen.Utilities.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpenUI">
+    <Reference Include="NXOpenUI, Version=1903.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Managed\NXOpenUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -60,7 +80,7 @@
     <Compile Include="Drawing\WorkpieceDrawing.cs" />
     <Compile Include="Drawing\ElectrodeDrawing.cs" />
     <Compile Include="Drawing\ElectrodeDrawingInfo.cs" />
-    <Compile Include="ElectrodeBomBuilder.cs" />
+    <Compile Include="Electrode\ElectrodeBomBuilder.cs" />
     <Compile Include="Electrode\ElectrodeHeadAnalye.cs" />
     <Compile Include="Electrode\AbstractElectrodeSetValue.cs" />
     <Compile Include="Electrode\CreateElectrodeBuilder.cs" />
@@ -89,6 +109,7 @@
     <Compile Include="Electrode\InterferenceBuilder.cs" />
     <Compile Include="Move\MoveObjectFactory.cs" />
     <Compile Include="Move\MoveObjectBasic.cs" />
+    <Compile Include="BOX\OutPutBom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BOX\SuperBoxBlock.cs" />
     <Compile Include="BOX\AbstractSuperBox.cs" />

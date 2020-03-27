@@ -34,20 +34,25 @@
       <HintPath>..\packages\Dapper.2.0.30\lib\net461\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NXOpen">
-      <HintPath>..\..\Managed\NXOpen.dll</HintPath>
+    <Reference Include="NXOpen, Version=11.0.2.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\New folder\NXOpen.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpen.Guide">
-      <HintPath>..\..\Managed\NXOpen.Guide.dll</HintPath>
+    <Reference Include="NXOpen.Guide, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\New folder\NXOpen.Guide.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpen.UF">
-      <HintPath>..\..\Managed\NXOpen.UF.dll</HintPath>
+    <Reference Include="NXOpen.UF, Version=11.0.2.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\New folder\NXOpen.UF.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpen.Utilities">
-      <HintPath>..\..\Managed\NXOpen.Utilities.dll</HintPath>
+    <Reference Include="NXOpen.Utilities, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\New folder\NXOpen.Utilities.dll</HintPath>
     </Reference>
-    <Reference Include="NXOpenUI">
-      <HintPath>..\..\Managed\NXOpenUI.dll</HintPath>
+    <Reference Include="NXOpenUI, Version=11.0.2.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\New folder\NXOpenUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
