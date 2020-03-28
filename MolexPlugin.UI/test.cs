@@ -9,6 +9,7 @@ using NXOpen.CAM;
 using NXOpen.UF;
 using NXOpen.Utilities;
 using MolexPlugin.Model;
+using MolexPlugin.DAL;
 
 namespace MolexPlugin
 {
@@ -98,7 +99,7 @@ namespace MolexPlugin
             //    Tag[] elePartOccsTag;
             //    NXOpen.UF.UFSession theUFSession = NXOpen.UF.UFSession.GetUFSession();
             //    theUFSession.Assem.AskOccsOfPart(workPart.Tag, part.Tag, out elePartOccsTag);
-                
+
             //    for(int i=0;i<elePartOccsTag.Length;i++)
             //    {
             //        string name;
@@ -106,9 +107,13 @@ namespace MolexPlugin
             //        ClassItem.Print(name);
             //    }
             //    ClassItem.Print(elePartOccsTag.Length.ToString());
-               
+
             //}
-           
+
+            //Part part = NXObjectManager.Get((Tag)44873) as Part;
+            //AssmbliesUtils.WaveAssociativeBodys(part.Bodies.ToArray());
+            UserInfoSingleton.Serialize();
+            ControlValue.Serialize();
         }
     }
 }

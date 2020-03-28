@@ -62,6 +62,8 @@
   <ItemGroup>
     <Compile Include="AbstractOperationModel.cs" />
     <Compile Include="BoundaryCondition.cs" />
+    <Compile Include="SurfaceContourModel.cs" />
+    <Compile Include="ZLevelMillingModel.cs" />
     <Compile Include="Electrode\AbstractModel.cs" />
     <Compile Include="Electrode\ASMModel.cs" />
     <Compile Include="Electrode\AssembleModel.cs" />

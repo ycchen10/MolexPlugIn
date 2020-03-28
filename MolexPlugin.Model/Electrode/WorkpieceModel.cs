@@ -43,7 +43,6 @@ namespace MolexPlugin.Model
                 File.Delete(this.WorkpiecePath);
             }
             File.Move(oldPth, this.WorkpiecePath);
-
         }
 
         public override void GetAssembleName()

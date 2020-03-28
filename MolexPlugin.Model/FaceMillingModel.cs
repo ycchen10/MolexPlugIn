@@ -33,6 +33,7 @@ namespace MolexPlugin.Model
             base.CreateOperation( templateOperName, name, this.GroupModel);
             NXOpen.CAM.FaceMillingBuilder builder1;
             builder1 = workPart.CAMSetup.CAMOperationCollection.CreateFaceMillingBuilder(this.Oper);
+            builder1.FeedsBuilder.SetMachiningData();
             Boundary boundary = builder1.BlankBoundary;
             BoundarySetList list = boundary.BoundaryList;
             List<BoundaryMillingSet> boundarySet = new List<BoundaryMillingSet>();

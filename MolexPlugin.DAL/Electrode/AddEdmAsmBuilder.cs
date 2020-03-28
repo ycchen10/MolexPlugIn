@@ -51,6 +51,7 @@ namespace MolexPlugin.DAL
             edm.Load(work.Model.PartTag);
             work.Load(asm.Model.PartTag);
 
+            work.Model.WaveBodys();
             PartUtils.SetPartDisplay(asm.Model.PartTag);
             bool anyPartsModified1;
             NXOpen.PartSaveStatus partSaveStatus1;

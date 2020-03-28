@@ -35,6 +35,7 @@ namespace MolexPlugin.Model
             base.CreateOperation(templateOperName, name, this.GroupModel);
             NXOpen.CAM.PlanarMillingBuilder planarMillingBuilder1;
             planarMillingBuilder1 = workPart.CAMSetup.CAMOperationCollection.CreatePlanarMillingBuilder(this.Oper);
+            planarMillingBuilder1.FeedsBuilder.SetMachiningData();
             BoundaryPlanarMill boundary = planarMillingBuilder1.PartBoundary;
             BoundarySetList list = boundary.BoundaryList;
             List<BoundarySetPlanarMill> boundarySet = new List<BoundarySetPlanarMill>();

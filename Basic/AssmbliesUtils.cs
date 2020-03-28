@@ -96,7 +96,7 @@ namespace Basic
 
 
         /// <summary>
-        /// 链接到工作部件中(关联)
+        /// 链接到工作部件中(非关联)
         /// </summary>
         /// <param name="seleObj">要链接的体</param>
         /// <returns></returns>
@@ -154,7 +154,65 @@ namespace Basic
             }
 
         }
+        /// <summary>
+        ///  链接到工作部件中(关联)
+        /// </summary>
+        /// <param name="seleObj"></param>
+        /// <returns></returns>
+        public static NXOpen.Features.Feature WaveAssociativeBodys(params NXObject[] seleObj)
+        {
 
+            Part workPart = theSession.Parts.Work;
+            NXOpen.Features.Feature nullNXOpen_Features_Feature = null;
+            NXOpen.Features.WaveLinkBuilder waveLinkBuilder1 = workPart.BaseFeatures.CreateWaveLinkBuilder(nullNXOpen_Features_Feature);
+            NXOpen.Features.ExtractFaceBuilder extractFaceBuilder1;
+            extractFaceBuilder1 = waveLinkBuilder1.ExtractFaceBuilder;
+            extractFaceBuilder1.FaceOption = NXOpen.Features.ExtractFaceBuilder.FaceOptionType.FaceChain;
+            waveLinkBuilder1.Type = NXOpen.Features.WaveLinkBuilder.Types.BodyLink;
+            extractFaceBuilder1.FaceOption = NXOpen.Features.ExtractFaceBuilder.FaceOptionType.FaceChain;
+            extractFaceBuilder1.AngleTolerance = 45.0;
+            extractFaceBuilder1.ParentPart = NXOpen.Features.ExtractFaceBuilder.ParentPartType.OtherPart;
+            extractFaceBuilder1.Associative = true;   //关联
+            extractFaceBuilder1.MakePositionIndependent = false;
+            extractFaceBuilder1.FixAtCurrentTimestamp = false;
+
+            extractFaceBuilder1.HideOriginal = false;
+
+            extractFaceBuilder1.InheritDisplayProperties = false;
+
+            NXOpen.ScCollector scCollector1;
+            scCollector1 = extractFaceBuilder1.ExtractBodyCollector;
+
+            extractFaceBuilder1.CopyThreads = false; //是否复制
+
+            extractFaceBuilder1.FeatureOption = NXOpen.Features.ExtractFaceBuilder.FeatureOptionType.OneFeatureForAllBodies;
+            Body[] seleBody = new Body[seleObj.Length];
+            for (int i = 0; i < seleObj.Length; i++)
+            {
+                seleBody[i] = (Body)seleObj[i];
+            }
+
+            BodyDumbRule bodyDumbRule1 = workPart.ScRuleFactory.CreateRuleBodyDumb(seleBody, true);
+
+            SelectionIntentRule[] rules1 = new SelectionIntentRule[1];
+            rules1[0] = bodyDumbRule1;
+            scCollector1.ReplaceRules(rules1, false);
+            try
+            {
+                return waveLinkBuilder1.CommitFeature();
+
+            }
+            catch (Exception ex)
+            {
+                LogMgr.WriteLog("AssmbliesUtils:WaveBodys:" + ex.Message);
+                return null;
+            }
+            finally
+            {
+                extractFaceBuilder1.Destroy();
+            }
+
+        }
         /// <summary>
         /// 链接到工作部件中(关联)
         /// </summary>

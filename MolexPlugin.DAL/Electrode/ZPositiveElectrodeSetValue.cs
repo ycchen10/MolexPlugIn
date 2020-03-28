@@ -76,7 +76,7 @@ namespace MolexPlugin.DAL
 
         public override Point3d GetSingleHeadSetValue()
         {
-            return new Point3d(Math.Ceiling(head.CenterPt.X), Math.Ceiling(head.CenterPt.Y), Math.Round(head.CenterPt.Z - head.DisPt.Z, 4));
+            return new Point3d(Math.Round(head.CenterPt.X,3), Math.Round(head.CenterPt.Y,3), Math.Round(head.CenterPt.Z - head.DisPt.Z, 3));
         }
 
         public override double GetZHeight(double exp)

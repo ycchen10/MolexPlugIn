@@ -227,5 +227,35 @@ namespace MolexPlugin.Model
             SetOrigin(20, originPoint);
             return originPoint;
         }
+        /// <summary>
+        /// 设置连接体
+        /// </summary>
+        public void WaveBodys()
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            UFSession theUFSession = UFSession.GetUFSession();
+            if (workPart.Tag != this.PartTag.Tag)
+            {
+                NXOpen.Assemblies.Component ct = AssmbliesUtils.GetPartComp(workPart, this.PartTag);
+                PartUtils.SetPartWork(ct);
+            }
+            foreach (Part part in Session.GetSession().Parts)
+            {
+                string type = AttributeUtils.GetAttrForString(part, "PartType");
+                if (type.Equals("Workpiece"))
+                {
+                    Body[] bodys = part.Bodies.ToArray();
+                    NXOpen.Features.Feature feat = AssmbliesUtils.WaveAssociativeBodys(bodys);
+                    Body[] waveBodys = ((NXOpen.Features.BodyFeature)feat).GetBodies();
+                    foreach (Body body in waveBodys)
+                    {
+                        body.Layer = 2;
+                        theUFSession.Layer.SetStatus(2, 2);
+                    }
+                    break;
+                }
+            } 
+            PartUtils.SetPartWork(null); 
+        }
     }
 }

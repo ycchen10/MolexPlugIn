@@ -34,7 +34,7 @@ namespace MolexPlugin.DAL
         {
             Matrix4 mat = new Matrix4();
             mat.Identity();          
-            center.Z = center.Z + (pre[0] / 2 - 0.7);
+            center.Z = center.Z + (pre[0] / 2 - 1.2);
             Matrix4 workMat = this.head.ConditionModel.Work.WorkMatr;
             Matrix4 workInvers = workMat.GetInversMatrix();
             workInvers.ApplyPos(ref center);
@@ -65,7 +65,7 @@ namespace MolexPlugin.DAL
 
         public override Point3d GetSingleHeadSetValue()
         {
-            return new Point3d(Math.Round(head.CenterPt.X + head.DisPt.X, 4), Math.Ceiling(head.CenterPt.Y), Math.Round(head.CenterPt.Z - head.DisPt.Z, 4));
+            return new Point3d(Math.Round(head.CenterPt.X + head.DisPt.X, 3), Math.Round(head.CenterPt.Y,3), Math.Round(head.CenterPt.Z - head.DisPt.Z, 3));
         }
 
         public override double GetZHeight(double exp)

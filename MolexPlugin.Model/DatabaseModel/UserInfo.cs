@@ -9,6 +9,7 @@ namespace MolexPlugin.Model
     /// <summary>
     /// 用户
     /// </summary>
+    [Serializable]
     public class UserInfo
     {
         /// <summary>

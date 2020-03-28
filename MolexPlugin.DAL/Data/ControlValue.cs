@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MolexPlugin.DLL;
 using MolexPlugin.Model;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace MolexPlugin.DAL
 {
@@ -17,8 +19,9 @@ namespace MolexPlugin.DAL
             {
                 if (controls.Count == 0 || controls == null)
                 {
-                    ControlEnumNameDll dll = new ControlEnumNameDll();
-                    return dll.GetList();
+                    //ControlEnumNameDll dll = new ControlEnumNameDll();
+                    //return dll.GetList();
+                    return Deserialize();
                 }
                 else
                 {
@@ -29,7 +32,7 @@ namespace MolexPlugin.DAL
 
         private ControlValue()
         {
-          
+
         }
         /// <summary>
         /// 获取控件数字
@@ -74,5 +77,36 @@ namespace MolexPlugin.DAL
             return control;
         }
 
+        /// <summary>
+        /// 序列化
+        /// </summary>
+        public static void Serialize()
+        {
+            string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            string contrPath = dllPath.Replace("application\\", "Cofigure\\SerializeContr.dat");
+            if (File.Exists(contrPath))
+                File.Delete(contrPath);
+            List<ControlEnum> users = new ControlEnumNameDll().GetList();
+            FileStream fs = new FileStream(contrPath, FileMode.Create);
+            BinaryFormatter bf = new BinaryFormatter();
+            bf.Serialize(fs, users);
+            fs.Close();
+        }
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <returns></returns>
+        public static List<ControlEnum> Deserialize()
+        {
+            string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            string contrPath = dllPath.Replace("application\\", "Cofigure\\SerializeContr.dat");
+            if (File.Exists(contrPath))
+            {
+                FileStream fs = new FileStream(contrPath, FileMode.Open);
+                BinaryFormatter bf = new BinaryFormatter();
+                return bf.Deserialize(fs) as List<ControlEnum>;
+            }
+            return null;
+        }
     }
 }

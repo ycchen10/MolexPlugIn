@@ -9,6 +9,7 @@ namespace MolexPlugin.Model
     /// <summary>
     /// 角色
     /// </summary>
+    [Serializable]
     public class Role
     {
         /// <summary>

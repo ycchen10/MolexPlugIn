@@ -31,20 +31,18 @@ namespace MolexPlugin.DAL
         /// <param name="workNumber"></param>
         public bool CreateBuilder(Matrix4 mat, int workNumber)
         {
-
             CreateWorkPart work = new CreateWorkPart(this.Model.Asm.WorkpieceDirectoryPath, this.Model.Asm.MoldInfo, workNumber, mat);
             if (!work.CreatePart())
                 return false;
             NXOpen.Assemblies.Component workComp = work.Load(asmPart);
             PartUtils.SetPartDisplay(asmPart);
-            PartUtils.SetPartWork(workComp);
-
+            PartUtils.SetPartWork(workComp);           
             Model.Edm.Load(work.Model.PartTag);
             CartesianCoordinateSystem csys = asmPart.WCS.Save();
             csys.Name = "WORK" + workNumber.ToString();
             csys.Layer = 200;
-            csys.Color = 186;
-            PartUtils.SetPartDisplay(asmPart);
+            csys.Color = 186;         
+            PartUtils.SetPartDisplay(asmPart);         
             singleton.AddWork(work.Model);
             return true;
         }

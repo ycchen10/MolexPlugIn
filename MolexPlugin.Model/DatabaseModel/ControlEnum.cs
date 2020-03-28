@@ -9,6 +9,7 @@ namespace MolexPlugin.Model
     /// <summary>
     /// 控件下拉菜单
     /// </summary>
+     [Serializable]
     public class ControlEnum
     {
         /// <summary>

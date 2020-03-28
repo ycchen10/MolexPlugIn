@@ -195,6 +195,10 @@ namespace MolexPlugin
                 //    this.EditionNumber.WideValue.ToUpper(), this.MoldType.WideValue.ToUpper(), this.ClientNumber.WideValue.ToUpper());
                 //buider.CreateAsm();
                 UserInfoSingleton user = UserInfoSingleton.GetInstance();
+                if (user.UserInfo == null)
+                {
+                    return 1;
+                }
                 MoldInfoModel moldInfo = new MoldInfoModel()
                 {
                     MoldNumber = this.MoldNumber.WideValue.ToUpper(),

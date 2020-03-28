@@ -7,7 +7,7 @@ using NXOpen;
 
 namespace Basic
 {
-    interface ISelectionRule
+   public interface ISelectionRule
     {
         SelectionIntentRule CreateSelectionRule();
     }

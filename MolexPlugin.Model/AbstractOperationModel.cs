@@ -53,6 +53,7 @@ namespace MolexPlugin.Model
             operation1 = workPart.CAMSetup.CAMOperationCollection.Create(groupModel.ProgramGroup, groupModel.MethodGroup, groupModel.ToolGroup,
                 groupModel.GeometryGroup, templateName, templateOperName, NXOpen.CAM.OperationCollection.UseDefaultName.True, name);
             this.Oper = operation1;
+           
         }
         /// <summary>
         /// 编辑刀路
