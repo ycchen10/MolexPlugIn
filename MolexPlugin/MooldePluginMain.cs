@@ -14,6 +14,7 @@ namespace MolexPlugin
 
         public static int Main(string[] args)
         {
+            #region  公共工具
             if (args[0] == "MENU_MoveObject")
             {
                 MoveObject move = new MoveObject();
@@ -45,7 +46,9 @@ namespace MolexPlugin
                 MoveObjectOfCenter move = new MoveObjectOfCenter("MENU_MoveObjectRotateZ");
                 move.Create();
             }
+            #endregion
 
+            #region 电极设计
             if (args[0] == "MENU_SuperBox")
             {
                 SuperBox superBox = new SuperBox();
@@ -126,7 +129,13 @@ namespace MolexPlugin
             {
                 new BomCreateForm().Show();
             }
+            #endregion
            // test.ces();
+            if (args[0] == "MENU_EleProgram")
+            {
+                EleProgram mode = new EleProgram();
+                mode.Show();
+            }
             return 1;
         }
         /// <summary>

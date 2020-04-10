@@ -24,6 +24,8 @@ namespace MolexPlugin.DAL
         /// </summary>
         public double MinRadius { get; private set; } = 99999;
 
+        public List<AnalyzeFaceSlopeAndRadius> AnalyzeFaces { get { return analyze; } }
+
         public AnalyzeBuilder(NXObject obj)
         {
             this.obj = obj;
@@ -67,9 +69,9 @@ namespace MolexPlugin.DAL
             }
             else
             {
-                for (int i = 0; i < analyze.Count - 2; i++)
+                for (int i = 1; i < analyze.Count ; i++)
                 {
-                    if ((analyze[i].MaxSlope > Math.Round(Math.PI / 2, 3) && analyze[i].MaxSlope <= Math.Round(Math.PI, 3)) || analyze[i].ResultsNum > 0)
+                    if ((analyze[i].MaxSlope > Math.Round(Math.PI / 2, 3) && analyze[i].MaxSlope <= Math.Round(Math.PI, 3)) || analyze[i].ResultsNum > 1)
                     {
                         SetColor(analyze[i].face, 186);//倒扣
                         this.IsBackOff = true;

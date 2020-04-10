@@ -123,8 +123,8 @@ namespace MolexPlugin.DAL
             theUFSession.Sket.UpdateSketch(sketchTag);
             this.Center = CreateCenter(zSetValue);
             SetSketchConstraint(centerLine);
-            SetSketch(this.WaiLine, centerLine, 0);
-            SetSketch(this.LeiLine, centerLine, 1.0);
+            SetSketch(this.WaiLine, centerLine, "0");
+            SetSketch(this.LeiLine, centerLine, "DatumWidth");
             theUFSession.Obj.SetLayer(sketchTag, 254);
             theUFSession.Obj.SetLayer(Center.Tag, 254);
             DisplayableObject[] disp = workPart.Datums.ToArray();
@@ -140,21 +140,21 @@ namespace MolexPlugin.DAL
         /// <param name="rectangle"></param>
         /// <param name="center"></param>
         /// <param name="i"></param>
-        private void SetSketch(Line[] rectangle, Line[] center, double i)
+        private void SetSketch(Line[] rectangle, Line[] center, string width)
         {
             Point3d dimOrigin = new Point3d(0, 0, 0);
 
 
             Expression ex1 = SketchUtils.CreateDim(center[0], rectangle[0], dimOrigin, NXOpen.Annotations.DimensionMeasurementBuilder.MeasurementMethod.Vertical, InferSnapType.SnapType.Origin);
             Expression ex2 = SketchUtils.CreateDim(center[0], rectangle[2], dimOrigin, NXOpen.Annotations.DimensionMeasurementBuilder.MeasurementMethod.Vertical, InferSnapType.SnapType.Origin);
-            ex1.RightHandSide = "PreparationY/2-" + i.ToString();
-            ex2.RightHandSide = "PreparationY/2-" + i.ToString();
+            ex1.RightHandSide = "PreparationY/2-" + width;
+            ex2.RightHandSide = "PreparationY/2-" + width;
 
             Expression ex3 = SketchUtils.CreateDim(center[1], rectangle[1], dimOrigin, NXOpen.Annotations.DimensionMeasurementBuilder.MeasurementMethod.Horizontal, InferSnapType.SnapType.Origin);
             Expression ex4 = SketchUtils.CreateDim(center[1], rectangle[3], dimOrigin, NXOpen.Annotations.DimensionMeasurementBuilder.MeasurementMethod.Horizontal, InferSnapType.SnapType.Origin);
 
-            ex3.RightHandSide = "PreparationX/2-" + i.ToString();
-            ex4.RightHandSide = "PreparationX/2-" + i.ToString();
+            ex3.RightHandSide = "PreparationX/2-" + width;
+            ex4.RightHandSide = "PreparationX/2-" + width;
         }
         /// <summary>
         /// 创建位置约束

@@ -16,7 +16,7 @@ namespace MolexPlugin.Model
     {
         private string templateOperName;
 
-        public CavityMillingModel()
+        public CavityMillingModel(NXOpen.CAM.Operation oper) : base(oper)
         {
 
         }
@@ -35,11 +35,11 @@ namespace MolexPlugin.Model
             builder1.Destroy();
         }
 
-        public override OperationData GetOperationData(NXOpen.CAM.Operation oper)
+        public override OperationData GetOperationData()
         {
-            OperationData data = base.GetOperationData(oper);
+            OperationData data = base.GetOperationData();
             NXOpen.CAM.CavityMillingBuilder operBuilder;
-            operBuilder = workPart.CAMSetup.CAMOperationCollection.CreateCavityMillingBuilder(oper);
+            operBuilder = workPart.CAMSetup.CAMOperationCollection.CreateCavityMillingBuilder(this.Oper);
             if (operBuilder.CutParameters.FloorSameAsPartStock)
             {
                 data.FloorStock = operBuilder.CutParameters.PartStock.Value;

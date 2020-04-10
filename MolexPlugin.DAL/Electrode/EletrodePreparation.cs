@@ -49,7 +49,12 @@ namespace MolexPlugin.DAL
             maxOutline[1] = pre[1];
             return isLength && isWidth;
         }
-
+        /// <summary>
+        /// 获取标准料
+        /// </summary>
+        /// <param name="wai"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
         private bool IsOutline(int[] wai, ref int max)
         {
             foreach (int k in wai)
@@ -61,6 +66,29 @@ namespace MolexPlugin.DAL
                 }
             }
             return false;
+        }
+        private bool IsCriterion(int[] crit, int pre)
+        {
+            foreach (int k in crit)
+            {
+                if (pre == k)
+                    return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 判断材料是否标准料
+        /// </summary>
+        /// <param name="pre"></param>
+        /// <returns></returns>
+        public bool IsPreCriterion(int[] pre)
+        {
+            if (pre[0] > pre[1])
+            {
+                return (IsCriterion(length.ToArray(), pre[0]) && (IsCriterion(width.ToArray(), pre[1])));
+            }
+            else
+                return (IsCriterion(length.ToArray(), pre[1]) && (IsCriterion(width.ToArray(), pre[2])));
         }
 
         /// <summary>

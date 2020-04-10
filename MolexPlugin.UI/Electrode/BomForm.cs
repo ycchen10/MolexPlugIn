@@ -239,7 +239,7 @@ namespace MolexPlugin
                 DataRow dr = (dataGridView.Rows[e.RowIndex].DataBoundItem as DataRowView).Row; //获取数据
                 ElectrodeInfo newInfo = ElectrodeInfo.GetEleInfo(dr);
                 bom = new ElectrodeBomBuilder(newInfo, this.assemble);
-                if (!builders.Exists(a => a.Model[0].EleInfo.EleNumber == newInfo.EleNumber))
+                if (!builders.Exists(a => a.Model[0].EleInfo.EleName == newInfo.EleName))
                     this.builders.Add(bom);
 
             }

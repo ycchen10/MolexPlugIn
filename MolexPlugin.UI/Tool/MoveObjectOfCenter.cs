@@ -18,7 +18,7 @@ namespace MolexPlugin
         }
 
         public void Create()
-        {
+        {           
             MoveObjectFactory.CreateMove(this.uiName);
         }
 

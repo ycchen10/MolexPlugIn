@@ -105,7 +105,6 @@ namespace Basic
             NXOpen.BasePart basePart1;
             NXOpen.PartLoadStatus partLoadStatus1;
             basePart1 = theSession.Parts.OpenBaseDisplay(path, out partLoadStatus1);
-
             partLoadStatus1.Dispose();
             return basePart1 as Part;
         }

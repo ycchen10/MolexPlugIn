@@ -15,20 +15,27 @@ namespace MolexPlugin.Model
     public class SurfaceContourModel : AbstractOperationModel
     {
         private string templateOperName;
-        private List<Face> faces;
-        public SurfaceContourModel()
+        public SurfaceContourModel(NXOpen.CAM.Operation oper) : base(oper)
         {
 
         }
-        public SurfaceContourModel(NCGroupModel model, string templateName, string templateOperName, List<Face> faces) : base(model, templateName)
+        public SurfaceContourModel(NCGroupModel model, string templateName, string templateOperName) : base(model, templateName)
         {
             this.templateOperName = templateOperName;
-            this.faces = faces;
+
         }
 
         public override void Create(string name)
         {
             base.CreateOperation(this.templateOperName, name, this.GroupModel);
+
+        }
+        /// <summary>
+        /// 设置加工面
+        /// </summary>
+        /// <param name="faces"></param>
+        public void SetGeometry(params Face[] faces)
+        {
             NXOpen.CAM.SurfaceContourBuilder builder1;
             builder1 = workPart.CAMSetup.CAMOperationCollection.CreateSurfaceContourBuilder(this.Oper);
             builder1.FeedsBuilder.SetMachiningData();
@@ -38,18 +45,27 @@ namespace MolexPlugin.Model
             geometrySet2 = builder1.CutAreaGeometry.CreateGeometrySet();
             geometrySetList.Append(geometrySet2);
             NXOpen.ScCollector scCollector1 = geometrySet2.ScCollector;
-            ISelectionRule rule = new SelectionFaceRule(faces);
+            ISelectionRule rule = new SelectionFaceRule(faces.ToList());
             SelectionIntentRule[] rules = new SelectionIntentRule[1] { rule.CreateSelectionRule() };
             scCollector1.ReplaceRules(rules, false);
-            builder1.Commit();
-            builder1.Destroy();
+            try
+            {
+                builder1.Commit();
+            }
+            catch (NXException ex)
+            {
+                LogMgr.WriteLog("SurfaceContourModel.SetGeometry 错误" + ex.Message);
+            }
+            finally
+            {
+                builder1.Destroy();
+            }
         }
-
-        public override OperationData GetOperationData(NXOpen.CAM.Operation oper)
+        public override OperationData GetOperationData()
         {
-            OperationData data = base.GetOperationData(oper);
+            OperationData data = base.GetOperationData();
             NXOpen.CAM.SurfaceContourBuilder operBuilder;
-            operBuilder = workPart.CAMSetup.CAMOperationCollection.CreateSurfaceContourBuilder(oper);
+            operBuilder = workPart.CAMSetup.CAMOperationCollection.CreateSurfaceContourBuilder(this.Oper);
             data.FloorStock = operBuilder.CutParameters.PartStock.Value;
             data.SideStock = operBuilder.CutParameters.PartStock.Value;
             data.Depth = operBuilder.DmareaMillingBuilder.StepoverBuilder.DistanceBuilder.Value;
@@ -85,6 +101,10 @@ namespace MolexPlugin.Model
             nXObject1 = builder1.Commit();
             builder1.Destroy();
         }
+        /// <summary>
+        /// 设置清根参考刀
+        /// </summary>
+        /// <param name="tool"></param>
         public void SetReferenceTool(Tool tool)
         {
             NXOpen.CAM.SurfaceContourBuilder builder1;

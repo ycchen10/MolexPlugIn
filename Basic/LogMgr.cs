@@ -14,8 +14,8 @@ namespace Basic
         //<summary>   
         //保存日志的文件夹   
         //<summary>   
-        private static string logPath = Utils.GetWorkDir() + @"logfolder\";
-          
+        // private static string logPath = Utils.GetWorkDir() + @"logfolder\";
+        private static string logPath = "C:\\temp\\" + @"logfolder\";
         // private static string logPath = System.Reflection.Assembly.GetExecutingAssembly().Location.ToString().Substring(0,System.Reflection.Assembly.GetExecutingAssembly().Location.ToString().Length-14) + @"logfolder\";
 
         //<summary>   
@@ -29,11 +29,11 @@ namespace Basic
                 {
                     System.IO.Directory.CreateDirectory(logPath);
                 }
-        
-                 System.IO.StreamWriter sw = System.IO.File.AppendText(
-                        logPath + " " +
-                        DateTime.Now.ToString("yyyyMMdd") + "Error.Log"
-                    );
+
+                System.IO.StreamWriter sw = System.IO.File.AppendText(
+                       logPath + " " +
+                       DateTime.Now.ToString("yyyyMMdd") + "Error.Log"
+                   );
                 sw.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:  ") + msg);
                 sw.Close();
             }

@@ -36,7 +36,7 @@ namespace Basic
             return boundarySetPlanarMill;
         }
         /// <summary>
-        /// 设置平面铣边界
+        /// 设置面铣边界
         /// </summary>
         /// <param name="toolside"></param>
         /// <param name="pt"></param>
@@ -49,10 +49,7 @@ namespace Basic
             mat.Identity();
             Part workPart = Session.GetSession().Parts.Work;
             BoundaryMillingSet boundarySet;
-            boundarySet = boundary.CreateBoundaryMillingSet();
-            Vector3d normal = new NXOpen.Vector3d(0.0, 0.0, 1.0);
-            Plane plane = workPart.Planes.CreatePlane(pt, normal, NXOpen.SmartObject.UpdateOption.AfterModeling);
-            boundarySet.Plane = plane;
+            boundarySet = boundary.CreateBoundaryMillingSet();         
             boundarySet.ToolSide = toolside;
             boundarySet.PlaneType = NXOpen.CAM.BoundarySet.PlaneTypes.UserDefined;
             boundarySet.AppendCurves(edges, pt, mat.GetMatrix3());

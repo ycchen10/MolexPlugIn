@@ -64,7 +64,7 @@ namespace MolexPlugin.DAL
             string userPath = dllPath.Replace("application\\", "Cofigure\\SerializeUser.dat");
             if (File.Exists(userPath))
             {
-                FileStream fs = new FileStream(userPath, FileMode.Open);
+                FileStream fs = new FileStream(userPath, FileMode.Open, FileAccess.Read);
                 BinaryFormatter bf = new BinaryFormatter();
                 return bf.Deserialize(fs) as List<UserInfo>;
             }

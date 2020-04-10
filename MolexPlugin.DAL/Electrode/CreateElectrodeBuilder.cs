@@ -112,13 +112,16 @@ namespace MolexPlugin.DAL
         public void CreateEle(ElectrodeInfo eleInfo)
         {
             this.eleInfo = eleInfo;
+            this.eleInfo.EleHeadDis[0] = Math.Round(this.head.DisPt.X, 3);
+            this.eleInfo.EleHeadDis[1] = Math.Round(this.head.DisPt.Y, 3);
+            this.eleInfo.EleMinDim = head.AskMinDim();
             Matrix4 workMat = this.model.Work.WorkMatr;
             double zHeight = setValue.GetZHeight(eleInfo.Extrudewith);
             Matrix4 mat = setValue.GetEleMatr(eleInfo.Preparation, GetCenter());
             ElectrodePart elePart = new ElectrodePart(eleInfo, this.model.Work.MoldInfo, this.head, mat);
-           
+
             elePart.CreateElectrode(eleInfo.ZDatum, zHeight, Expression);
-         
+
         }
         private void Expression()
         {

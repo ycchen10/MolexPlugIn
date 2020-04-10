@@ -38,8 +38,27 @@ namespace MolexPlugin.DAL
             this.DisPt = disPt;
             this.CenterPt = centerPt;
         }
-
-      
+        /// <summary>
+        /// 查询电极头最小距离
+        /// </summary>
+        /// <returns></returns>
+        public double AskMinDim()
+        {
+            double min = 9999;
+            double[] pt1 = new double[3];
+            double[] pt2 = new double[3];
+            for (int i = 0; i < this.ConditionModel.Bodys.Count - 1; i++)
+            {
+                for (int j = i + 1; j < this.ConditionModel.Bodys.Count; j++)
+                {
+                    double temp = AnalysisUtils.AskMinimumDist(this.ConditionModel.Bodys[i].Tag, this.ConditionModel.Bodys[j].Tag, out pt1, out pt2);
+                    temp = Math.Round(temp, 3);
+                    if (min >= temp)
+                        min = temp;
+                }
+            }
+            return min;
+        }
 
     }
 }

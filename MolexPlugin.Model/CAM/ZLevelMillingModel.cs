@@ -15,20 +15,23 @@ namespace MolexPlugin.Model
     public class ZLevelMillingModel : AbstractOperationModel
     {
         private string templateOperName;
-        private List<Face> faces;
-        public ZLevelMillingModel()
+
+        public ZLevelMillingModel(NXOpen.CAM.Operation oper) : base(oper)
         {
 
         }
-        public ZLevelMillingModel(NCGroupModel model, string templateName, string templateOperName, List<Face> faces) : base(model, templateName)
+        public ZLevelMillingModel(NCGroupModel model, string templateName, string templateOperName) : base(model, templateName)
         {
             this.templateOperName = templateOperName;
-            this.faces = faces;
         }
 
         public override void Create(string name)
         {
             base.CreateOperation(this.templateOperName, name, this.GroupModel);
+
+        }
+        public void SetGeometry(params Face[] faces)
+        {
             NXOpen.CAM.ZLevelMillingBuilder builder1;
             builder1 = workPart.CAMSetup.CAMOperationCollection.CreateZlevelMillingBuilder(this.Oper);
             builder1.FeedsBuilder.SetMachiningData();
@@ -38,17 +41,28 @@ namespace MolexPlugin.Model
             geometrySet2 = builder1.CutAreaGeometry.CreateGeometrySet();
             geometrySetList.Append(geometrySet2);
             NXOpen.ScCollector scCollector1 = geometrySet2.ScCollector;
-            ISelectionRule rule = new SelectionFaceRule(faces);
+            ISelectionRule rule = new SelectionFaceRule(faces.ToList());
             SelectionIntentRule[] rules = new SelectionIntentRule[1] { rule.CreateSelectionRule() };
             scCollector1.ReplaceRules(rules, false);
-            builder1.Destroy();
-        }
+            try
+            {
+                builder1.Commit();
+            }
+            catch (NXException ex)
+            {
+                LogMgr.WriteLog("ZLevelMillingModel.SetGeometry 错误" + ex.Message);
+            }
+            finally
+            {
+                builder1.Destroy();
+            }
 
-        public override OperationData GetOperationData(NXOpen.CAM.Operation oper)
+        }
+        public override OperationData GetOperationData()
         {
-            OperationData data = base.GetOperationData(oper);
+            OperationData data = base.GetOperationData();
             NXOpen.CAM.ZLevelMillingBuilder operBuilder;
-            operBuilder = workPart.CAMSetup.CAMOperationCollection.CreateZlevelMillingBuilder(oper);          
+            operBuilder = workPart.CAMSetup.CAMOperationCollection.CreateZlevelMillingBuilder(this.Oper);
             if (operBuilder.CutParameters.FloorSameAsPartStock)
             {
                 data.FloorStock = operBuilder.CutParameters.PartStock.Value;
@@ -85,9 +99,18 @@ namespace MolexPlugin.Model
                 point.Add(workPart.Points.CreatePoint(p));
             }
             builder1.NonCuttingBuilder.SetRegionStartPoints(point.ToArray());
-            NXOpen.NXObject nXObject1;
-            nXObject1 = builder1.Commit();
-            builder1.Destroy();
+            try
+            {
+                builder1.Commit();
+            }
+            catch (NXException ex)
+            {
+                LogMgr.WriteLog("ZLevelMillingModel.SetRegionStartPoints 错误" + ex.Message);
+            }
+            finally
+            {
+                builder1.Destroy();
+            }
         }
 
         public override void SetStock(double partStock, double floorStock)
@@ -96,9 +119,18 @@ namespace MolexPlugin.Model
             builder1 = workPart.CAMSetup.CAMOperationCollection.CreateZlevelMillingBuilder(this.Oper);
             builder1.CutParameters.PartStock.Value = partStock;
             builder1.CutParameters.FloorStock.Value = floorStock;
-            NXOpen.NXObject nXObject1;
-            nXObject1 = builder1.Commit();
-            builder1.Destroy();
+            try
+            {
+                builder1.Commit();
+            }
+            catch (NXException ex)
+            {
+                LogMgr.WriteLog("ZLevelMillingModel.SetStock 错误" + ex.Message);
+            }
+            finally
+            {
+                builder1.Destroy();
+            }
         }
         /// <summary>
         /// 设置切削层
@@ -109,7 +141,18 @@ namespace MolexPlugin.Model
             NXOpen.CAM.ZLevelMillingBuilder builder1;
             builder1 = workPart.CAMSetup.CAMOperationCollection.CreateZlevelMillingBuilder(this.Oper);
             builder1.CutLevel.SetRangeDepth(0, zLevel, NXOpen.CAM.CutLevel.MeasureTypes.TopLevel);
-            builder1.Destroy();
+            try
+            {
+                builder1.Commit();
+            }
+            catch (NXException ex)
+            {
+                LogMgr.WriteLog("ZLevelMillingModel.SetCutLevel 错误" + ex.Message);
+            }
+            finally
+            {
+                builder1.Destroy();
+            }
         }
     }
 

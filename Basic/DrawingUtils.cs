@@ -907,5 +907,26 @@ namespace Basic
 
 
         }
+
+        public static void SetDimensionPrecision(Dimension dim, int count)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            NXOpen.Annotations.LinearDimensionBuilder linearDimensionBuilder1 = workPart.Dimensions.CreateLinearDimensionBuilder(dim);
+            linearDimensionBuilder1.Style.DimensionStyle.DimensionValuePrecision = count;
+            try
+            {
+                NXOpen.NXObject nXObject1;
+                nXObject1 = linearDimensionBuilder1.Commit();
+            }
+            catch(NXException ex)
+            {
+                LogMgr.WriteLog("DrawingUtils:SetDimensionPrecision" + ex.Message);            
+            }
+            finally
+            {
+                linearDimensionBuilder1.Destroy();
+            }
+       
+        }
     }
 }

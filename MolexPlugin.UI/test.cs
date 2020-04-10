@@ -66,23 +66,23 @@ namespace MolexPlugin
             //    ProgramGroup = (NCGroup)workPart.CAMSetup.CAMGroupCollection.FindObject("O0013"),
             //    ToolGroup = (NCGroup)workPart.CAMSetup.CAMGroupCollection.FindObject("EM5"),
             //};
-            //FaceLoopUtils.LoopList[] list = FaceLoopUtils.AskFaceLoops((Tag)73392);
+            //FaceLoopUtils.LoopList[] list = FaceLoopUtils.AskFaceLoops((Tag)50065);
             //List<Edge> edges = new List<Edge>();
             //foreach (Tag t in list[0].EdgeList)
             //{
             //    edges.Add(NXObjectManager.Get(t) as Edge);
             //}
-            //BoundaryCondition condition = new BoundaryCondition()
+            //BoundaryModel condition = new BoundaryModel()
             //{
-            //    BouudaryPt = new Point3d(0, 0, 0),            
+            //    BouudaryPt = new Point3d(0, 0, 0),
             //    Types = BoundarySet.BoundaryTypes.Closed,
             //    ToolSide = BoundarySet.ToolSideTypes.InsideOrLeft,
             //    Edges = edges
             //};
-            //FaceMillingModel model = new FaceMillingModel(groups,new Point3d(0,0,-10), condition);
-            //model.Create("electrode", "TOP", "456");
+            //FaceMillingModel model = new FaceMillingModel(groups, "electrode", "TOP", condition);
+            //model.Create("456");
             #endregion
-            string err = "";
+            //string err = "";
             //Face face = NXObjectManager.Get((Tag)73347) as Face;
             //foreach (Edge edge in face.GetEdges())
             //{
@@ -112,8 +112,18 @@ namespace MolexPlugin
 
             //Part part = NXObjectManager.Get((Tag)44873) as Part;
             //AssmbliesUtils.WaveAssociativeBodys(part.Bodies.ToArray());
-            UserInfoSingleton.Serialize();
-            ControlValue.Serialize();
+
+            //ElectrodeModel ele = new ElectrodeModel();
+            //ele.GetModelForPart(workPart);
+            //AnalyzeElectrode analyze = new AnalyzeElectrode(ele);
+            //double min = analyze.GetMinDis();
+            //AnalyzeBuilder builder = analyze.AnalyzeBody();
+            //foreach(AnalyzeFaceSlopeAndRadius ar in builder.AnalyzeFaces)
+            //{
+            //    LogMgr.WriteLog(ar.face.Tag.ToString());
+            //}
+           // UserInfoSingleton.Serialize();
+            //ControlValue.Serialize();
         }
     }
 }

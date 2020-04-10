@@ -26,11 +26,11 @@ namespace MolexPlugin.DAL
         private Session theSession;
 
 
-        public ElectrodeDrawingInfo(AssembleModel assemble, int eleNumer)
+        public ElectrodeDrawingInfo(AssembleModel assemble, string eleName)
         {
             theSession = Session.GetSession();
             this.Assemble = assemble;
-            List<ElectrodeModel> eles = this.Assemble.Electrodes.Where(a => a.EleInfo.EleNumber == eleNumer).ToList();
+            List<ElectrodeModel> eles = this.Assemble.Electrodes.Where(a => (a.EleInfo.EleName == eleName)).ToList();
             WorkModel work = null;
             foreach (WorkModel wm in this.Assemble.Works)
             {
@@ -172,12 +172,11 @@ namespace MolexPlugin.DAL
                 NXOpen.UF.UFEval.Line lineData;
                 if (EdgeUtils.GetLineData(eg, out lineData, ref str))
                 {
-                    if (lineData.start[1] == lineData.end[1])
+                    if (UMathUtils.IsEqual(lineData.start[1], lineData.end[1]))
                     {
-
                         xEdge.Add(AssmbliesUtils.GetNXObjectOfOcc(ct.Tag, eg.Tag) as Edge);
                     }
-                    if (lineData.start[0] == lineData.end[0])
+                    if (UMathUtils.IsEqual(lineData.start[0], lineData.end[0]))
                         yEdge.Add(AssmbliesUtils.GetNXObjectOfOcc(ct.Tag, eg.Tag) as Edge);
                 }
             }

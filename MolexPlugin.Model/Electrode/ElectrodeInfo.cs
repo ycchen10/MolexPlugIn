@@ -144,6 +144,16 @@ namespace MolexPlugin.Model
         /// /Z向基准
         /// </summary>
         public bool ZDatum { get; set; }
+
+        public double DatumWidth { get; set; }
+        /// <summary>
+        /// 电极单齿外形
+        /// </summary>
+        public double[] EleHeadDis { get; set; } = new double[2] { 0, 0 };
+        /// <summary>
+        /// 电极单齿最小距离
+        /// </summary>
+        public double EleMinDim { get; set; } = 9999;
         /// <summary>
         /// 设置属性
         /// </summary>
@@ -181,6 +191,10 @@ namespace MolexPlugin.Model
             AttributeUtils.AttributeOperation("Area", this.Area, obj);
             AttributeUtils.AttributeOperation("EleNumber", this.EleNumber, obj);
             AttributeUtils.AttributeOperation("Positioning", this.Positioning, obj);
+
+            AttributeUtils.AttributeOperation("DatumWidth", this.DatumWidth, obj);
+            AttributeUtils.AttributeOperation("EleHeadDis", this.EleHeadDis, obj);
+            AttributeUtils.AttributeOperation("EleMinDim", this.EleMinDim, obj);
         }
         /// <summary>
         /// 读取属性
@@ -226,6 +240,12 @@ namespace MolexPlugin.Model
             this.ElePresentation = AttributeUtils.GetAttrForString(obj, "ElePresentation");
             this.Area = AttributeUtils.GetAttrForDouble(obj, "Area");
             this.EleNumber = AttributeUtils.GetAttrForInt(obj, "EleNumber");
+            this.DatumWidth = AttributeUtils.GetAttrForDouble(obj, "DatumWidth");
+            this.EleMinDim = AttributeUtils.GetAttrForDouble(obj, "EleMinDim");
+            for (int i = 0; i < 2; i++)
+            {
+                this.EleHeadDis[i] = AttributeUtils.GetAttrForDouble(obj, "EleHeadDis", i);
+            }
         }
 
         private static DataTable CreateDataTable()
@@ -263,6 +283,7 @@ namespace MolexPlugin.Model
                 row["PreparationX"] = ei.Preparation[0];
                 row["PreparationY"] = ei.Preparation[1];
                 row["PreparationZ"] = ei.Preparation[2];
+
                 dt.Rows.Add(row);
             }
 

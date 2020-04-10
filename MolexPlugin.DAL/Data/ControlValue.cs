@@ -102,9 +102,11 @@ namespace MolexPlugin.DAL
             string contrPath = dllPath.Replace("application\\", "Cofigure\\SerializeContr.dat");
             if (File.Exists(contrPath))
             {
-                FileStream fs = new FileStream(contrPath, FileMode.Open);
+                FileStream fs = new FileStream(contrPath, FileMode.Open, FileAccess.Read);
                 BinaryFormatter bf = new BinaryFormatter();
-                return bf.Deserialize(fs) as List<ControlEnum>;
+                List<ControlEnum> control = bf.Deserialize(fs) as List<ControlEnum>;
+                fs.Close();
+                return control;
             }
             return null;
         }

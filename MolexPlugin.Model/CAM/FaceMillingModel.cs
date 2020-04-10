@@ -14,60 +14,57 @@ namespace MolexPlugin.Model
     /// </summary>
     public class FaceMillingModel : AbstractOperationModel
     {
-        private List<BoundaryCondition> conditions;
         private string templateOperName;
-        private Point3d floorPt;
-        public FaceMillingModel()
+        public FaceMillingModel(NXOpen.CAM.Operation oper) : base(oper)
         {
 
         }
-        public FaceMillingModel(NCGroupModel model, string templateName, string templateOperName, Point3d floorPt,
-            params BoundaryCondition[] conditions) : base(model, templateName)
+        public FaceMillingModel(NCGroupModel model, string templateName, string templateOperName) : base(model, templateName)
         {
-            this.conditions = conditions.ToList();
-            this.floorPt = floorPt;
+          
             this.templateOperName = templateOperName;
         }
-        public override void Create( string name)
+        public override void Create(string name)
         {
-            base.CreateOperation( templateOperName, name, this.GroupModel);
+            base.CreateOperation(templateOperName, name, this.GroupModel);           
+        }
+        /// <summary>
+        /// 设置边界
+        /// </summary>
+        /// <param name="conditions"></param>
+        public void SetBoundary(params BoundaryModel[] conditions)
+        {
             NXOpen.CAM.FaceMillingBuilder builder1;
             builder1 = workPart.CAMSetup.CAMOperationCollection.CreateFaceMillingBuilder(this.Oper);
             builder1.FeedsBuilder.SetMachiningData();
             Boundary boundary = builder1.BlankBoundary;
             BoundarySetList list = boundary.BoundaryList;
             List<BoundaryMillingSet> boundarySet = new List<BoundaryMillingSet>();
-            foreach (BoundaryCondition bc in conditions)
+            foreach (BoundaryModel bc in conditions)
             {
                 boundarySet.Add(OperationUtils.CreateBoundaryMillingSet(bc.ToolSide, bc.Types,
               bc.BouudaryPt, boundary, bc.Edges.ToArray()));
             }
             list.Append(boundarySet.ToArray());
-
-            Vector3d normal = new NXOpen.Vector3d(0.0, 0.0, 1.0);
-            Plane plane = workPart.Planes.CreatePlane(this.floorPt, normal, NXOpen.SmartObject.UpdateOption.AfterModeling);
-            builder1.Geometry.FloorPlane = plane;
             try
             {
                 NXOpen.NXObject nXObject1;
                 nXObject1 = builder1.Commit();
             }
-            catch (Exception ex)
+            catch (NXException ex)
             {
-                LogMgr.WriteLog("PlanarMillingModel.Create 错误" + ex.Message);
+                LogMgr.WriteLog("PlanarMillingModel.SetBoundary 错误" + ex.Message);
             }
             finally
             {
                 builder1.Destroy();
             }
-
         }
-
-        public override OperationData GetOperationData(NXOpen.CAM.Operation oper)
+        public override OperationData GetOperationData()
         {
-            OperationData data = base.GetOperationData(oper);
+            OperationData data = base.GetOperationData();
             NXOpen.CAM.FaceMillingBuilder operBuilder;
-            operBuilder = workPart.CAMSetup.CAMOperationCollection.CreateFaceMillingBuilder(oper);
+            operBuilder = workPart.CAMSetup.CAMOperationCollection.CreateFaceMillingBuilder(this.Oper);
             data.FloorStock = operBuilder.CutParameters.FloorStock.Value;
             data.SideStock = operBuilder.CutParameters.PartStock.Value;
             if (operBuilder.BndStepover.DistanceBuilder.Intent == NXOpen.CAM.ParamValueIntent.ToolDep)

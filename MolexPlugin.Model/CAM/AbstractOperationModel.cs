@@ -27,9 +27,10 @@ namespace MolexPlugin.Model
 
         string templateName;
         protected Part workPart;
-        public AbstractOperationModel()
+        public AbstractOperationModel(NXOpen.CAM.Operation oper)
         {
             workPart = Session.GetSession().Parts.Work;
+            this.Oper = oper;
         }
         public AbstractOperationModel(NCGroupModel model, string templateName)
         {
@@ -53,28 +54,39 @@ namespace MolexPlugin.Model
             operation1 = workPart.CAMSetup.CAMOperationCollection.Create(groupModel.ProgramGroup, groupModel.MethodGroup, groupModel.ToolGroup,
                 groupModel.GeometryGroup, templateName, templateOperName, NXOpen.CAM.OperationCollection.UseDefaultName.True, name);
             this.Oper = operation1;
-           
+
         }
         /// <summary>
         /// 编辑刀路
         /// </summary>
-        public abstract void Create( string name);
+        public abstract void Create(string name);
         /// <summary>
         /// 获取刀路数据
         /// </summary>
-        public  virtual OperationData GetOperationData(NXOpen.CAM.Operation oper)
+        public virtual OperationData GetOperationData()
         {
             OperationData data = new OperationData();
-            data.Oper = oper;
-            data.OperName = oper.Name.ToString();
-            data.ToolNCGroup = oper.GetParent(NXOpen.CAM.CAMSetup.View.MachineTool);
-            data.OperGroup = oper.GetParent(NXOpen.CAM.CAMSetup.View.ProgramOrder).Name;
+            data.Oper = this.Oper;
+            data.OperName = this.Oper.Name.ToString();
+            data.ToolNCGroup = this.Oper.GetParent(NXOpen.CAM.CAMSetup.View.MachineTool);
+            data.OperGroup = this.Oper.GetParent(NXOpen.CAM.CAMSetup.View.ProgramOrder).Name;
             data.Tool = new ToolDataModel(data.ToolNCGroup);
-            data.OperTime = oper.GetToolpathTime() / 1440.0;
-            data.OprtLength = oper.GetToolpathLength();
-            string path = PostOperation(oper);
+            data.OperTime = this.Oper.GetToolpathTime() / 1440.0;
+            data.OprtLength = this.Oper.GetToolpathLength();
+            string path = PostOperation(this.Oper);
             GetPostData(data, path);
             return data;
+        }
+        /// <summary>
+        /// 获取父项
+        /// </summary>
+        public void GetNCGroupMolde()
+        {
+            this.GroupModel = new NCGroupModel();
+            this.GroupModel.ProgramGroup = this.Oper.GetParent(CAMSetup.View.ProgramOrder);
+            this.GroupModel.GeometryGroup = this.Oper.GetParent(CAMSetup.View.Geometry);
+            this.GroupModel.ToolGroup = this.Oper.GetParent(CAMSetup.View.MachineTool);
+            this.GroupModel.MethodGroup = this.Oper.GetParent(CAMSetup.View.MachineMethod);
         }
         /// <summary>
         /// 设置起始点
@@ -85,7 +97,7 @@ namespace MolexPlugin.Model
         /// 设置余量
         /// </summary>
         /// <param name="stock"></param>
-        public abstract void SetStock(double partStock,double floorStock);
+        public abstract void SetStock(double partStock, double floorStock);
         /// <summary>
         /// 后处理
         /// </summary>
@@ -130,7 +142,42 @@ namespace MolexPlugin.Model
             data.Zmin = text[11];
 
         }
-
+        /// <summary>
+        /// 移动程序到程序组下
+        /// </summary>
+        /// <param name="program"></param>
+        public void MoveOpreationToProgram(NCGroup program)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            workPart.CAMSetup.MoveObjects(CAMSetup.View.ProgramOrder, new CAMObject[1] { this.Oper }, program, CAMSetup.Paste.Inside);
+        }
+        /// <summary>
+        /// 移动程序到刀具下
+        /// </summary>
+        /// <param name="tool"></param>
+        public void MoveOperationToTool(NCGroup tool)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            workPart.CAMSetup.MoveObjects(CAMSetup.View.MachineTool, new CAMObject[1] { this.Oper }, tool, CAMSetup.Paste.Inside);
+        }
+        /// <summary>
+        /// 移动程序到加工体下
+        /// </summary>
+        /// <param name="geometry"></param>
+        public void MoveOperationToGeometry(NCGroup geometry)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            workPart.CAMSetup.MoveObjects(CAMSetup.View.Geometry, new CAMObject[1] { this.Oper }, geometry, CAMSetup.Paste.Inside);
+        }
+        /// <summary>
+        /// 移动程序到加工方法下
+        /// </summary>
+        /// <param name="method"></param>
+        public void MoveOperationToMethod(NCGroup method)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            workPart.CAMSetup.MoveObjects(CAMSetup.View.MachineMethod, new CAMObject[1] { this.Oper }, method, CAMSetup.Paste.Inside);
+        }
         public void Highlight(bool highlight)
         {
             Session theSession = Session.GetSession();

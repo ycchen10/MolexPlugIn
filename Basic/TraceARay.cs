@@ -61,7 +61,7 @@ namespace Basic
                 {
 
                     int statusPt = 0;
-                    theUFSession.Modl.AskPointContainment(ray.hit_point, face.Tag, out statusPt);
+                    theUFSession.Modl.AskPointContainment(ray.hit_point, face.Tag, out statusPt);                
                     if (statusPt != 3)
                     {
                         count++;

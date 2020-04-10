@@ -58,7 +58,12 @@ namespace MolexPlugin
         public void Show()
         {
             if (PartIsAsm())
+            {
+                bool anyPartsModified1;
+                NXOpen.PartSaveStatus partSaveStatus1;
+                Session.GetSession().Parts.SaveAll(out anyPartsModified1, out partSaveStatus1);
                 ShowForm();
+            }              
         }
     }
 }

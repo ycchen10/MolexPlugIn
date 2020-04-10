@@ -27,7 +27,7 @@ namespace MolexPlugin
         {
             this.assemble.Works.Sort();
             foreach (WorkModel work in assemble.Works)
-            {               
+            {
                 List<ElectrodeModel> eles = this.assemble.Electrodes.Where(a => a.WorkNumber == work.WorkNumber).ToList();
                 eles.Sort();
                 foreach (ElectrodeModel em in eles)
@@ -78,10 +78,10 @@ namespace MolexPlugin
             {
                 if (listView.Items[i].Checked)
                 {
-                    string workNum = listView.Items[i].SubItems[1].Text.ToString();
-                    dra = new ElectrodeDrawing(this.assemble, int.Parse(workNum));
+                    string eleName = listView.Items[i].SubItems[2].Text.ToString();
+                    dra = new ElectrodeDrawing(this.assemble, eleName);
                     dra.CreateDrawing();
-                    
+
                 }
             }
             PartUtils.SetPartDisplay(this.assemble.Asm.PartTag);

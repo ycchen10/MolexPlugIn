@@ -87,7 +87,7 @@ namespace MolexPlugin.DAL
             ExpressionUtils.SetAttrExp("PitchYNum", "PitchYNum", NXObject.AttributeType.Integer);
             ExpressionUtils.SetAttrExp("PreparationX", "Preparation", NXObject.AttributeType.Integer, 0);
             ExpressionUtils.SetAttrExp("PreparationY", "Preparation", NXObject.AttributeType.Integer, 1);
-
+            ExpressionUtils.SetAttrExp("DatumWidth", "DatumWidth", NXObject.AttributeType.Real);
             //ExpressionUtils.EditExp(ExpressionUtils.GetExpByName("xNCopies"), "PitchXNum");
             //ExpressionUtils.EditExp(ExpressionUtils.GetExpByName("yNCopies"), "PitchYNum");
             //ExpressionUtils.EditExp(ExpressionUtils.GetExpByName("xPitchDistance"), "PitchX");

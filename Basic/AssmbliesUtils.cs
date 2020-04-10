@@ -273,12 +273,12 @@ namespace Basic
         /// <param name="endPt"></param>
         /// <param name="mat"></param>
         /// <returns></returns>
-        public static NXOpen.Assemblies.Component MoveCompCopyPart(NXOpen.Assemblies.Component compObj, Point3d endPt, Matrix4 mat)
+        public static NXOpen.Assemblies.Component MoveCompCopyPart(NXOpen.Assemblies.Component compObj, Vector3d endPt, Matrix4 mat)
         {
             Part workPart = theSession.Parts.Work;
 
             Matrix4 invers = mat.GetInversMatrix();
-            invers.ApplyPos(ref endPt);
+            invers.ApplyVec(ref endPt);
 
             NXOpen.Positioning.ComponentPositioner componentPositioner1;
             componentPositioner1 = workPart.ComponentAssembly.Positioner; //组件定位

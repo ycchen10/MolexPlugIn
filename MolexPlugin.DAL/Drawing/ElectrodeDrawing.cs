@@ -16,9 +16,9 @@ namespace MolexPlugin.DAL
     {
         private ElectrodeDrawingInfo draInfo;
         private string eleTemplate;
-        public ElectrodeDrawing(AssembleModel assemble, int eleNumer)
+        public ElectrodeDrawing(AssembleModel assemble, string eleName)
         {
-            draInfo = new ElectrodeDrawingInfo(assemble, eleNumer);
+            draInfo = new ElectrodeDrawingInfo(assemble, eleName);
             GetTemplate();
         }
         public void CreateDrawing()
@@ -30,6 +30,12 @@ namespace MolexPlugin.DAL
         }
         private void CreatDwgPart()
         {
+
+            foreach (Part part in Session.GetSession().Parts)
+            {
+                if (part.Name.ToUpper().Equals(draInfo.DraModel.AssembleName.ToUpper()))
+                    part.Close(NXOpen.BasePart.CloseWholeTree.False, NXOpen.BasePart.CloseModified.UseResponses, null);
+            }
             if (File.Exists(draInfo.DraModel.WorkpiecePath))
             {
                 File.Delete(draInfo.DraModel.WorkpiecePath);
@@ -77,7 +83,7 @@ namespace MolexPlugin.DAL
             ProViewDimension(proView, projectedPt, scale, workPoint, elePoint);
 
             List<Face> face = this.draInfo.EleFaceSort();
-            EleTopDimension(topEleView, eleOrigin, eleScale, face[0]);
+            // EleTopDimension(topEleView, eleOrigin, eleScale, face[0]);
             EleProViewDimension(proEleView2, projectedElePt2, eleScale, face[10], elePoint[0]);
             SetViewVisible(new DraftingView[6] { topView, proView, topEleView, proEleView1, proEleView2, topEleView2 });
 
@@ -85,7 +91,7 @@ namespace MolexPlugin.DAL
             {
                 Basic.DrawingUtils.SetNote(new Point3d(130, 20, 0), 6, "标准铜料");
             }
-            else
+            else if (!this.draInfo.DraModel.EleInfo.IsPreparation)
             {
                 Basic.DrawingUtils.SetNote(new Point3d(130, 20, 0), 6, "非标准铜料");
             }
@@ -125,7 +131,7 @@ namespace MolexPlugin.DAL
                 if (y > 1)
                     return Math.Round(y, 1) - 0.4;
                 else
-                    return Math.Round(y, 1) ;
+                    return Math.Round(y, 1);
             }
             else
             {
@@ -227,9 +233,10 @@ namespace MolexPlugin.DAL
             Point3d pt2 = new Point3d(originPt.X, originPt.Y - (pre[1] * scale / 2 + 10), 0);
             this.draInfo.GetEdge(face, out xEdge, out yEdge);
 
-            Basic.DrawingUtils.DimensionVertical(topView, pt1, xEdge[0], xEdge[1], ref err);
-
-            Basic.DrawingUtils.DimensionHorizontal(topView, pt2, yEdge[0], yEdge[1], ref err);
+            NXOpen.Annotations.Dimension dim1 = Basic.DrawingUtils.DimensionVertical(topView, pt1, xEdge[0], xEdge[1], ref err);
+            Basic.DrawingUtils.SetDimensionPrecision(dim1, 0);
+            NXOpen.Annotations.Dimension dim2 = Basic.DrawingUtils.DimensionHorizontal(topView, pt2, yEdge[0], yEdge[1], ref err);
+            Basic.DrawingUtils.SetDimensionPrecision(dim2, 0);
         }
 
         private void EleProViewDimension(DraftingView topView, Point3d originPt, double scale, Face face, Point elePoint)
@@ -241,6 +248,7 @@ namespace MolexPlugin.DAL
             this.draInfo.GetEdge(face, out xEdge, out yEdge);
             Point3d dimPt = new Point3d(originPt.X, originPt.Y - (pre[1] * scale / 2 + 10), 0);
             NXOpen.Annotations.Dimension dim = Basic.DrawingUtils.DimensionVertical(topView, dimPt, xEdge[0], elePoint, ref err);
+            Basic.DrawingUtils.SetDimensionPrecision(dim, 1);
         }
 
         private void PointSort(ref List<Point> points, Matrix4 mat, string axisName)

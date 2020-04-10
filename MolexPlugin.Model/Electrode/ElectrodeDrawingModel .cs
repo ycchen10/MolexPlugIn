@@ -79,6 +79,12 @@ namespace MolexPlugin.Model
             string temp = EleInfo.Preparation[0].ToString() + "*" + EleInfo.Preparation[1].ToString() + "*" + EleInfo.Preparation[2].ToString();
             AttributeUtils.AttributeOperation("StrPre", temp, this.PartTag);
         }
+
+        public void SetPreAtrr(double[] pre)
+        {
+            string temp = pre[0].ToString() + "*" + pre[1].ToString() + "*" + pre[2].ToString();
+            AttributeUtils.AttributeOperation("StrPre", temp, this.PartTag);
+        }
         /// <summary>
         /// 获取Comp下设定点
         /// </summary>

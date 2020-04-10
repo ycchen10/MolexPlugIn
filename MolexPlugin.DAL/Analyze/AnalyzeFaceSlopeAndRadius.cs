@@ -35,7 +35,7 @@ namespace MolexPlugin.DAL
         /// <summary>
         /// 最小半径
         /// </summary>
-        public double MinRadius { get; private set; } = -999999;
+        public double MinRadius { get; private set; } = 999999;
         /// <summary>
         /// 射线焦点个数
         /// </summary>
@@ -101,16 +101,16 @@ namespace MolexPlugin.DAL
                 FaceUtils.GetSweptSlope(this.face, vec, out slope, out rad);
                 foreach (double temp in slope)
                 {
-                    if (this.MaxSlope > temp)
-                        this.MaxSlope = Math.Round( temp,3);
-                    if (this.MinSlope < temp)
+                    if (this.MaxSlope <= temp)
+                        this.MaxSlope = Math.Round(temp, 3);
+                    if (this.MinSlope >= temp)
                         this.MinSlope = Math.Round(temp, 3);
                 }
                 foreach (double temp in rad)
                 {
-                    if (this.MaxRadius > temp)
+                    if (this.MaxRadius <= temp)
                         this.MaxRadius = Math.Round(temp, 3);
-                    if (this.MinRadius < temp)
+                    if (this.MinRadius >= temp)
                         this.MinRadius = Math.Round(temp, 3);
                 }
             }
@@ -143,7 +143,7 @@ namespace MolexPlugin.DAL
             Point3d centerPt2 = UMathUtils.GetMiddle(other.FaceData.BoxMinCorner, other.FaceData.BoxMaxCorner);
             mat.ApplyPos(ref centerPt1);
             mat.ApplyPos(ref centerPt2);
-            return centerPt2.Z.CompareTo(centerPt1.Z);
+            return centerPt1.Z.CompareTo(centerPt2.Z);
         }
     }
 }

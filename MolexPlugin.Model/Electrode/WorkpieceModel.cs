@@ -25,6 +25,7 @@ namespace MolexPlugin.Model
             this.PartType = "Workpiece";
             this.filePath = filePath;
             this.GetAssembleName();
+            this.MoveLayer();
         }
         public override void CreatePart()
         {
@@ -65,6 +66,15 @@ namespace MolexPlugin.Model
             Matrix4 matr = new Matrix4();
             matr.Identity();
             return Basic.AssmbliesUtils.PartLoad(parentPart, this.WorkpiecePath, this.AssembleName, matr, new Point3d(0, 0, 0));
+        }
+        private void MoveLayer()
+        {
+            Body[] bodys = this.PartTag.Bodies.ToArray();
+            foreach (Body body in bodys)
+            {
+                if (body.Layer != 1)
+                    body.Layer = 1;
+            }
         }
     }
 }

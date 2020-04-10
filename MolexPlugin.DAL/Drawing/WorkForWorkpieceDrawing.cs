@@ -75,7 +75,7 @@ namespace MolexPlugin.DAL
             NXOpen.Drawings.DrawingSheet sheet = Basic.DrawingUtils.DrawingSheetByName(workpiecePart.Name);
             if (sheet != null)
             {
-                DeleteObject.Delete(sheet);            
+                DeleteObject.Delete(sheet);
             }
             sheet = Basic.DrawingUtils.DrawingSheet(workpieceDrawTemplate, 297, 420, workpiecePart.Name);
             this.CreateView(scale, this.GetFirstPoint(info, scale), info);
@@ -89,6 +89,7 @@ namespace MolexPlugin.DAL
         private void OtherWorkpieceDrawing(List<WorkpieceInfo> otherPart, WorkpieceInfo hostInfo, double scale)
         {
             int count = (int)Math.Floor(340 / (2 * hostInfo.DisPt.X * scale + 40));
+            int temp = 0;
             for (int i = 0; i < otherPart.Count; i++)
             {
                 List<WorkpieceInfo> infos = new List<WorkpieceInfo>();
@@ -96,17 +97,16 @@ namespace MolexPlugin.DAL
                 {
                     if (k + i < otherPart.Count)
                     {
-                        infos.Add(otherPart[k + i]);
-                        i = k + i;
+                        infos.Add(otherPart[k + i]);                     
                     }
-
                     else
                     {
-                        i = k + i;
                         break;
                     }
                 }
+                temp++;
                 OtherWorkpieceView(infos, scale);
+                i = temp * count;
             }
         }
         /// <summary>
@@ -217,7 +217,7 @@ namespace MolexPlugin.DAL
             NXOpen.Drawings.DrawingSheet sheet = Basic.DrawingUtils.DrawingSheetByName(infos[0].workpiece.Name);
             if (sheet != null)
             {
-                DeleteObject.Delete(sheet);              
+                DeleteObject.Delete(sheet);
             }
             int k = 0;
             if (infos.Count == 1)

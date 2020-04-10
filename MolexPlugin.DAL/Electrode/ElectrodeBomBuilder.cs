@@ -21,7 +21,7 @@ namespace MolexPlugin.DAL
             this.info = info;
             foreach (ElectrodeModel model in assemble.Electrodes)
             {
-                if (model.EleInfo.EleNumber == info.EleNumber)
+                if (model.EleInfo.EleName == info.EleName)
                     Model.Add(model);
             }
             foreach (WorkModel wk in assemble.Works)
@@ -29,6 +29,17 @@ namespace MolexPlugin.DAL
                 if (wk.WorkNumber == Model[0].WorkNumber)
                     work = wk;
             }
+            EletrodePreparation pre;
+            if (info.Material.Equals("紫铜"))
+            {
+                pre = new EletrodePreparation("CuLength", "CuWidth");
+            }
+            else
+            {
+                pre = new EletrodePreparation("WuLength", "WuWidth");
+            }
+            int[] temp = new int[2] { info.Preparation[0], info.Preparation[1] };
+            info.IsPreparation = pre.IsPreCriterion(temp);
         }
 
         /// <summary>
@@ -188,18 +199,40 @@ namespace MolexPlugin.DAL
         public void AlterDrawing()
         {
             ElectrodeModel ele = null;
+
             foreach (ElectrodeModel em in Model)
             {
                 if (em.EleInfo.Positioning == "")
                     ele = em;
             }
+            string dwgName = ele.EleInfo.EleName + "_dwg";
             string path = ele.WorkpieceDirectoryPath + ele.EleInfo.EleName + "_dwg.prt";
-            if (File.Exists(path))
+            Part dwg = null;
+            foreach (Part part in Session.GetSession().Parts)
             {
-                Part dwg = PartUtils.OpenPartFile(path);
-                ele.EleInfo.SetAttribute(dwg);
+                if (part.Name.ToUpper().Equals(dwgName.ToUpper()))
+                {
+                    dwg = part;
+                    break;
+                }
+
+            }
+            if (dwg == null)
+            {
+                if (File.Exists(path))
+                {
+                    dwg = PartUtils.OpenPartFile(path);
+                }
+            }
+            if (dwg != null)
+            {
+                info.SetAttribute(dwg);
+                string temp = info.Preparation[0].ToString() + "*" + info.Preparation[1].ToString() + "*" + info.Preparation[2].ToString();
+                AttributeUtils.AttributeOperation("StrPre", temp, dwg);
+                PartUtils.SetPartDisplay(dwg);
                 foreach (NXOpen.Drawings.DrawingSheet sh in dwg.DrawingSheets)
                 {
+                   
                     Basic.DrawingUtils.UpdateViews(sh);
                 }
             }

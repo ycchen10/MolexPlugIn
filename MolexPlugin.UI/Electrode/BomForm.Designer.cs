@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.button_Cancel = new System.Windows.Forms.Button();
             this.button_OK = new System.Windows.Forms.Button();
             this.button_OutExcel = new System.Windows.Forms.Button();
@@ -60,6 +60,7 @@
             this.PreparationX = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PreparationY = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PreparationZ = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DatumWidth = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BorrowEle = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
@@ -152,14 +153,14 @@
             // 
             this.dataGridView.AllowUserToAddRows = false;
             this.dataGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.EleName,
@@ -183,6 +184,7 @@
             this.PreparationX,
             this.PreparationY,
             this.PreparationZ,
+            this.DatumWidth,
             this.BorrowEle});
             this.dataGridView.Location = new System.Drawing.Point(3, 8);
             this.dataGridView.Name = "dataGridView";
@@ -347,6 +349,12 @@
             this.PreparationZ.Name = "PreparationZ";
             this.PreparationZ.Width = 70;
             // 
+            // DatumWidth
+            // 
+            this.DatumWidth.DataPropertyName = "DatumWidth";
+            this.DatumWidth.HeaderText = "宽度";
+            this.DatumWidth.Name = "DatumWidth";
+            // 
             // BorrowEle
             // 
             this.BorrowEle.DataPropertyName = "BorrowName";
@@ -413,6 +421,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn PreparationX;
         private System.Windows.Forms.DataGridViewTextBoxColumn PreparationY;
         private System.Windows.Forms.DataGridViewTextBoxColumn PreparationZ;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DatumWidth;
         private System.Windows.Forms.DataGridViewTextBoxColumn BorrowEle;
     }
 }
