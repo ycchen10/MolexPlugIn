@@ -13,7 +13,7 @@ namespace MolexPlugin.DAL
     {
         private List<NCGroup> program = new List<NCGroup>();
         private List<NCGroup> tool = new List<NCGroup>();
-        private NCGroup geometry = null;
+        private List<NCGroup> geometry = new List<NCGroup>();
         private List<NCGroup> method = new List<NCGroup>();
         private Session theSession;
         /// <summary>
@@ -64,15 +64,25 @@ namespace MolexPlugin.DAL
         /// <summary>
         /// 加工体
         /// </summary>
-        public NCGroup WorkPieceGroup
+        public List<NCGroup> Geometry
         {
             get
             {
-                if (geometry != null)
+                if (geometry.Count == 0)
                 {
                     Part workPart = theSession.Parts.Work;
-                    // NCGroup geo = workPart.CAMSetup.GetRoot(CAMSetup.View.Geometry);
-                    geometry = workPart.CAMSetup.FindObject("WORKPIECE") as NCGroup;
+                    NCGroup ge = workPart.CAMSetup.GetRoot(CAMSetup.View.Geometry);
+                    foreach (NCGroup np in ge.GetMembers())
+                    {
+                        geometry.Add(np as NCGroup);
+                        if (np.GetMembers().Length > 0)
+                        {
+                            foreach (NCGroup np2 in np.GetMembers())
+                            {
+                                geometry.Add(np2 as NCGroup);
+                            }
+                        }
+                    }
                 }
                 return geometry;
             }
@@ -92,6 +102,7 @@ namespace MolexPlugin.DAL
                     foreach (NCGroup np in methodGroup.GetMembers())
                     {
                         method.Add(np as NCGroup);
+                       
                     }
                 }
                 return method;
@@ -125,6 +136,11 @@ namespace MolexPlugin.DAL
         public NCGroup FindMethod(string method)
         {
             return MethodGroup.Find(a => a.Name.Equals(method, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        public NCGroup FindGeometry(string method)
+        {
+            return Geometry.Find(a => a.Name.Equals(method, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 

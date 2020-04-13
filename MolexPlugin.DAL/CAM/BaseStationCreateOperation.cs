@@ -16,19 +16,29 @@ namespace MolexPlugin.DAL
     public class BaseStationCreateOperation : AbstractCreateOperation
     {
         private Point3d floorPt;
-        private List<BoundaryModel> conditions;
-        public BaseStationCreateOperation(int site, string tool, Point3d floorPt, params BoundaryModel[] conditions) : base(site, tool)
+        private List<BoundaryModel> conditions = new List<BoundaryModel>();
+        public BaseStationCreateOperation(int site, string tool) : base(site, tool)
         {
-            this.floorPt = floorPt;
-            this.conditions = conditions.ToList();
+
         }
         public override void CreateOperation(ElectrodeCAM eleCam, double inter)
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfPlanarMilling(this.NameModel, eleCam);
-            (this.Oper as PlanarMillingModel).SetBoundary(floorPt, conditions.ToArray());
+            this.Oper.Create(this.NameModel.OperName);
+            if (conditions.Count > 0)
+                (this.Oper as PlanarMillingModel).SetBoundary(floorPt, conditions.ToArray());
             this.Oper.SetStock(-inter, 0.05);
         }
-
+        /// <summary>
+        /// 设置边界
+        /// </summary>
+        /// <param name="floorPt"></param>
+        /// <param name="conditions"></param>
+        public void SetBoundary(Point3d floorPt, params BoundaryModel[] conditions)
+        {
+            this.floorPt = floorPt;
+            this.conditions = conditions.ToList();
+        }
         public override void CreateOperationName()
         {
             string program = "O000" + this.Site.ToString();

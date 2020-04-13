@@ -21,8 +21,8 @@ namespace MolexPlugin.DAL
             NCGroupModel group = new NCGroupModel()
             {
 
-                GeometryGroup = cam.WorkPieceGroup,
-                MethodGroup = cam.MethodGroup.Find(a => a.Name.ToUpper().Equals(model.ProgramName.ToUpper())),
+                GeometryGroup = cam.FindGeometry("WORKPIECE"),
+                MethodGroup = cam.MethodGroup.Find(a => a.Name.ToUpper().Equals("CU")),
                 ToolGroup = cam.FindTool(model.ToolName)
             };
             NCGroup temp = cam.FindProgram(model.ProgramName);

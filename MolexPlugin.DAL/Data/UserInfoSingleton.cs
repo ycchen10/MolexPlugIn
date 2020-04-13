@@ -23,7 +23,7 @@ namespace MolexPlugin.DAL
         private UserInfoSingleton()
         {
             string userAccount = Environment.UserName;//获取电脑用户名
-                                                      //  user = new UserInfoDll().GetEntity(userAccount);
+            Basic.LogMgr.WriteLog(userAccount);                                          //  user = new UserInfoDll().GetEntity(userAccount);
             List<UserInfo> users = Deserialize();
             user = users.Find(a => a.UserAccount == userAccount);
         }

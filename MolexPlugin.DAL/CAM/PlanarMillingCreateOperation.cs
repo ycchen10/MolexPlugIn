@@ -24,8 +24,11 @@ namespace MolexPlugin.DAL
         public override void CreateOperation(ElectrodeCAM eleCam, double inter)
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfPlanarMilling(this.NameModel, eleCam);
+            this.Oper.Create(this.NameModel.OperName);
             if (conditions.Count != 0)
+            {
                 (this.Oper as PlanarMillingModel).SetBoundary(floorPt, conditions.ToArray());
+            }              
             this.Oper.SetStock(-inter, 0.05);
         }
         /// <summary>

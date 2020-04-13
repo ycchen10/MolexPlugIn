@@ -93,7 +93,7 @@ namespace MolexPlugin
             try
             {
                 string type = AttributeUtils.GetAttrForString(workPart, "PartType");
-                if (!type.Equals("ASM"))
+                if (!type.Equals("ASM",StringComparison.CurrentCultureIgnoreCase))
                 {
                     theUI.NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, "请切换到ASM档");
                     return 0;

@@ -38,9 +38,9 @@ namespace MolexPlugin.DAL
             {
                 minPHY = ele.EleInfo.PitchY - 2 * ele.EleInfo.EleHeadDis[1];
             }
-            if (min >= minPHX)
-                min = minPHX;
-            if (min >= minPHY)
+            if (min >= minPHX && minPHX > 0)
+                min = minPHX; 
+            if (min >= minPHY && minPHY > 0)
                 min = minPHY;
             return min;
         }

@@ -15,27 +15,29 @@ namespace MolexPlugin.DAL
     /// </summary>
     public abstract class AbstractElectrodeOperation
     {
-        public List<OperationNameModel> NameModel { get; protected set; }
+
+        public List<AbstractCreateOperation> Oper { get; protected set; } = new List<AbstractCreateOperation>();
         public ElectrodeCAM Cam { get; private set; }
 
-        protected AnalyzeElectrode analyze;
-        private ElectrodeModel ele;
-        public AbstractElectrodeOperation(ElectrodeModel ele)
+        protected ElectrodeCAMInfo camInfo;
+        protected ElectrodeModel ele;
+
+        protected ComputeTool tool;
+        public AbstractElectrodeOperation(ElectrodeModel ele, bool isInter)
         {
             this.ele = ele;
             Part workPart = Session.GetSession().Parts.Work;
-            analyze = new AnalyzeElectrode(ele);
-            if (workPart.Tag != ele.PartTag.Tag)
-                PartUtils.SetPartDisplay(ele.PartTag);
+            camInfo = new ElectrodeCAMInfo(ele, isInter);
+            tool = new ComputeTool(camInfo.MinDim, camInfo.MinDia);
             Cam = new ElectrodeCAM();
         }
         /// <summary>
         /// 添加刀路名
         /// </summary>
         /// <param name="model"></param>
-        public void AddOperationNameModel(OperationNameModel model, int count)
+        public void AddOperationNameModel(AbstractCreateOperation model, int count)
         {
-            NameModel.IndexOf(model, count);
+            Oper.IndexOf(model, count);
         }
         /// <summary>
         /// 设置加工体
@@ -54,6 +56,7 @@ namespace MolexPlugin.DAL
             theSession.ApplicationSwitchImmediate("UG_APP_MANUFACTURING");
             bool result1;
             result1 = theSession.IsCamSessionInitialized();
+            theSession.CAMSession.SpecifyConfiguration("${UGII_CAM_CONFIG_DIR}Molex_CAM");
             NXOpen.CAM.CAMSetup cAMSetup1;
             cAMSetup1 = workPart.CreateCamSetup("electrode");
         }
@@ -64,7 +67,23 @@ namespace MolexPlugin.DAL
         /// <summary>
         /// 创建加工操作
         /// </summary>
-        public abstract void CreateOperation();
+        public abstract void CreateOperation(bool isInter);
+
+        protected double GetInter(bool isInter)
+        {
+            if (isInter)
+                return 0;
+            else
+            {
+                if (ele.EleInfo.FineInter != 0)
+                    return ele.EleInfo.FineInter;
+                if (ele.EleInfo.DuringInter != 0)
+                    return ele.EleInfo.DuringInter;
+                if (ele.EleInfo.CrudeInter != 0)
+                    return ele.EleInfo.CrudeInter;
+            }
+            return 0;
+        }
 
     }
 }

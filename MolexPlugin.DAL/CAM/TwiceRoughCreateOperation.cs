@@ -23,6 +23,7 @@ namespace MolexPlugin.DAL
         public override void CreateOperation(ElectrodeCAM eleCam, double inter)
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfCavityMilling(this.NameModel, eleCam);
+            this.Oper.Create(this.NameModel.OperName);
             (this.Oper as CavityMillingModel).SetReferenceTool(eleCam.FindTool(this.ReferenceTool) as Tool);
             if ((0.05 - inter) > 0)
             {

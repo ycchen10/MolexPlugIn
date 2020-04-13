@@ -122,7 +122,7 @@ namespace MolexPlugin
             //{
             //    LogMgr.WriteLog(ar.face.Tag.ToString());
             //}
-           // UserInfoSingleton.Serialize();
+          // UserInfoSingleton.Serialize();
             //ControlValue.Serialize();
         }
     }

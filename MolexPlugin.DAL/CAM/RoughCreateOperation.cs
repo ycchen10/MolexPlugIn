@@ -22,6 +22,7 @@ namespace MolexPlugin.DAL
         public override void CreateOperation(ElectrodeCAM eleCam, double inter)
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfCavityMilling(this.NameModel, eleCam);
+            this.Oper.Create(this.NameModel.OperName);
             if ((0.05 - inter) > 0)
             {
                 if (0.03 - inter > 0)

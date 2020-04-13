@@ -24,6 +24,7 @@ namespace MolexPlugin.DAL
         public override void CreateOperation(ElectrodeCAM eleCam, double inter)
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfZLevelMilling(this.NameModel, eleCam);
+            this.Oper.Create(this.NameModel.OperName);
             if (faces.Count > 0)
                 (this.Oper as ZLevelMillingModel).SetGeometry(faces.ToArray());
             if (level != 0)

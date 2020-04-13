@@ -26,18 +26,6 @@ namespace MolexPlugin.DAL
         /// </summary>
         public FaceData BaseFace { get; private set; }
         /// <summary>
-        /// 平坦面
-        /// </summary>
-        public List<Face> FlatFaces { get; private set; } = new List<Face>();
-        /// <summary>
-        /// 陡峭面
-        /// </summary>
-        public List<Face> SteepFaces { get; private set; } = new List<Face>();
-        /// <summary>
-        /// 平面
-        /// </summary>
-        public List<Face> PlaneFace { get; private set; } = new List<Face>();
-        /// <summary>
         /// 是否以扣间隙
         /// </summary>
         public bool IsInter { get; private set; }
@@ -45,10 +33,14 @@ namespace MolexPlugin.DAL
         /// 最小距离
         /// </summary>
         public double MinDim { get; private set; }
-
+        /// <summary>
+        /// 最小半径
+        /// </summary>
         public double MinDia { get; private set; }
 
         public ElectrodeInfo Info { get; private set; }
+
+        private AnalyzeBuilder builder;
 
         public ElectrodeCAMInfo(ElectrodeModel model, bool isInter)
         {
@@ -56,10 +48,10 @@ namespace MolexPlugin.DAL
             this.IsInter = isInter;
             AnalyzeElectrode analyze = new AnalyzeElectrode(model);
             this.MinDim = analyze.GetMinDis();
-            AnalyzeBuilder builder = analyze.AnalyzeBody();
+            builder = analyze.AnalyzeBody();
             this.BaseFace = builder.AnalyzeFaces[1].FaceData;
             this.BaseSubfaceFace = builder.AnalyzeFaces[0].FaceData;
-            this.MinDim = 2 * builder.MinRadius;
+            this.MinDia = 2 * builder.MinRadius;
             this.BasePlanarPlanarBoundary = new PlanarBoundary(this.BaseFace.Face);
 
         }
@@ -67,10 +59,10 @@ namespace MolexPlugin.DAL
         /// 获取平坦面（0到40度）
         /// </summary>
         /// <param name="analyzeFace"></param>
-        public List<Face> GetFlatFaces(List<AnalyzeFaceSlopeAndRadius> analyzeFace)
+        public List<Face> GetFlatFaces()
         {
             List<Face> flat = new List<Face>();
-            foreach (AnalyzeFaceSlopeAndRadius ar in analyzeFace)
+            foreach (AnalyzeFaceSlopeAndRadius ar in builder.AnalyzeFaces)
             {
                 if (ar.MinSlope > 0 && ar.MaxSlope <= Math.Round(2 * Math.PI / 9, 3))
                     flat.Add(ar.face);
@@ -81,10 +73,10 @@ namespace MolexPlugin.DAL
         /// 获取陡峭面
         /// </summary>
         /// <param name="analyzeFace"></param>
-        public List<Face> GetSteepFaces(List<AnalyzeFaceSlopeAndRadius> analyzeFace)
+        public List<Face> GetSteepFaces()
         {
             List<Face> steep = new List<Face>();
-            foreach (AnalyzeFaceSlopeAndRadius ar in analyzeFace)
+            foreach (AnalyzeFaceSlopeAndRadius ar in builder.AnalyzeFaces)
             {
                 if (ar.MinSlope < Math.Round(Math.PI / 2, 3) && ar.MaxSlope > Math.Round(2 * Math.PI / 9, 3))
                     steep.Add(ar.face);
@@ -96,11 +88,11 @@ namespace MolexPlugin.DAL
         /// </summary>
         /// <param name="analyzeFace"></param>
         /// <returns></returns>
-        public List<PlanarBoundary> GetPlaneFaces(List<AnalyzeFaceSlopeAndRadius> analyzeFace)
+        public List<PlanarBoundary> GetPlaneFaces()
         {
             List<Face> plane = new List<Face>();
             List<PlanarBoundary> boundary = new List<PlanarBoundary>();
-            foreach (AnalyzeFaceSlopeAndRadius ar in analyzeFace)
+            foreach (AnalyzeFaceSlopeAndRadius ar in builder.AnalyzeFaces)
             {
                 if (UMathUtils.IsEqual(ar.MaxSlope, 0) && UMathUtils.IsEqual(ar.MinSlope, 0))
                     plane.Add(ar.face);
@@ -118,10 +110,10 @@ namespace MolexPlugin.DAL
         /// </summary>
         /// <param name="analyzeFace"></param>
         /// <returns></returns>
-        public List<Face> GetAllFaces(List<AnalyzeFaceSlopeAndRadius> analyzeFace)
+        public List<Face> GetAllFaces()
         {
             List<Face> faces = new List<Face>();
-            foreach (AnalyzeFaceSlopeAndRadius ar in analyzeFace)
+            foreach (AnalyzeFaceSlopeAndRadius ar in builder.AnalyzeFaces)
             {
                 faces.Add(ar.face);
             }

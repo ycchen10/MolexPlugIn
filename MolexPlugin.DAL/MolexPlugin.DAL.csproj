@@ -84,17 +84,18 @@
     <Compile Include="CAM\TwiceRoughCreateOperation.cs" />
     <Compile Include="CAM\RoughCreateOperation.cs" />
     <Compile Include="CAM\AbstractCreateOperation.cs" />
-    <Compile Include="AbstractElectrodeOperation.cs" />
-    <Compile Include="AnalyzeElectrode.cs" />
+    <Compile Include="CAM\AbstractElectrodeOperation.cs" />
+    <Compile Include="CAM\AnalyzeElectrode.cs" />
+    <Compile Include="CAM\ComputeTool.cs" />
     <Compile Include="Drawing\DrawingOperation.cs" />
     <Compile Include="Drawing\WorkForWorkpieceDrawing.cs" />
     <Compile Include="Drawing\WorkpieceDrawing.cs" />
     <Compile Include="Drawing\ElectrodeDrawing.cs" />
     <Compile Include="Drawing\ElectrodeDrawingInfo.cs" />
-    <Compile Include="ElectrodeCAM.cs" />
-    <Compile Include="ElectrodeCAMInfo.cs" />
-    <Compile Include="ElectrodeOperationTemplate.cs" />
-    <Compile Include="ElectrodeCAMNameTemplate.cs" />
+    <Compile Include="CAM\ElectrodeCAM.cs" />
+    <Compile Include="CAM\ElectrodeCAMInfo.cs" />
+    <Compile Include="CAM\ElectrodeOperationTemplate.cs" />
+    <Compile Include="CAM\ElectrodeCAMNameTemplate.cs" />
     <Compile Include="Electrode\ElectrodeBomBuilder.cs" />
     <Compile Include="Electrode\ElectrodeHeadAnalye.cs" />
     <Compile Include="Electrode\AbstractElectrodeSetValue.cs" />
@@ -125,7 +126,7 @@
     <Compile Include="Move\MoveObjectFactory.cs" />
     <Compile Include="Move\MoveObjectBasic.cs" />
     <Compile Include="BOX\OutPutBom.cs" />
-    <Compile Include="PlanarBoundary.cs" />
+    <Compile Include="CAM\PlanarBoundary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BOX\SuperBoxBlock.cs" />
     <Compile Include="BOX\AbstractSuperBox.cs" />
@@ -137,7 +138,7 @@
     <Compile Include="Electrode\XPositiveElectrodeSetValue .cs" />
     <Compile Include="Electrode\ZPositiveElectrodeSetValue.cs" />
     <Compile Include="Drawing\WorkpieceInfo.cs" />
-    <Compile Include="SimplenessVerticalEleOperation.cs" />
+    <Compile Include="CAM\SimplenessVerticalEleOperation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Basic\Basic.csproj">

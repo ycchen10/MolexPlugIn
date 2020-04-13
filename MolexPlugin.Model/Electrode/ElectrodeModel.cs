@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using NXOpen;
+using NXOpen.BlockStyler;
 using Basic;
 using NXOpen.Assemblies;
 
@@ -29,6 +30,8 @@ namespace MolexPlugin.Model
         /// 电极中心点在work位置点(绝对点)
         /// </summary>
         public Point3d CenterPt { get; set; }
+
+     
 
         public ElectrodeModel()
         {

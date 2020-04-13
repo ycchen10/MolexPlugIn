@@ -23,6 +23,7 @@ namespace MolexPlugin.DAL
         public override void CreateOperation(ElectrodeCAM eleCam, double inter)
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfFaceMilling(this.NameModel, eleCam);
+            this.Oper.Create(this.NameModel.OperName);
             if (conditions.Count != 0)
                 (this.Oper as FaceMillingModel).SetBoundary(conditions.ToArray());
             this.Oper.SetStock(0.05, -inter);

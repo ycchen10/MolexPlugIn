@@ -23,6 +23,7 @@ namespace MolexPlugin.DAL
         public override void CreateOperation(ElectrodeCAM eleCam, double inter)
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfSurfaceContour(this.NameModel, eleCam);
+            this.Oper.Create(this.NameModel.OperName);
             if (faces.Count > 0)
                 (this.Oper as SurfaceContourModel).SetGeometry(faces.ToArray());
            

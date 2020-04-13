@@ -88,7 +88,7 @@ namespace MolexPlugin.DAL
                 return (IsCriterion(length.ToArray(), pre[0]) && (IsCriterion(width.ToArray(), pre[1])));
             }
             else
-                return (IsCriterion(length.ToArray(), pre[1]) && (IsCriterion(width.ToArray(), pre[2])));
+                return (IsCriterion(length.ToArray(), pre[1]) && (IsCriterion(width.ToArray(), pre[0])));
         }
 
         /// <summary>

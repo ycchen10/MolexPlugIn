@@ -37,6 +37,10 @@
 using System;
 using NXOpen;
 using NXOpen.BlockStyler;
+using Basic;
+using MolexPlugin.Model;
+using MolexPlugin.DAL;
+
 namespace MolexPlugin
 {
 
@@ -76,6 +80,9 @@ namespace MolexPlugin
         private NXOpen.BlockStyler.Button buttSele;// Block type: Button
         private NXOpen.BlockStyler.Group group5;// Block type: Group
         private NXOpen.BlockStyler.Toggle togCompute;// Block type: Toggle
+        private AssembleModel assemble;
+        AbstractElectrodeOperation eleOper;
+        private IDisplayObject m_highlight = null;
 
         //------------------------------------------------------------------------------
         //Constructor for NX Styler class
@@ -100,7 +107,7 @@ namespace MolexPlugin
                 throw ex;
             }
         }
-          
+
         //------------------------------------------------------------------------------
         //This method shows the dialog on the screen
         //------------------------------------------------------------------------------
@@ -108,6 +115,16 @@ namespace MolexPlugin
         {
             try
             {
+                Part workPart = theSession.Parts.Work;
+                string type = AttributeUtils.GetAttrForString(workPart, "PartType");
+                if (!type.Equals("ASM", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    theUI.NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, "请切换到ASM档");
+                    return 0;
+                }
+                MoldInfoModel info = new MoldInfoModel(workPart);
+                string name = info.MoldNumber + "-" + info.WorkpieceNumber;
+                assemble = AssembleSingleton.Instance().GetAssemble(name);
                 theDialog.Show();
             }
             catch (Exception ex)
@@ -167,6 +184,11 @@ namespace MolexPlugin
                 buttSele = (NXOpen.BlockStyler.Button)theDialog.TopBlock.FindBlock("buttSele");
                 group5 = (NXOpen.BlockStyler.Group)theDialog.TopBlock.FindBlock("group5");
                 togCompute = (NXOpen.BlockStyler.Toggle)theDialog.TopBlock.FindBlock("togCompute");
+
+
+
+
+                #region 回调函数
                 //------------------------------------------------------------------------------
                 //Registration of Treelist specific callbacks
                 //------------------------------------------------------------------------------
@@ -180,7 +202,7 @@ namespace MolexPlugin
 
                 //tree_eleInfo.SetOnPreSelectHandler(new NXOpen.BlockStyler.Tree.OnPreSelectCallback(OnPreSelectcallback));
 
-                //tree_eleInfo.SetOnSelectHandler(new NXOpen.BlockStyler.Tree.OnSelectCallback(OnSelectcallback));
+                tree_eleInfo.SetOnSelectHandler(new NXOpen.BlockStyler.Tree.OnSelectCallback(OnSelectcallback));
 
                 //tree_eleInfo.SetOnStateChangeHandler(new NXOpen.BlockStyler.Tree.OnStateChangeCallback(OnStateChangecallback));
 
@@ -198,9 +220,9 @@ namespace MolexPlugin
 
                 //tree_eleInfo.SetAskEditControlHandler(new NXOpen.BlockStyler.Tree.AskEditControlCallback(AskEditControlCallback));
 
-                //tree_eleInfo.SetOnMenuHandler(new NXOpen.BlockStyler.Tree.OnMenuCallback(OnMenuCallback));;
+                tree_eleInfo.SetOnMenuHandler(new NXOpen.BlockStyler.Tree.OnMenuCallback(OnMenuCallback)); ;
 
-                //tree_eleInfo.SetOnMenuSelectionHandler(new NXOpen.BlockStyler.Tree.OnMenuSelectionCallback(OnMenuSelectionCallback));;
+                tree_eleInfo.SetOnMenuSelectionHandler(new NXOpen.BlockStyler.Tree.OnMenuSelectionCallback(OnMenuSelectionCallback)); ;
 
                 //tree_eleInfo.SetIsDropAllowedHandler(new NXOpen.BlockStyler.Tree.IsDropAllowedCallback(IsDropAllowedCallback));;
 
@@ -263,6 +285,11 @@ namespace MolexPlugin
                 //list_box_template.SetDeleteHandler(new NXOpen.BlockStyler.ListBox.DeleteCallback(DeleteCallback));
 
                 //------------------------------------------------------------------------------
+                #endregion
+
+                this.double_offestD.Show = false;
+                this.double_offestF.Show = false;
+                this.double_offsetR.Show = false;
             }
             catch (Exception ex)
             {
@@ -281,6 +308,11 @@ namespace MolexPlugin
             try
             {
                 //---- Enter your callback code here -----
+                SetEleTreeTitle();
+                SetOperTreeTitle();
+                AddEleToTree();
+                AddOperTree();
+
             }
             catch (Exception ex)
             {
@@ -298,6 +330,7 @@ namespace MolexPlugin
             try
             {
                 //---- Enter your callback code here -----
+                this.eleOper.CreateOperation(false);
             }
             catch (Exception ex)
             {
@@ -430,9 +463,23 @@ namespace MolexPlugin
         //{
         //}
 
-        //public void OnSelectcallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID, bool Selected)
-        //{
-        //}
+        public void OnSelectcallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID, bool Selected)
+        {
+            if (tree.Equals(tree_eleInfo))
+            {
+                if (m_highlight != null)
+                    m_highlight.Highlight(false);
+                foreach (ElectrodeModel ele in assemble.Electrodes)
+                {
+                    if (ele.Node.Equals(node))
+                    {
+                        m_highlight = ele;
+                        m_highlight.Highlight(true);
+                    }
+                }
+            }
+
+        }
 
         //public void OnStateChangecallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int State)
         //{
@@ -466,13 +513,17 @@ namespace MolexPlugin
         //{
         //}
 
-        //public void OnMenuCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID)
-        //{
-        //}
+        public void OnMenuCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID)
+        {
+            TreeListMenu menu = this.tree_eleInfo.CreateMenu();
+            menu.AddMenuItem(1, "删除", "delete_sc");
+            this.tree_eleInfo.SetMenu(menu);
+        }
 
-        //public void OnMenuSelectionCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int menuItemID)
-        //{
-        //}
+        public void OnMenuSelectionCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int menuItemID)
+        {
+            this.tree_eleInfo.DeleteNode(node);
+        }
 
         //public Node.DropType IsDropAllowedCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID, NXOpen.BlockStyler.Node targetNode, int targetColumnID)
         //{
@@ -525,6 +576,58 @@ namespace MolexPlugin
             }
             return plist;
         }
+        /// <summary>
+        /// 设置电极树列
+        /// </summary>
+        private void SetEleTreeTitle()
+        {
+            this.tree_eleInfo.InsertColumn(0, "电极名", 153);
+            this.tree_eleInfo.InsertColumn(1, "电极类型", 80);
+            this.tree_eleInfo.InsertColumn(2, "粗间隙", 80);
+            this.tree_eleInfo.InsertColumn(3, "中间隙", 80);
+            this.tree_eleInfo.InsertColumn(4, "精间隙", 80);
+        }
+        /// <summary>
+        /// 设置刀路列
+        /// </summary>
+        private void SetOperTreeTitle()
+        {
+            this.tree_operInfo.InsertColumn(0, "程序名", 160);
+            this.tree_operInfo.InsertColumn(1, "刀具名", 100);
+            this.tree_operInfo.InsertColumn(2, "刀路名", 100);
+        }
+        /// <summary>
+        /// 设置电极行
+        /// </summary>
+        private void AddEleToTree()
+        {
+            assemble.Electrodes.Sort();
+            foreach (ElectrodeModel ele in assemble.Electrodes)
+            {
 
+                Node pNode = this.tree_eleInfo.CreateNode(ele.EleInfo.EleName);
+                this.tree_eleInfo.InsertNode(pNode, null, null, Tree.NodeInsertOption.Last);
+                pNode.SetColumnDisplayText(0, ele.EleInfo.EleName);
+                pNode.SetColumnDisplayText(1, ele.EleInfo.EleType);
+                pNode.SetColumnDisplayText(2, ele.EleInfo.CrudeInter.ToString());
+                pNode.SetColumnDisplayText(3, ele.EleInfo.DuringInter.ToString());
+                pNode.SetColumnDisplayText(4, ele.EleInfo.FineInter.ToString());
+                ele.Node = pNode;
+            }
+        }
+
+        public void AddOperTree()
+        {
+            eleOper = new SimplenessVerticalEleOperation(assemble.Electrodes[0], false);
+            eleOper.CreateOperationNameModel();
+            foreach (AbstractCreateOperation ao in eleOper.Oper)
+            {
+                Node pNode = this.tree_operInfo.CreateNode(ao.NameModel.OperName);
+                this.tree_operInfo.InsertNode(pNode, null, null, Tree.NodeInsertOption.Last);
+                pNode.SetColumnDisplayText(0, ao.NameModel.ProgramName);
+                pNode.SetColumnDisplayText(1, ao.NameModel.ToolName);
+                pNode.SetColumnDisplayText(2, ao.NameModel.OperName);
+            }
+        }
     }
 }

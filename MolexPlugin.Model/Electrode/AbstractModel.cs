@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using NXOpen;
+using NXOpen.BlockStyler;
 using Basic;
 
 
 namespace MolexPlugin.Model
 {
-    public abstract class AbstractModel : IEquatable<AbstractModel>
+    public abstract class AbstractModel : IEquatable<AbstractModel>, IDisplayObject
     {
         /// <summary>
         /// 模具信息
@@ -36,6 +37,8 @@ namespace MolexPlugin.Model
         /// 文件夹位置
         /// </summary>
         public string WorkpieceDirectoryPath { get; protected set; }
+
+        public Node Node { get; set; }
 
         public bool Equals(AbstractModel other)
         {
@@ -94,5 +97,20 @@ namespace MolexPlugin.Model
             return NXOpen.Utilities.NXObjectManager.Get(elePartOccsTag[0]) as NXOpen.Assemblies.Component;
         }
 
+        public void Highlight(bool highlight)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            NXOpen.Assemblies.Component root = workPart.ComponentAssembly.RootComponent;
+            if ((workPart.Tag != this.PartTag.Tag) && highlight && root != null)
+            {
+                foreach (NXOpen.Assemblies.Component ct in root.GetChildren())
+                {
+                    ct.Blank();
+                }
+                NXOpen.Assemblies.Component eleComp = Basic.AssmbliesUtils.GetPartComp(workPart, this.PartTag);
+                eleComp.Unblank();
+            }
+
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NXOpen;
 using NXOpen.CAM;
+using NXOpen.BlockStyler;
 using Basic;
 using MolexPlugin.Model;
 
@@ -27,6 +28,7 @@ namespace MolexPlugin.DAL
 
         public AbstractOperationModel Oper { get; protected set; } = null;
 
+        public Node Node { get; set; }
         public AbstractCreateOperation(int site, string tool)
         {
             this.Site = site;
