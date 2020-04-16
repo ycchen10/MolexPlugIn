@@ -19,16 +19,16 @@ namespace MolexPlugin.DAL
         public List<AbstractCreateOperation> Oper { get; protected set; } = new List<AbstractCreateOperation>();
         public ElectrodeCAM Cam { get; private set; }
 
-        protected ElectrodeCAMInfo camInfo;
-        protected ElectrodeModel ele;
+        public ElectrodeCAMInfo CamInfo { get; set; }
+        public ElectrodeModel EleModel { get; set; }
 
         protected ComputeTool tool;
-        public AbstractElectrodeOperation(ElectrodeModel ele, bool isInter)
+        public AbstractElectrodeOperation(ElectrodeModel ele, ElectrodeCAMInfo info)
         {
-            this.ele = ele;
+            this.EleModel = ele;
             Part workPart = Session.GetSession().Parts.Work;
-            camInfo = new ElectrodeCAMInfo(ele, isInter);
-            tool = new ComputeTool(camInfo.MinDim, camInfo.MinDia);
+            CamInfo = info;
+            tool = new ComputeTool(CamInfo.MinDim, CamInfo.MinDia);
             Cam = new ElectrodeCAM();
         }
         /// <summary>
@@ -40,11 +40,32 @@ namespace MolexPlugin.DAL
             Oper.IndexOf(model, count);
         }
         /// <summary>
+        /// 删除刀路
+        /// </summary>
+        /// <param name="model"></param>
+        public void DeleteOperationNameModel(AbstractCreateOperation model)
+        {
+            Oper.Remove(model);
+        }
+
+        public void DeleteOperationNameModel(int count)
+        {
+            Oper.RemoveAt(count);
+        }
+
+        public void UpdateOperationNameModel()
+        {
+            for (int i = 0; i < Oper.Count; i++)
+            {
+                Oper[i].SetProgramName(i + 1);
+            }
+        }
+        /// <summary>
         /// 设置加工体
         /// </summary>
         protected void SetWorkpiece()
         {
-            CAMUtils.SetFeatureGeometry("WORKPIECE", ele.PartTag.Bodies.ToArray());
+            CAMUtils.SetFeatureGeometry("WORKPIECE", this.EleModel.PartTag.Bodies.ToArray());
         }
         /// <summary>
         /// 设置加工环境
@@ -53,12 +74,17 @@ namespace MolexPlugin.DAL
         {
             Session theSession = Session.GetSession();
             Part workPart = theSession.Parts.Work;
+
             theSession.ApplicationSwitchImmediate("UG_APP_MANUFACTURING");
+
             bool result1;
             result1 = theSession.IsCamSessionInitialized();
-            theSession.CAMSession.SpecifyConfiguration("${UGII_CAM_CONFIG_DIR}Molex_CAM");
+
+            theSession.CreateCamSession();
+
             NXOpen.CAM.CAMSetup cAMSetup1;
             cAMSetup1 = workPart.CreateCamSetup("electrode");
+           
         }
         /// <summary>
         /// 创建加工名字
@@ -75,12 +101,12 @@ namespace MolexPlugin.DAL
                 return 0;
             else
             {
-                if (ele.EleInfo.FineInter != 0)
-                    return ele.EleInfo.FineInter;
-                if (ele.EleInfo.DuringInter != 0)
-                    return ele.EleInfo.DuringInter;
-                if (ele.EleInfo.CrudeInter != 0)
-                    return ele.EleInfo.CrudeInter;
+                if (this.EleModel.EleInfo.FineInter != 0)
+                    return this.EleModel.EleInfo.FineInter;
+                if (this.EleModel.EleInfo.DuringInter != 0)
+                    return this.EleModel.EleInfo.DuringInter;
+                if (this.EleModel.EleInfo.CrudeInter != 0)
+                    return this.EleModel.EleInfo.CrudeInter;
             }
             return 0;
         }

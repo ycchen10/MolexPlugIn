@@ -17,10 +17,10 @@ namespace MolexPlugin.DAL
 
         public ComputeTool(double width, double minDia)
         {
-            if (width <= minDia)
+            if (width <= Math.Abs(minDia))
                 this.width = width;
             else
-                this.width = minDia;
+                this.width = Math.Abs(minDia);
         }
         /// <summary>
         /// 获得开粗刀具

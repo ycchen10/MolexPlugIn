@@ -41,7 +41,7 @@ namespace MolexPlugin.DAL
         public override void CreateOperationName()
         {
             string program = "O000" + this.Site.ToString();
-            this.NameModel = ElectrodeCAMNameTemplate.AskOperationNameModelOfRough(program, this.ToolName);
+            this.NameModel = ElectrodeCAMNameTemplate.AskOperationNameModelOfTwiceRough(program, this.ToolName);
         }
     }
 }

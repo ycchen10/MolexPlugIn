@@ -89,6 +89,7 @@
     <Compile Include="FaceLoopUtils.cs" />
     <Compile Include="FaceUtils.cs" />
     <Compile Include="LayerUtils.cs" />
+    <Compile Include="OffsetRegion.cs" />
     <Compile Include="OperationUtils.cs" />
     <Compile Include="PartUtils.cs" />
     <Compile Include="PatternUtils.cs" />

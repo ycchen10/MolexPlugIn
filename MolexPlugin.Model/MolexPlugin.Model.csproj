@@ -62,7 +62,7 @@
   <ItemGroup>
     <Compile Include="CAM\AbstractOperationModel.cs" />
     <Compile Include="CAM\BoundaryModel.cs" />
-    <Compile Include="CAM\OperationDataFactory.cs" />
+    <Compile Include="CAM\CreateOperationFactory.cs" />
     <Compile Include="CAM\SurfaceContourModel.cs" />
     <Compile Include="CAM\ZLevelMillingModel.cs" />
     <Compile Include="Electrode\AbstractModel.cs" />

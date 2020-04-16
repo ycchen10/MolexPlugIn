@@ -87,6 +87,7 @@
     <Compile Include="CAM\AbstractElectrodeOperation.cs" />
     <Compile Include="CAM\AnalyzeElectrode.cs" />
     <Compile Include="CAM\ComputeTool.cs" />
+    <Compile Include="CreateElectrodeCAM.cs" />
     <Compile Include="Drawing\DrawingOperation.cs" />
     <Compile Include="Drawing\WorkForWorkpieceDrawing.cs" />
     <Compile Include="Drawing\WorkpieceDrawing.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Electrode\ZPositiveElectrodeSetValue.cs" />
     <Compile Include="Drawing\WorkpieceInfo.cs" />
     <Compile Include="CAM\SimplenessVerticalEleOperation.cs" />
+    <Compile Include="TreeOperInfoOperation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Basic\Basic.csproj">

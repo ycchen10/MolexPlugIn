@@ -11,7 +11,7 @@ using MolexPlugin.Model;
 
 namespace MolexPlugin.DAL
 {
-    public abstract class AbstractCreateOperation
+    public abstract class AbstractCreateOperation : IComparable<AbstractCreateOperation>
     {
         /// <summary>
         /// 位置
@@ -63,5 +63,10 @@ namespace MolexPlugin.DAL
             this.NameModel.ProgramName = "O000" + site.ToString();
         }
 
+        public int CompareTo(AbstractCreateOperation other)
+        {
+            return this.Site.CompareTo(other.Site);
+
+        }
     }
 }

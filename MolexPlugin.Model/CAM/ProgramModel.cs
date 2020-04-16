@@ -37,11 +37,12 @@ namespace MolexPlugin.Model
             {
                 if (np is NXOpen.CAM.Operation)
                 {
-                    OperationData model = OperationDataFactory.GetOperationData(np as NXOpen.CAM.Operation);
-                    data.Add(model);
+                    AbstractOperationModel model = CreateOperationFactory.GetOperation(np as NXOpen.CAM.Operation);
+                    OperationData od = model.GetOperationData();
+                    data.Add(od);
                     if (toolName == "")
-                        toolName = model.Tool.ToolName;
-                    else if (!toolName.ToUpper().Equals(model.Tool.ToolName.ToUpper()))
+                        toolName = od.Tool.ToolName;
+                    else if (!toolName.ToUpper().Equals(od.Tool.ToolName.ToUpper()))
                     {
                         Estimate = false;
                         break;

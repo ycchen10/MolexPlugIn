@@ -122,8 +122,19 @@ namespace MolexPlugin
             //{
             //    LogMgr.WriteLog(ar.face.Tag.ToString());
             //}
-          // UserInfoSingleton.Serialize();
+            // UserInfoSingleton.Serialize();
             //ControlValue.Serialize();
+
+            //UFSession theUFSession = UFSession.GetUFSession();
+
+            //List<Tag> featureTags = new List<Tag>();
+            //Tag groupTag = Tag.Null;
+            //foreach (NXOpen.Features.Feature fe in workPart.Features)
+            //{
+            //    featureTags.Add(fe.Tag);
+            //}
+            //theUFSession.Modl.CreateSetOfFeature("特征", featureTags.ToArray(), featureTags.Count, 1, out groupTag);
+
         }
     }
 }

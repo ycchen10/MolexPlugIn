@@ -42,6 +42,7 @@ namespace MolexPlugin.DAL
                     model.BouudaryPt = new Point3d(0, 0, zMax);
                     model.Edges = edges;
                     model.Types = NXOpen.CAM.BoundarySet.BoundaryTypes.Closed;
+                    model.PlaneTypes = NXOpen.CAM.BoundarySet.PlaneTypes.UserDefined;
                     if (UMathUtils.IsEqual(zMax, faceData.BoxMaxCorner.Z))
                     {
                         model.ToolSide = NXOpen.CAM.BoundarySet.ToolSideTypes.InsideOrLeft;
@@ -75,6 +76,7 @@ namespace MolexPlugin.DAL
                     model.BouudaryPt = new Point3d(0, 0, tempZ);
                     model.ToolSide = NXOpen.CAM.BoundarySet.ToolSideTypes.InsideOrLeft;
                     model.Types = NXOpen.CAM.BoundarySet.BoundaryTypes.Closed;
+                    model.PlaneTypes = NXOpen.CAM.BoundarySet.PlaneTypes.Automatic;
                     model.Edges = edges;
                 }
             }

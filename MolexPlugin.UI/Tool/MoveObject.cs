@@ -101,6 +101,7 @@ namespace MolexPlugin
         {
             try
             {
+                CsysUtils.SetWcsToAbs();
                 theDialog.Show();
             }
             catch (Exception ex)
@@ -196,7 +197,7 @@ namespace MolexPlugin
             try
             {
                 //---- Enter your callback code here -----
-                CsysUtils.SetWcsToAbs();
+              
                 CoordinateSystem wcs = theSession.Parts.Work.WCS.CoordinateSystem;
                 Basic.MoveObject.MoveObjectOfCsys(wcs, nxObjects.ToArray());
                 DeleteObject.Delete(points.ToArray());

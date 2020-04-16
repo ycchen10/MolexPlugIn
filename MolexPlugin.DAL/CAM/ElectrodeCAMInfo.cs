@@ -42,10 +42,9 @@ namespace MolexPlugin.DAL
 
         private AnalyzeBuilder builder;
 
-        public ElectrodeCAMInfo(ElectrodeModel model, bool isInter)
+        public ElectrodeCAMInfo(ElectrodeModel model)
         {
             this.Info = model.EleInfo;
-            this.IsInter = isInter;
             AnalyzeElectrode analyze = new AnalyzeElectrode(model);
             this.MinDim = analyze.GetMinDis();
             builder = analyze.AnalyzeBody();
@@ -88,10 +87,9 @@ namespace MolexPlugin.DAL
         /// </summary>
         /// <param name="analyzeFace"></param>
         /// <returns></returns>
-        public List<PlanarBoundary> GetPlaneFaces()
+        public List<Face> GetPlaneFaces()
         {
             List<Face> plane = new List<Face>();
-            List<PlanarBoundary> boundary = new List<PlanarBoundary>();
             foreach (AnalyzeFaceSlopeAndRadius ar in builder.AnalyzeFaces)
             {
                 if (UMathUtils.IsEqual(ar.MaxSlope, 0) && UMathUtils.IsEqual(ar.MinSlope, 0))
@@ -99,11 +97,7 @@ namespace MolexPlugin.DAL
             }
             plane.Remove(this.BaseFace.Face);
             plane.Remove(this.BaseSubfaceFace.Face);
-            foreach (Face face in plane)
-            {
-                boundary.Add(new PlanarBoundary(face));
-            }
-            return boundary;
+            return plane;
         }
         /// <summary>
         /// 获取所有面

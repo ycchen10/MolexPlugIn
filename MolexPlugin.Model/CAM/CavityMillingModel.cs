@@ -102,6 +102,9 @@ namespace MolexPlugin.Model
             NXOpen.CAM.CavityMillingBuilder builder1;
             builder1 = workPart.CAMSetup.CAMOperationCollection.CreateCavityMillingBuilder(this.Oper);
             builder1.ReferenceTool = tool;
+            NXOpen.NXObject nXObject1;
+            nXObject1 = builder1.Commit();
+            builder1.Destroy();
         }
     }
 

@@ -77,7 +77,7 @@ namespace MolexPlugin.Model
             AttributeUtils.AttributeOperation("EditionNumber", this.EditionNumber, part);
             AttributeUtils.AttributeOperation("MoldType", this.MoldType, part);
             AttributeUtils.AttributeOperation("ClientName", this.ClientName, part);
-            AttributeUtils.AttributeOperation("CreatorName", this.CreatorName, part);
+            AttributeUtils.AttributeOperation("CreatorName", Getuft8(this.CreatorName), part);
             AttributeUtils.AttributeOperation("CreatedDate", this.CreatedDate, part);
         }
         /// <summary>
@@ -93,6 +93,15 @@ namespace MolexPlugin.Model
             this.ClientName = AttributeUtils.GetAttrForString(part, "ClientName");
             this.CreatorName = AttributeUtils.GetAttrForString(part, "CreatorName");
             this.CreatedDate = AttributeUtils.GetAttrForString(part, "CreatedDate");
+        }
+
+
+        private string Getuft8(string unicodeString)
+        {
+            UTF8Encoding utf8 = new UTF8Encoding();
+            Byte[] encodedBytes = utf8.GetBytes(unicodeString);
+            String decodedString = utf8.GetString(encodedBytes);
+            return decodedString;
         }
     }
 }

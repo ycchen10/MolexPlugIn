@@ -175,7 +175,7 @@ namespace MolexPlugin.DAL
             theUFSession.Tabnot.SetCellText(cellTag[1], workpiece.workpiece.Name);
             theUFSession.Tabnot.SetCellText(cellTag[2], Math.Round(-min.X, 3).ToString());
             theUFSession.Tabnot.SetCellText(cellTag[3], Math.Round(-min.Y, 3).ToString());
-            theUFSession.Tabnot.SetCellText(cellTag[4], Math.Round(min.Z, 3).ToString());
+            theUFSession.Tabnot.SetCellText(cellTag[4], Math.Round(-min.Z, 3).ToString());
         }
 
         private void SetViewSite(DraftingView topView, DraftingView proView, Point3d origin)

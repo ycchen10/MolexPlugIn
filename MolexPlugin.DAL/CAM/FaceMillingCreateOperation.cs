@@ -15,7 +15,7 @@ namespace MolexPlugin.DAL
     /// </summary>
     public class FaceMillingCreateOperation : AbstractCreateOperation
     {
-        private List<BoundaryModel> conditions = new List<BoundaryModel>();
+        private List<Face> conditions = new List<Face>();
         public FaceMillingCreateOperation(int site, string tool) : base(site, tool)
         {
 
@@ -25,7 +25,7 @@ namespace MolexPlugin.DAL
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfFaceMilling(this.NameModel, eleCam);
             this.Oper.Create(this.NameModel.OperName);
             if (conditions.Count != 0)
-                (this.Oper as FaceMillingModel).SetBoundary(conditions.ToArray());
+                (this.Oper as FaceMillingModel).SetBoundary(GetBoundary().ToArray());
             this.Oper.SetStock(0.05, -inter);
         }
         /// <summary>
@@ -33,11 +33,25 @@ namespace MolexPlugin.DAL
         /// </summary>
         /// <param name="floorPt"></param>
         /// <param name="conditions"></param>
-        public void SetBoundary(params BoundaryModel[] conditions)
+        public void SetBoundary(params Face[] conditions)
         {
             this.conditions = conditions.ToList();
         }
 
+        private List<BoundaryModel> GetBoundary()
+        {
+            List<BoundaryModel> models = new List<BoundaryModel>();
+            foreach (Face face in conditions)
+            {
+                PlanarBoundary pb = new PlanarBoundary(face);
+                BoundaryModel model1;
+                double blank1;
+                pb.GetPeripheralBoundary(out model1, out blank1);
+                if (UMathUtils.IsEqual(blank1, 0))
+                    models.Add(model1);
+            }
+            return models;
+        }
         public override void CreateOperationName()
         {
             string program = "O000" + this.Site.ToString();

@@ -32,6 +32,7 @@ namespace MolexPlugin.Model
         /// </summary>
         public BoundarySet.ToolSideTypes ToolSide { get; set; }
 
+        public BoundarySet.PlaneTypes PlaneTypes { get; set; }
         private Point3d disPt = new Point3d(0, 0, 0);
         private Point3d centerPt = new Point3d(0, 0, 0);
         public Point3d DisPt
@@ -54,7 +55,7 @@ namespace MolexPlugin.Model
                 return centerPt;
             }
         }
-         private void GetBoundingBox()
+        private void GetBoundingBox()
         {
             Matrix4 mat = new Matrix4();
             mat.Identity();
@@ -72,4 +73,3 @@ namespace MolexPlugin.Model
 
     }
 }
- 

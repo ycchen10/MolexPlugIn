@@ -28,7 +28,7 @@ namespace MolexPlugin.DAL
                 templateOperName = "R8",
                 ProgramName = program,
                 OperName = tool + "-CAV-R",
-                PngName = "",
+                PngName = "260.bmp",
                 ToolName = tool,
                 OperType = OperationType.CavityMilling
             };
@@ -47,8 +47,8 @@ namespace MolexPlugin.DAL
                 templateName = "electrode",
                 templateOperName = "R3",
                 ProgramName = program,
-                OperName = tool + "CAV-R",
-                PngName = "",
+                OperName = tool + "-CAV-R",
+                PngName = "260.bmp",
                 ToolName = tool,
                 OperType = OperationType.CavityMilling
             };
@@ -69,7 +69,7 @@ namespace MolexPlugin.DAL
                 templateOperName = "J",
                 ProgramName = program,
                 OperName = tool + "-P-F",
-                PngName = "",
+                PngName = "110.bmp",
                 ToolName = tool,
                 OperType = OperationType.PlanarMillingBase
             };
@@ -89,7 +89,7 @@ namespace MolexPlugin.DAL
                 templateOperName = "TOP",
                 ProgramName = program,
                 OperName = tool + "-TOP-F",
-                PngName = "",
+                PngName = "261.bmp",
                 ToolName = tool,
                 OperType = OperationType.FaceMilling
             };
@@ -109,7 +109,7 @@ namespace MolexPlugin.DAL
                 templateOperName = "P2.98",
                 ProgramName = program,
                 OperName = tool + "-P-F",
-                PngName = "",
+                PngName = "110.bmp",
                 ToolName = tool,
                 OperType = OperationType.PlanarMilling
             };
@@ -129,7 +129,7 @@ namespace MolexPlugin.DAL
                 templateOperName = "Z1",
                 ProgramName = program,
                 OperName = tool + "-Z-F",
-                PngName = "",
+                PngName = "263.bmp",
                 ToolName = tool,
                 OperType = OperationType.ZLevelMilling
             };
@@ -149,7 +149,7 @@ namespace MolexPlugin.DAL
                 templateOperName = "C1.98",
                 ProgramName = program,
                 OperName = tool + "-C-F",
-                PngName = "",
+                PngName = "210.bmp",
                 ToolName = tool,
                 OperType = OperationType.SurfaceContour
             };
@@ -169,7 +169,7 @@ namespace MolexPlugin.DAL
                 templateOperName = "CQG",
                 ProgramName = program,
                 OperName = tool + "-Q-F",
-                PngName = "",
+                PngName = "210.bmp",
                 ToolName = tool,
                 OperType = OperationType.SurfaceContour
             };
@@ -189,7 +189,7 @@ namespace MolexPlugin.DAL
                 templateOperName = "CK",
                 ProgramName = program,
                 OperName = tool + "-F",
-                PngName = "",
+                PngName = "450.bmp",
                 ToolName = tool,
                 OperType = OperationType.SurfaceContour
             };

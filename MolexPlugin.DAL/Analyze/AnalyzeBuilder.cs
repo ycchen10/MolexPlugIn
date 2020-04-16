@@ -40,8 +40,12 @@ namespace MolexPlugin.DAL
             AnalyzeFaceSlopeAndRadius af = new AnalyzeFaceSlopeAndRadius(face);
             af.AnalyzeFace(vec);
             analyze.Add(af);
-            if (this.MinRadius > af.MinRadius)
-                this.MinRadius = af.MinRadius;
+            if (Math.Abs(this.MinRadius) >= Math.Abs(af.MinRadius) && !UMathUtils.IsEqual(af.MinRadius, 0)
+                && UMathUtils.IsEqual(af.FaceData.IntNorm, -1))
+            {
+                this.MinRadius = af.MinRadius;               
+            }
+
         }
         /// <summary>
         /// 设置颜色
@@ -69,7 +73,7 @@ namespace MolexPlugin.DAL
             }
             else
             {
-                for (int i = 1; i < analyze.Count ; i++)
+                for (int i = 1; i < analyze.Count; i++)
                 {
                     if ((analyze[i].MaxSlope > Math.Round(Math.PI / 2, 3) && analyze[i].MaxSlope <= Math.Round(Math.PI, 3)) || analyze[i].ResultsNum > 1)
                     {
