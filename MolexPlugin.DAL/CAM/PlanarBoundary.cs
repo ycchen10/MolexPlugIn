@@ -73,10 +73,10 @@ namespace MolexPlugin.DAL
                     List<Edge> edges = GetLoopToEdge(loop);
                     double tempZ = GetLoopMaxOfZ(edges);
                     blank = Math.Round(tempZ - faceData.BoxMaxCorner.Z, 4);
-                    model.BouudaryPt = new Point3d(0, 0, tempZ);
+                    model.BouudaryPt = new Point3d(0, 0, faceData.BoxMaxCorner.Z);
                     model.ToolSide = NXOpen.CAM.BoundarySet.ToolSideTypes.InsideOrLeft;
                     model.Types = NXOpen.CAM.BoundarySet.BoundaryTypes.Closed;
-                    model.PlaneTypes = NXOpen.CAM.BoundarySet.PlaneTypes.Automatic;
+                    model.PlaneTypes = NXOpen.CAM.BoundarySet.PlaneTypes.UserDefined;
                     model.Edges = edges;
                 }
             }

@@ -20,6 +20,7 @@ namespace MolexPlugin.DAL
         public ElectrodeCAM Cam { get; private set; }
 
         public ElectrodeCAMInfo CamInfo { get; set; }
+
         public ElectrodeModel EleModel { get; set; }
 
         protected ComputeTool tool;

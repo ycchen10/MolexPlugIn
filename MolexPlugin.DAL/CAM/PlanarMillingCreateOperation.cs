@@ -28,7 +28,7 @@ namespace MolexPlugin.DAL
             if (conditions.Count != 0)
             {
                 (this.Oper as PlanarMillingModel).SetBoundary(floorPt, conditions.ToArray());
-            }              
+            }
             this.Oper.SetStock(-inter, 0.05);
         }
         /// <summary>
@@ -46,6 +46,14 @@ namespace MolexPlugin.DAL
         {
             string program = "O000" + this.Site.ToString();
             this.NameModel = ElectrodeCAMNameTemplate.AskOperationNameModelOfPlanarMilling(program, this.ToolName);
+        }
+
+        public override AbstractCreateOperation CopyOperation()
+        {
+            PlanarMillingCreateOperation po = new PlanarMillingCreateOperation(this.Site, this.ToolName);
+            po.CreateOperationName();
+            po.SetBoundary(this.floorPt, this.conditions.ToArray());
+            return po;
         }
     }
 }

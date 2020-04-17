@@ -15,7 +15,7 @@ namespace MolexPlugin.DAL
     /// </summary>
     public class SurfaceContourCreateOperation : AbstractCreateOperation
     {
-        private List<Face> faces = new List<Face>();      
+        private List<Face> faces = new List<Face>();
         public SurfaceContourCreateOperation(int site, string tool) : base(site, tool)
         {
 
@@ -26,7 +26,7 @@ namespace MolexPlugin.DAL
             this.Oper.Create(this.NameModel.OperName);
             if (faces.Count > 0)
                 (this.Oper as SurfaceContourModel).SetGeometry(faces.ToArray());
-           
+
             this.Oper.SetStock(-inter, -inter);
         }
         /// <summary>
@@ -37,11 +37,19 @@ namespace MolexPlugin.DAL
         public void SetFaces(params Face[] faces)
         {
             this.faces = faces.ToList();
-        }      
+        }
         public override void CreateOperationName()
         {
             string program = "O000" + this.Site.ToString();
             this.NameModel = ElectrodeCAMNameTemplate.AskOperationNameModelOfSurfaceContour(program, this.ToolName);
+        }
+
+        public override AbstractCreateOperation CopyOperation()
+        {
+            SurfaceContourCreateOperation so = new SurfaceContourCreateOperation(this.Site, this.ToolName);
+            so.CreateOperationName();
+            // so.SetFaces(this.faces.ToArray());
+            return so;
         }
     }
 }

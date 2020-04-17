@@ -19,6 +19,14 @@ namespace MolexPlugin.DAL
         {
 
         }
+
+        public override AbstractCreateOperation CopyOperation()
+        {
+            RoughCreateOperation ro = new RoughCreateOperation(this.Site, this.ToolName);
+            ro.CreateOperationName();
+            return ro;
+        }
+
         public override void CreateOperation(ElectrodeCAM eleCam, double inter)
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfCavityMilling(this.NameModel, eleCam);

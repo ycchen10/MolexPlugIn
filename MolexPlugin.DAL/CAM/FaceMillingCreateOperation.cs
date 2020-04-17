@@ -25,7 +25,7 @@ namespace MolexPlugin.DAL
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfFaceMilling(this.NameModel, eleCam);
             this.Oper.Create(this.NameModel.OperName);
             if (conditions.Count != 0)
-                (this.Oper as FaceMillingModel).SetBoundary(GetBoundary().ToArray());
+                (this.Oper as FaceMillingModel).SetBoundary(conditions.ToArray());
             this.Oper.SetStock(0.05, -inter);
         }
         /// <summary>
@@ -56,6 +56,14 @@ namespace MolexPlugin.DAL
         {
             string program = "O000" + this.Site.ToString();
             this.NameModel = ElectrodeCAMNameTemplate.AskOperationNameModelOfFaceMilling(program, this.ToolName);
+        }
+
+        public override AbstractCreateOperation CopyOperation()
+        {
+            FaceMillingCreateOperation fo = new FaceMillingCreateOperation(this.Site, this.ToolName);
+            fo.CreateOperationName();
+           // fo.SetBoundary(this.conditions.ToArray());
+            return fo;
         }
     }
 }

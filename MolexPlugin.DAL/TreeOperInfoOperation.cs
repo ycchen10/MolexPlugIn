@@ -34,6 +34,7 @@ namespace MolexPlugin.DAL
                 Node pNode = this.tree.CreateNode(ao);
                 this.tree.InsertNode(pNode, null, null, Tree.NodeInsertOption.Last);
                 pNode.SetColumnDisplayText(0, ao);
+                pNode.SetColumnDisplayText(2, eleOper.EleModel.EleInfo.EleName);
                 List<AbstractCreateOperation> oprs = eleOper.Oper.FindAll(a => a.NameModel.ProgramName.Equals(ao));
                 int i = 1;
                 foreach (AbstractCreateOperation an in oprs)
@@ -48,7 +49,7 @@ namespace MolexPlugin.DAL
         /// 获取所有程序Node
         /// </summary>
         /// <returns></returns>
-        private List<Node> GetProgramNode()
+        public List<Node> GetProgramNode()
         {
             List<Node> pro = new List<Node>();
             Node root = tree.RootNode;
@@ -97,20 +98,18 @@ namespace MolexPlugin.DAL
         /// <param name="eleOper"></param>
         private void UpdateTree(AbstractElectrodeOperation eleOper)
         {
+
             List<Node> nodes = GetProgramNode();
             for (int i = 0; i < nodes.Count; i++)
             {
-                string oldProName = nodes[i].GetColumnDisplayText(0);
-                string newProName = "O000" + (i + 1).ToString();
-                nodes[i].SetColumnDisplayText(0, newProName);
-                Node next = nodes[i].NextNode;
-                if (next != null)
+                string name = "O000" + (i + 1).ToString();
+                nodes[i].SetColumnDisplayText(0, name);
+            }
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                foreach (AbstractCreateOperation ao in FindOperationForProNode(nodes[i], eleOper))
                 {
-                    List<AbstractCreateOperation> opers = eleOper.Oper.FindAll(a => a.NameModel.ProgramName.Equals(oldProName, StringComparison.CurrentCultureIgnoreCase));
-                    foreach (AbstractCreateOperation ao in opers)
-                    {
-                        ao.SetProgramName(i + 1);
-                    }
+                    ao.SetProgramName(i + 1);
                 }
             }
         }
@@ -138,6 +137,8 @@ namespace MolexPlugin.DAL
                 eleOper.Oper.Remove(ao);
 
             }
+            this.tree.DeleteNode(node);
+            UpdateTree(eleOper);
         }
         /// <summary>
         /// 添加刀路
@@ -175,12 +176,128 @@ namespace MolexPlugin.DAL
             eleOper.Oper.Remove(FindOperationForOperNode(node, eleOper));
         }
         /// <summary>
+        /// 程序组向上移动
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="eleOper"></param>
+        public void MoveUpProgram(Node node, AbstractElectrodeOperation eleOper)
+        {
+            string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            string png = dllPath.Replace("application\\", "Images\\");
+            Node previous = node.PreviousSiblingNode;
+            if (previous != null)
+            {
+                List<AbstractCreateOperation> aos = FindOperationForProNode(previous, eleOper);
+                Node newNode = this.tree.CreateNode(previous.GetColumnDisplayText(0));
+                this.tree.InsertNode(newNode, null, node, Tree.NodeInsertOption.Last);
+                int i = 1;
+                foreach (AbstractCreateOperation an in aos)
+                {
+                    AddOpeTotree(an, newNode, null, i.ToString(), png);
+                    i++;
+                }
+                newNode.Expand(Node.ExpandOption.Expand); //展开节点
+                this.tree.DeleteNode(previous);
+                UpdateTree(eleOper);
+            }
+        }
+        /// <summary>
+        /// 程序组往下移动
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="eleOper"></param>
+        public void MoveDownProgram(Node node, AbstractElectrodeOperation eleOper)
+        {
+            string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            string png = dllPath.Replace("application\\", "Images\\");
+            Node sibling = node.NextSiblingNode;
+            if (sibling != null)
+            {
+                List<AbstractCreateOperation> aos = FindOperationForProNode(node, eleOper);
+                Node newNode = this.tree.CreateNode(node.GetColumnDisplayText(0));
+                this.tree.InsertNode(newNode, null, sibling, Tree.NodeInsertOption.Last);
+                int i = 1;
+                foreach (AbstractCreateOperation an in aos)
+                {
+                    AddOpeTotree(an, newNode, null, i.ToString(), png);
+                    i++;
+                }
+                newNode.Expand(Node.ExpandOption.Expand); //展开节点
+                this.tree.DeleteNode(node);
+                UpdateTree(eleOper);
+            }
+        }
+        /// <summary>
+        /// 操作往上移动
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="eleOper"></param>
+        public void MoveUpOperation(Node node, AbstractElectrodeOperation eleOper)
+        {
+            Node previous = node.PreviousNode;
+            if (previous != null)
+            {
+                this.tree.InsertNode(previous, null, node, Tree.NodeInsertOption.Last);
+                AbstractCreateOperation ao = FindOperationForOperNode(node, eleOper);
+                int index = eleOper.Oper.IndexOf(ao);
+                eleOper.Oper.Remove(ao);
+                eleOper.Oper.Insert(index - 1, ao);
+            }
+        }
+        /// <summary>
+        /// 操作往下移动
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="eleOper"></param>
+        public void MoveDownOperation(Node node, AbstractElectrodeOperation eleOper)
+        {
+            Node sibling = node.NextSiblingNode;
+            if (sibling != null)
+            {
+                this.tree.InsertNode(node, null, sibling, Tree.NodeInsertOption.Last);
+                AbstractCreateOperation ao = FindOperationForOperNode(node, eleOper);
+                int index = eleOper.Oper.IndexOf(ao);
+                eleOper.Oper.Remove(ao);
+                eleOper.Oper.Insert(index + 1, ao);
+            }
+        }
+        /// <summary>
+        /// 判断Node是否是程序组
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public bool NodeIsProgram(Node node)
+        {
+            string toolName = node.GetColumnDisplayText(1);
+            if (toolName == "")
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        /// <summary>
+        /// 判断Node是否是操作
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public bool NodeIsOperation(Node node)
+        {
+            string toolName = node.GetColumnDisplayText(1);
+            if (toolName != "")
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        /// <summary>
         /// 通过刀路Node 查找刀路
         /// </summary>
         /// <param name="node"></param>
         /// <param name="eleOper"></param>
         /// <returns></returns>
-        private AbstractCreateOperation FindOperationForOperNode(Node node, AbstractElectrodeOperation eleOper)
+        public AbstractCreateOperation FindOperationForOperNode(Node node, AbstractElectrodeOperation eleOper)
         {
             return eleOper.Oper.Find(a => a.Node.Equals(node));
 
@@ -193,7 +310,24 @@ namespace MolexPlugin.DAL
         /// <returns></returns>
         private List<AbstractCreateOperation> FindOperationForProNode(Node node, AbstractElectrodeOperation eleOper)
         {
-            return eleOper.Oper.FindAll(a => a.Node.Equals(node));
+            List<AbstractCreateOperation> ao = new List<AbstractCreateOperation>();
+            Node next = node.FirstChildNode;
+            if (next != null)
+            {
+                ao.Add(FindOperationForOperNode(next, eleOper));
+                bool sibling = true;
+                while (sibling)
+                {
+                    next = next.NextSiblingNode;
+                    if (next != null)
+                    {
+                        ao.Add(FindOperationForOperNode(next, eleOper));
+                    }
+                    else
+                        sibling = false;
+                }
+            }
+            return ao;
 
         }
         /// <summary>
@@ -206,6 +340,7 @@ namespace MolexPlugin.DAL
             List<Node> proNode = GetProgramNode();
             return proNode.Find(a => a.GetColumnDisplayText(0).Equals(proName, StringComparison.CurrentCultureIgnoreCase));
         }
+
         /// <summary>
         /// 把刀路插入到程序组下面
         /// </summary>
@@ -226,5 +361,7 @@ namespace MolexPlugin.DAL
             ao.Node = node;
             return node;
         }
+
+
     }
 }

@@ -52,7 +52,8 @@ namespace MolexPlugin.DAL
             string temp = tool.GetTwiceRoughTool();
             if (!temp.Equals(""))
             {
-                AbstractCreateOperation twice = new TwiceRoughCreateOperation(count, temp, tool.GetRoughTool()); //二次开粗
+                TwiceRoughCreateOperation twice = new TwiceRoughCreateOperation(count, temp); //二次开粗
+                twice.SetReferencetool(tool.GetTwiceRoughTool());
                 this.Oper.Add(twice);
                 count++;
             }

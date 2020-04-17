@@ -44,5 +44,13 @@ namespace MolexPlugin.DAL
             string program = "O000" + this.Site.ToString();
             this.NameModel = ElectrodeCAMNameTemplate.AskOperationNameModelOfBaseStation(program, this.ToolName);
         }
+
+        public override AbstractCreateOperation CopyOperation()
+        {
+            BaseStationCreateOperation ao = new BaseStationCreateOperation(this.Site, this.ToolName);
+            ao.CreateOperationName();
+          //  ao.SetBoundary(this.floorPt, this.conditions.ToArray());
+            return ao;
+        }
     }
 }

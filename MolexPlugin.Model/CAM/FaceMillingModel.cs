@@ -21,12 +21,12 @@ namespace MolexPlugin.Model
         }
         public FaceMillingModel(NCGroupModel model, string templateName, string templateOperName) : base(model, templateName)
         {
-          
+
             this.templateOperName = templateOperName;
         }
         public override void Create(string name)
         {
-            base.CreateOperation(templateOperName, name, this.GroupModel);           
+            base.CreateOperation(templateOperName, name, this.GroupModel);
         }
         /// <summary>
         /// 设置边界
@@ -42,9 +42,40 @@ namespace MolexPlugin.Model
             List<BoundaryMillingSet> boundarySet = new List<BoundaryMillingSet>();
             foreach (BoundaryModel bc in conditions)
             {
+
                 boundarySet.Add(OperationUtils.CreateBoundaryMillingSet(bc.ToolSide, bc.Types,
               bc.BouudaryPt, boundary, bc.Edges.ToArray()));
             }
+            list.Append(boundarySet.ToArray());
+            try
+            {
+                NXOpen.NXObject nXObject1;
+                nXObject1 = builder1.Commit();
+            }
+            catch (NXException ex)
+            {
+                LogMgr.WriteLog("PlanarMillingModel.SetBoundary 错误" + ex.Message);
+            }
+            finally
+            {
+                builder1.Destroy();
+            }
+        }
+
+        public void SetBoundary(params Face[] conditions)
+        {
+            NXOpen.CAM.FaceMillingBuilder builder1;
+            builder1 = workPart.CAMSetup.CAMOperationCollection.CreateFaceMillingBuilder(this.Oper);
+            builder1.FeedsBuilder.SetMachiningData();
+            Boundary boundary = builder1.BlankBoundary;
+            BoundarySetList list = boundary.BoundaryList;
+            List<BoundarySet> boundarySet = new List<BoundarySet>();
+            foreach (Face face in conditions)
+            {
+                BoundarySet[] set = boundary.AppendFaceBoundary(face, true, false, false, NXOpen.CAM.BoundarySet.ToolSideTypes.InsideOrLeft);
+                boundarySet.AddRange(set);
+            }
+            
             list.Append(boundarySet.ToArray());
             try
             {

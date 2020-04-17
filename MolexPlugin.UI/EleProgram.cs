@@ -35,6 +35,7 @@
 //These imports are needed for the following template code
 //------------------------------------------------------------------------------
 using System;
+using System.IO;
 using NXOpen;
 using NXOpen.BlockStyler;
 using MolexPlugin.DAL;
@@ -42,6 +43,7 @@ using MolexPlugin.Model;
 using Basic;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
 
 namespace MolexPlugin
 {
@@ -256,7 +258,7 @@ namespace MolexPlugin
 
                 //tree_operInfo.SetOnPreSelectHandler(new NXOpen.BlockStyler.Tree.OnPreSelectCallback(OnPreSelectcallback));
 
-                //tree_operInfo.SetOnSelectHandler(new NXOpen.BlockStyler.Tree.OnSelectCallback(OnSelectcallback));
+                tree_operInfo.SetOnSelectHandler(new NXOpen.BlockStyler.Tree.OnSelectCallback(OnSelectcallback));
 
                 //tree_operInfo.SetOnStateChangeHandler(new NXOpen.BlockStyler.Tree.OnStateChangeCallback(OnStateChangecallback));
 
@@ -324,7 +326,10 @@ namespace MolexPlugin
                 this.list_box_template.SelectedItemIndex = 0;
                 this.SetTemplatePng();
                 this.groupParameter.Enable = false;
-
+                this.group3.Enable = false;
+                this.seleFace.Show = false;
+                this.togPost.Show = false;
+                this.enumReferenceTool.Show = false;
             }
             catch (Exception ex)
             {
@@ -369,6 +374,7 @@ namespace MolexPlugin
             {
                 if (block == double_offestF)
                 {
+
                     //---------Enter your code here-----------
                 }
                 else if (block == double_offestD)
@@ -402,6 +408,7 @@ namespace MolexPlugin
                         CreateElectrodeCAM cam = new CreateElectrodeCAM(model);
                         cam.CreateOperName();
                         treeOper.AddOperTree(cam.EleOper);
+                        SetEnumProgram();
                         this.eleCams.Add(cam);
                     }
 
@@ -524,6 +531,21 @@ namespace MolexPlugin
                     }
                 }
             }
+
+            if (tree.Equals(this.tree_operInfo))
+            {
+                if (treeOper.NodeIsProgram(node))
+                {
+                    this.groupParameter.Enable = false;
+                    ProgramShow(node);
+                }
+                if (treeOper.NodeIsOperation(node))
+                {
+                    SetToolType(FindOperForNode(node));
+                    this.group3.Enable = false;
+                    ToolShow(node);
+                }
+            }
         }
 
         //public void OnStateChangecallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int State)
@@ -571,12 +593,26 @@ namespace MolexPlugin
             }
             if (tree.Equals(this.tree_operInfo) && node != null && node.IsSelected)
             {
-                TreeListMenu operMenu = this.tree_operInfo.CreateMenu();
-                operMenu.AddMenuItem(1, "添加", "add_new_sc");
-                operMenu.AddMenuItem(2, "向上移动", "arrowup_sc");
-                operMenu.AddMenuItem(3, "向下移动", "arrowdown_sc");
-                operMenu.AddMenuItem(4, "删除", "delete");
-                this.tree_operInfo.SetMenu(operMenu);
+                if (treeOper.NodeIsProgram(node))
+                {
+                    TreeListMenu operMenu = this.tree_operInfo.CreateMenu();
+                    operMenu.AddMenuItem(1, "添加", "add_new_sc");
+                    operMenu.AddMenuItem(2, "向上移动", "arrowup_sc");
+                    operMenu.AddMenuItem(3, "向下移动", "arrowdown_sc");
+                    operMenu.AddMenuItem(4, "删除", "delete");
+                    this.tree_operInfo.SetMenu(operMenu);
+                }
+                else if (treeOper.NodeIsOperation(node))
+                {
+                    TreeListMenu operMenu = this.tree_operInfo.CreateMenu();
+                    operMenu.AddMenuItem(1, "复制", "copy");
+                    operMenu.AddMenuItem(2, "粘贴", "paste");
+                    operMenu.AddMenuItem(3, "向上移动", "arrowup_sc");
+                    operMenu.AddMenuItem(4, "向下移动", "arrowdown_sc");
+                    operMenu.AddMenuItem(5, "删除", "delete");
+                    this.tree_operInfo.SetMenu(operMenu);
+                }
+
             }
 
 
@@ -590,9 +626,32 @@ namespace MolexPlugin
                 this.tree_eleInfo.DeleteNode(node);
                 this.eleCams.Remove(this.eleCams.Find(a => a.EleModel.Node.Equals(node)));
             }
+            if (tree.Equals(this.tree_operInfo))
+            {
+                if (treeOper.NodeIsProgram(node))
+                {
+                    if (menuItemID == 1)
+                    {
+                        treeOper.AddProgramNode(node, FindEleOperForNode(node));
+                    }
+                    if (menuItemID == 2)
+                    {
+                        treeOper.MoveUpProgram(node, FindEleOperForNode(node));
+                    }
+                    if (menuItemID == 3)
+                    {
+                        treeOper.MoveDownProgram(node, FindEleOperForNode(node));
+                    }
+                    if (menuItemID == 4)
+                    {
+                        AbstractElectrodeOperation eleOper = FindEleOperForNode(node);
+                        treeOper.DeleteProgramNode(node, eleOper);
+                    }
+                }
+            }
 
         }
-
+        #region 回调函数
         //public Node.DropType IsDropAllowedCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID, NXOpen.BlockStyler.Node targetNode, int targetColumnID)
         //{
         //}
@@ -623,7 +682,7 @@ namespace MolexPlugin
         //public int  DeleteCallback(NXOpen.BlockStyler.ListBox list_box)
         //{
         //}
-
+        #endregion
         //------------------------------------------------------------------------------
 
         //------------------------------------------------------------------------------
@@ -664,7 +723,8 @@ namespace MolexPlugin
             this.tree_operInfo.InsertColumn(0, "程序名", 160);
             // this.tree_operInfo.SetColumnDisplayType(0, Tree.ColumnDisplay.Icon);
             this.tree_operInfo.InsertColumn(1, "刀具名", 100);
-
+            this.tree_operInfo.InsertColumn(2, "电极名", 200);
+            this.tree_operInfo.SetColumnVisible(2, false);
         }
         /// <summary>
         /// 设置电极行
@@ -685,35 +745,6 @@ namespace MolexPlugin
                     pNode.SetColumnDisplayText(4, ele.EleInfo.FineInter.ToString());
                     ele.Node = pNode;
                 }
-            }
-        }
-        /// <summary>
-        /// 设置刀路树
-        /// </summary>
-        private void AddOperTree(AbstractElectrodeOperation eleOper)
-        {
-            string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            string png = dllPath.Replace("application\\", "Images\\");
-            List<string> progs = eleOper.Oper.GroupBy(p => p.NameModel.ProgramName).OrderBy(p => p.Key).Select(p => p.Key).ToList();
-            foreach (string ao in progs)
-            {
-                Node pNode = this.tree_operInfo.CreateNode(ao);
-                this.tree_operInfo.InsertNode(pNode, null, null, Tree.NodeInsertOption.Last);
-                pNode.SetColumnDisplayText(0, ao);
-                List<AbstractCreateOperation> oprs = eleOper.Oper.FindAll(a => a.NameModel.ProgramName.Equals(ao));
-                int i = 1;
-                foreach (AbstractCreateOperation an in oprs)
-                {
-                    Node node = this.tree_operInfo.CreateNode(i.ToString());
-                    this.tree_operInfo.InsertNode(node, pNode, null, Tree.NodeInsertOption.Last);
-                    node.SetColumnDisplayText(0, an.NameModel.OperName);
-                    node.DisplayIcon = png + an.NameModel.PngName;
-                    node.SelectedIcon = png + an.NameModel.PngName;
-                    node.SetColumnDisplayText(1, an.NameModel.ToolName);
-                    an.Node = node;
-                    i++;
-                }
-                pNode.Expand(Node.ExpandOption.Expand); //展开节点
             }
         }
         /// <summary>
@@ -751,6 +782,100 @@ namespace MolexPlugin
                 }
             }
             return null;
+        }
+        /// <summary>
+        /// 设置程序选项
+        /// </summary>
+        private void SetEnumProgram()
+        {
+            List<string> proName = new List<string>();
+            foreach (Node node in this.treeOper.GetProgramNode())
+            {
+                proName.Add(node.GetColumnDisplayText(0));
+            }
+            this.enumProgram.SetEnumMembers(proName.ToArray());
+        }
+        /// <summary>
+        /// 设置刀具选项
+        /// </summary>
+        /// <param name="toolTemplate"></param>
+        private void SetEnumTool(string toolTemplate)
+        {
+            string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            string template = dllPath.Replace("application\\", "Cofigure\\") + toolTemplate + ".dat";
+            StreamReader sr = new StreamReader(template, Encoding.Default);
+            List<string> toolName = new List<string>();
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                toolName.Add(line);
+            }
+            this.enumTool.SetEnumMembers(toolName.ToArray());
+        }
+        /// <summary>
+        /// 设置选择程序组显示
+        /// </summary>
+        /// <param name="node"></param>
+        private void ProgramShow(Node node)
+        {
+            this.group3.Enable = true;
+            this.enumProgram.ValueAsString = node.GetColumnDisplayText(0);
+        }
+        /// <summary>
+        /// 设置刀具显示
+        /// </summary>
+        /// <param name="node"></param>
+        private void ToolShow(Node node)
+        {
+            this.groupParameter.Enable = true;
+            this.enumTool.ValueAsString = node.GetColumnDisplayText(1);
+            this.enumProgram.ValueAsString = node.ParentNode.GetColumnDisplayText(0);
+        }
+
+        private void SetToolType(AbstractCreateOperation ao)
+        {
+            if (ao.NameModel.OperType == OperationType.CavityMilling)
+            {
+                SetEnumTool("RoughPlaneTool");
+                return;
+            }
+            if (ao.NameModel.OperType == OperationType.FaceMilling ||
+                ao.NameModel.OperType == OperationType.PlanarMilling
+                || ao.NameModel.OperType == OperationType.PlanarMillingBase)
+            {
+                SetEnumTool("FinishPlaneTool");
+                return;
+            }
+            if (ao.NameModel.OperType == OperationType.ZLevelMilling)
+            {
+                SetEnumTool("FinishZLevelTool");
+                return;
+            }
+            if (ao.NameModel.OperType == OperationType.SurfaceContour)
+            {
+                SetEnumTool("FinishBallTool");
+                return;
+            }
+        }
+        /// <summary>
+        /// 查找操作
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private AbstractCreateOperation FindOperForNode(Node node)
+        {
+            CreateElectrodeCAM cc = this.eleCams.Find(a => a.EleModel.EleInfo.EleName.Equals(node.ParentNode.GetColumnDisplayText(2)));
+            return treeOper.FindOperationForOperNode(node, cc.EleOper);
+        }
+        /// <summary>
+        /// 查找电极程序
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private AbstractElectrodeOperation FindEleOperForNode(Node node)
+        {
+            CreateElectrodeCAM cc = this.eleCams.Find(a => a.EleModel.EleInfo.EleName.Equals(node.GetColumnDisplayText(2)));
+            return cc.EleOper;
         }
     }
 }

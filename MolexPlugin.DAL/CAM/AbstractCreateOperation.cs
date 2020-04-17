@@ -46,6 +46,11 @@ namespace MolexPlugin.DAL
         /// <param name="inter">电极间隙</param>
         public abstract void CreateOperation(ElectrodeCAM eleCam, double inter);
         /// <summary>
+        /// 拷贝刀路
+        /// </summary>
+        /// <returns></returns>
+        public abstract AbstractCreateOperation CopyOperation();
+        /// <summary>
         /// 设置刀具名
         /// </summary>
         /// <param name="tool"></param>
@@ -68,5 +73,6 @@ namespace MolexPlugin.DAL
             return this.Site.CompareTo(other.Site);
 
         }
+
     }
 }

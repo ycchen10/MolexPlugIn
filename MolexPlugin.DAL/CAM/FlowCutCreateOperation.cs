@@ -57,5 +57,14 @@ namespace MolexPlugin.DAL
             string program = "O000" + this.Site.ToString();
             this.NameModel = ElectrodeCAMNameTemplate.AskOperationNameModelOfSurfaceContour(program, this.ToolName);
         }
+
+        public override AbstractCreateOperation CopyOperation()
+        {
+            FlowCutCreateOperation fo = new FlowCutCreateOperation(this.Site, this.ToolName);
+            fo.CreateOperationName();
+            // fo.SetFaces(this.faces.ToArray());
+            // fo.SetReferencetool(this.referencetoolName);
+            return fo;
+        }
     }
 }

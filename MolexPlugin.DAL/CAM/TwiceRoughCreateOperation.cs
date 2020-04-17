@@ -16,9 +16,9 @@ namespace MolexPlugin.DAL
     public class TwiceRoughCreateOperation : AbstractCreateOperation
     {
         public string ReferenceTool { get; private set; } = "";
-        public TwiceRoughCreateOperation(int site, string tool, string referenceTool) : base(site, tool)
+        public TwiceRoughCreateOperation(int site, string tool) : base(site, tool)
         {
-            this.ReferenceTool = referenceTool;
+
         }
         public override void CreateOperation(ElectrodeCAM eleCam, double inter)
         {
@@ -38,10 +38,27 @@ namespace MolexPlugin.DAL
             }
         }
 
+        /// <summary>
+        /// 设置参考刀具
+        /// </summary>
+        /// <param name="toolName"></param>
+        public void SetReferencetool(string toolName)
+        {
+            this.ReferenceTool = toolName;
+        }
+
         public override void CreateOperationName()
         {
             string program = "O000" + this.Site.ToString();
             this.NameModel = ElectrodeCAMNameTemplate.AskOperationNameModelOfTwiceRough(program, this.ToolName);
+        }
+
+        public override AbstractCreateOperation CopyOperation()
+        {
+            TwiceRoughCreateOperation to = new TwiceRoughCreateOperation(this.Site, this.ToolName);
+            to.CreateOperationName();
+            // to.SetReferencetool(this.ReferenceTool);
+            return to;
         }
     }
 }

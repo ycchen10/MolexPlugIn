@@ -53,5 +53,14 @@ namespace MolexPlugin.DAL
             string program = "O000" + this.Site.ToString();
             this.NameModel = ElectrodeCAMNameTemplate.AskOperationNameModelOfZLevelMilling(program, this.ToolName);
         }
+
+        public override AbstractCreateOperation CopyOperation()
+        {
+            ZLevelMillingCreateOperation zo = new ZLevelMillingCreateOperation(this.Site, this.ToolName);
+            zo.CreateOperationName();
+            // zo.SetFaces(this.faces.ToArray());
+            //  zo.SetCutLevel(this.level);
+            return zo;
+        }
     }
 }
