@@ -14,7 +14,7 @@ namespace MolexPlugin.DAL
     public class TreeOperInfoOperation
     {
         private Tree tree;
-
+        private static string png = AppDomain.CurrentDomain.SetupInformation.ApplicationBase.Replace("application\\", "Images\\");
         public TreeOperInfoOperation(Tree tree)
         {
             this.tree = tree;
@@ -26,8 +26,6 @@ namespace MolexPlugin.DAL
         public void AddOperTree(AbstractElectrodeOperation eleOper)
         {
             DeleteAllNode();
-            string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            string png = dllPath.Replace("application\\", "Images\\");
             List<string> progs = eleOper.Oper.GroupBy(p => p.NameModel.ProgramName).OrderBy(p => p.Key).Select(p => p.Key).ToList();
             foreach (string ao in progs)
             {
@@ -36,11 +34,10 @@ namespace MolexPlugin.DAL
                 pNode.SetColumnDisplayText(0, ao);
                 pNode.SetColumnDisplayText(2, eleOper.EleModel.EleInfo.EleName);
                 List<AbstractCreateOperation> oprs = eleOper.Oper.FindAll(a => a.NameModel.ProgramName.Equals(ao));
-                int i = 1;
+
                 foreach (AbstractCreateOperation an in oprs)
                 {
-                    AddOpeTotree(an, pNode, null, i.ToString(), png);
-                    i++;
+                    AddOpeTotree(an, pNode, null, png);
                 }
                 pNode.Expand(Node.ExpandOption.Expand); //展开节点
             }
@@ -85,6 +82,8 @@ namespace MolexPlugin.DAL
                         string proName = "O000" + (i + 2).ToString();
                         Node newNode = this.tree.CreateNode(proName);
                         this.tree.InsertNode(newNode, null, node, Tree.NodeInsertOption.Last);
+                        newNode.SetColumnDisplayText(0, proName);
+                        newNode.SetColumnDisplayText(2, eleOper.EleModel.EleInfo.EleName);
                         UpdateTree(eleOper);
                         return newNode;
                     }
@@ -96,7 +95,7 @@ namespace MolexPlugin.DAL
         /// 更新树
         /// </summary>
         /// <param name="eleOper"></param>
-        private void UpdateTree(AbstractElectrodeOperation eleOper)
+        public void UpdateTree(AbstractElectrodeOperation eleOper)
         {
 
             List<Node> nodes = GetProgramNode();
@@ -146,24 +145,67 @@ namespace MolexPlugin.DAL
         /// <param name="node">程序Node</param>
         /// <param name="eleOper"></param>
         /// <param name="oper"></param>
-        public void AddOperation(AbstractElectrodeOperation eleOper, AbstractCreateOperation oper, Node node = null)
+        public void AddOperation(AbstractElectrodeOperation eleOper, AbstractCreateOperation oper)
         {
             Node proNode = FindNodeForProName(oper.NameModel.ProgramName);
-            string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            string png = dllPath.Replace("application\\", "Images\\");
-            if (node != null)
+            Node nextNode1 = proNode.NextNode;
+            if (nextNode1 == null)
             {
-                AbstractCreateOperation ao = FindOperationForOperNode(node, eleOper);
-                int index = eleOper.Oper.IndexOf(ao);
-                eleOper.Oper.Insert(index, oper);
-                if (proNode.Equals(node.ParentNode))
-                    AddOpeTotree(oper, proNode, node, oper.NameModel.OperName, png);
+                eleOper.Oper.Insert(eleOper.Oper.Count, oper);
+                AddOpeTotree(oper, proNode, null, png);
+                return;
+            }
+            bool sibling = true;
+            while (sibling)
+            {
+                Node nextNode2;
+                nextNode2 = nextNode1.NextSiblingNode;
+                if (nextNode2 == null)
+                {
+                    sibling = false;
+                    break;
+                }
                 else
-                    AddOpeTotree(oper, proNode, null, oper.NameModel.OperName, png);
-
+                {
+                    nextNode1 = nextNode2;
+                }
+            }
+            AbstractCreateOperation ao = FindOperationForOperNode(nextNode1, eleOper);
+            int index = eleOper.Oper.IndexOf(ao);
+            eleOper.Oper.Insert(index + 1, oper);
+            AddOpeTotree(oper, proNode, nextNode1, png);
+        }
+        /// <summary>
+        /// 拷贝程序
+        /// </summary>
+        /// <param name="eleOper"></param>
+        /// <param name="node"></param>
+        public void CopyOperation(AbstractElectrodeOperation eleOper, Node node)
+        {
+            AbstractCreateOperation ao = FindOperationForOperNode(node, eleOper);
+            AbstractCreateOperation copy = ao.CopyOperation();
+            int index = eleOper.Oper.IndexOf(ao);
+            eleOper.Oper.Insert(index + 1, copy);
+            AddOpeTotree(copy, node.ParentNode, node, png);
+        }
+        /// <summary>
+        /// 更新刀路
+        /// </summary>
+        /// <param name="eleOper"></param>
+        /// <param name="ao"></param>
+        public void UpdateOperation(AbstractElectrodeOperation eleOper, AbstractCreateOperation ao)
+        {
+            if (ao.NameModel.ProgramName.Equals(ao.Node.ParentNode.GetColumnDisplayText(0)))
+            {
+                ao.Node.SetColumnDisplayText(0, ao.NameModel.OperName);
+                ao.Node.SetColumnDisplayText(1, ao.NameModel.ToolName);
             }
             else
-                AddOpeTotree(oper, proNode, null, oper.NameModel.OperName, png);
+            {
+                eleOper.Oper.Remove(ao);
+                this.tree.DeleteNode(ao.Node);
+                this.AddOperation(eleOper, ao);
+            }
         }
         /// <summary>
         /// 删除刀路
@@ -174,6 +216,7 @@ namespace MolexPlugin.DAL
         public void DeleteOperation(Node node, AbstractElectrodeOperation eleOper)
         {
             eleOper.Oper.Remove(FindOperationForOperNode(node, eleOper));
+            this.tree.DeleteNode(node);
         }
         /// <summary>
         /// 程序组向上移动
@@ -182,19 +225,20 @@ namespace MolexPlugin.DAL
         /// <param name="eleOper"></param>
         public void MoveUpProgram(Node node, AbstractElectrodeOperation eleOper)
         {
-            string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            string png = dllPath.Replace("application\\", "Images\\");
             Node previous = node.PreviousSiblingNode;
             if (previous != null)
             {
                 List<AbstractCreateOperation> aos = FindOperationForProNode(previous, eleOper);
                 Node newNode = this.tree.CreateNode(previous.GetColumnDisplayText(0));
                 this.tree.InsertNode(newNode, null, node, Tree.NodeInsertOption.Last);
-                int i = 1;
-                foreach (AbstractCreateOperation an in aos)
+                newNode.SetColumnDisplayText(0, previous.GetColumnDisplayText(0));
+                newNode.SetColumnDisplayText(2, eleOper.EleModel.EleInfo.EleName);
+                if (aos.Count != 0)
                 {
-                    AddOpeTotree(an, newNode, null, i.ToString(), png);
-                    i++;
+                    foreach (AbstractCreateOperation an in aos)
+                    {
+                        AddOpeTotree(an, newNode, null, png);
+                    }
                 }
                 newNode.Expand(Node.ExpandOption.Expand); //展开节点
                 this.tree.DeleteNode(previous);
@@ -208,19 +252,20 @@ namespace MolexPlugin.DAL
         /// <param name="eleOper"></param>
         public void MoveDownProgram(Node node, AbstractElectrodeOperation eleOper)
         {
-            string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            string png = dllPath.Replace("application\\", "Images\\");
             Node sibling = node.NextSiblingNode;
             if (sibling != null)
             {
                 List<AbstractCreateOperation> aos = FindOperationForProNode(node, eleOper);
                 Node newNode = this.tree.CreateNode(node.GetColumnDisplayText(0));
                 this.tree.InsertNode(newNode, null, sibling, Tree.NodeInsertOption.Last);
-                int i = 1;
-                foreach (AbstractCreateOperation an in aos)
+                newNode.SetColumnDisplayText(0, node.GetColumnDisplayText(0));
+                newNode.SetColumnDisplayText(2, eleOper.EleModel.EleInfo.EleName);
+                if (aos.Count != 0)
                 {
-                    AddOpeTotree(an, newNode, null, i.ToString(), png);
-                    i++;
+                    foreach (AbstractCreateOperation an in aos)
+                    {
+                        AddOpeTotree(an, newNode, null, png);
+                    }
                 }
                 newNode.Expand(Node.ExpandOption.Expand); //展开节点
                 this.tree.DeleteNode(node);
@@ -234,14 +279,15 @@ namespace MolexPlugin.DAL
         /// <param name="eleOper"></param>
         public void MoveUpOperation(Node node, AbstractElectrodeOperation eleOper)
         {
-            Node previous = node.PreviousNode;
+            Node previous = node.PreviousSiblingNode;
             if (previous != null)
             {
-                this.tree.InsertNode(previous, null, node, Tree.NodeInsertOption.Last);
-                AbstractCreateOperation ao = FindOperationForOperNode(node, eleOper);
+                AbstractCreateOperation ao = FindOperationForOperNode(previous, eleOper);
+                AddOpeTotree(ao, node.ParentNode, node, png);
                 int index = eleOper.Oper.IndexOf(ao);
                 eleOper.Oper.Remove(ao);
-                eleOper.Oper.Insert(index - 1, ao);
+                eleOper.Oper.Insert(index + 1, ao);
+                this.tree.DeleteNode(previous);
             }
         }
         /// <summary>
@@ -254,11 +300,12 @@ namespace MolexPlugin.DAL
             Node sibling = node.NextSiblingNode;
             if (sibling != null)
             {
-                this.tree.InsertNode(node, null, sibling, Tree.NodeInsertOption.Last);
                 AbstractCreateOperation ao = FindOperationForOperNode(node, eleOper);
+                AddOpeTotree(ao, node.ParentNode, sibling, png);
                 int index = eleOper.Oper.IndexOf(ao);
                 eleOper.Oper.Remove(ao);
-                eleOper.Oper.Insert(index + 1, ao);
+                eleOper.Oper.Insert(index - 1, ao);
+                this.tree.DeleteNode(node);
             }
         }
         /// <summary>
@@ -350,9 +397,9 @@ namespace MolexPlugin.DAL
         /// <param name="name"></param>
         /// <param name="pngPath"></param>
         /// <returns></returns>
-        private Node AddOpeTotree(AbstractCreateOperation ao, Node pNode, Node afterNode, string name, string pngPath)
+        private Node AddOpeTotree(AbstractCreateOperation ao, Node pNode, Node afterNode, string pngPath)
         {
-            Node node = this.tree.CreateNode(name);
+            Node node = this.tree.CreateNode(ao.NameModel.OperName);
             this.tree.InsertNode(node, pNode, afterNode, Tree.NodeInsertOption.Last);
             node.SetColumnDisplayText(0, ao.NameModel.OperName);
             node.DisplayIcon = pngPath + ao.NameModel.PngName;
