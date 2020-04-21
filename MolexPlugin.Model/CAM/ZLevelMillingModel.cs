@@ -154,6 +154,29 @@ namespace MolexPlugin.Model
                 builder1.Destroy();
             }
         }
+        /// <summary>
+        /// 设置陡峭角
+        /// </summary>
+        public void SetSteep()
+        {
+            NXOpen.CAM.ZLevelMillingBuilder builder1;
+            builder1 = workPart.CAMSetup.CAMOperationCollection.CreateZlevelMillingBuilder(this.Oper);
+            builder1.CutParameters.SteepContainment.Type = NXOpen.CAM.SteepContainment.Types.SteepOnly;
+
+            builder1.CutParameters.SteepContainment.Angle.Value = 40.0;
+            try
+            {
+                builder1.Commit();
+            }
+            catch (NXException ex)
+            {
+                LogMgr.WriteLog("ZLevelMillingModel.SetSteep 错误" + ex.Message);
+            }
+            finally
+            {
+                builder1.Destroy();
+            }
+        }
     }
 
 }

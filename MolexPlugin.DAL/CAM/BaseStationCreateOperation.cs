@@ -48,8 +48,8 @@ namespace MolexPlugin.DAL
         public override AbstractCreateOperation CopyOperation()
         {
             BaseStationCreateOperation ao = new BaseStationCreateOperation(this.Site, this.ToolName);
-            ao.CreateOperationName();
-          //  ao.SetBoundary(this.floorPt, this.conditions.ToArray());
+            ao.CreateOperationName();          
+            //  ao.SetBoundary(this.floorPt, this.conditions.ToArray());
             return ao;
         }
     }

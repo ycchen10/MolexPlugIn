@@ -76,6 +76,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CAM\FlowCutCreateOperation.cs" />
+    <Compile Include="CAM\ZleveEleOperation.cs" />
+    <Compile Include="CAM\SufaceAndZleveEleOperation.cs" />
+    <Compile Include="CAM\PlanarAndZleveEleOperation.cs" />
+    <Compile Include="CAM\PlanarAndSufaceEleOperation.cs" />
     <Compile Include="CAM\SurfaceContourCreateOperation.cs" />
     <Compile Include="CAM\ZLevelMillingCreateOperation.cs" />
     <Compile Include="CAM\FaceMillingCreateOperation.cs" />
@@ -97,6 +101,7 @@
     <Compile Include="CAM\ElectrodeCAMInfo.cs" />
     <Compile Include="CAM\ElectrodeOperationTemplate.cs" />
     <Compile Include="CAM\ElectrodeCAMNameTemplate.cs" />
+    <Compile Include="ElectrodeOperationFactory.cs" />
     <Compile Include="Electrode\ElectrodeBomBuilder.cs" />
     <Compile Include="Electrode\ElectrodeHeadAnalye.cs" />
     <Compile Include="Electrode\AbstractElectrodeSetValue.cs" />

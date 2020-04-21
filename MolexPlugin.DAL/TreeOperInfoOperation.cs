@@ -175,6 +175,36 @@ namespace MolexPlugin.DAL
             eleOper.Oper.Insert(index + 1, oper);
             AddOpeTotree(oper, proNode, nextNode1, png);
         }
+        public void AddOperation(AbstractElectrodeOperation eleOper, AbstractCreateOperation oper, Node node)
+        {
+            Node nextNode1 = node.FirstChildNode;
+            if (nextNode1 == null)
+            {
+                eleOper.Oper.Insert(eleOper.Oper.Count, oper);
+                AddOpeTotree(oper, node, null, png);
+                return;
+            }
+            bool sibling = true;
+            while (sibling)
+            {
+                Node nextNode2;
+                nextNode2 = nextNode1.NextSiblingNode;
+                if (nextNode2 == null)
+                {
+                    sibling = false;
+                    break;
+                }
+                else
+                {
+                    nextNode1 = nextNode2;
+                }
+            }
+            AbstractCreateOperation ao = FindOperationForOperNode(nextNode1, eleOper);
+            int index = eleOper.Oper.IndexOf(ao);
+            eleOper.Oper.Insert(index + 1, oper);
+            AddOpeTotree(oper, node, nextNode1, png);
+            node.Expand(Node.ExpandOption.Expand); //展开节点
+        }
         /// <summary>
         /// 拷贝程序
         /// </summary>
@@ -216,6 +246,22 @@ namespace MolexPlugin.DAL
         public void DeleteOperation(Node node, AbstractElectrodeOperation eleOper)
         {
             eleOper.Oper.Remove(FindOperationForOperNode(node, eleOper));
+            this.tree.DeleteNode(node);
+        }
+        /// <summary>
+        /// 移动刀路
+        /// </summary>
+        /// <param name="eleOper"></param>
+        /// <param name="node"></param>
+        /// <param name="afterNode"></param>
+        public void MoveOperation(AbstractElectrodeOperation eleOper, Node node, Node afterNode)
+        {
+            AbstractCreateOperation ao1 = FindOperationForOperNode(node, eleOper);
+            AbstractCreateOperation ao2 = FindOperationForOperNode(afterNode, eleOper);
+            this.AddOpeTotree(ao1, afterNode.ParentNode, afterNode, png);
+            eleOper.Oper.Remove(ao1);
+            int index = eleOper.Oper.IndexOf(ao2);
+            eleOper.Oper.Insert(index + 1, ao1);
             this.tree.DeleteNode(node);
         }
         /// <summary>

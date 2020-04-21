@@ -11,15 +11,15 @@ using MolexPlugin.Model;
 namespace MolexPlugin.DAL
 {
     /// <summary>
-    /// 简单电极（没斜度 直电极）
+    ///等高加等宽
     /// </summary>
-    public class SimplenessVerticalEleOperation : AbstractElectrodeOperation
+    public class SufaceAndZleveEleOperation : AbstractElectrodeOperation
     {
-        public SimplenessVerticalEleOperation(ElectrodeModel ele, ElectrodeCAMInfo info) : base(ele, info)
+        public SufaceAndZleveEleOperation(ElectrodeModel ele, ElectrodeCAMInfo info) : base(ele, info)
         {
             CreateOper();
         }
-      
+
         private void CreateOper()
         {
             int count = 1;
@@ -35,21 +35,18 @@ namespace MolexPlugin.DAL
                 this.Oper.Add(twice);
                 count++;
             }
-            FaceMillingCreateOperation face1 = new FaceMillingCreateOperation(count, tool.GetFinishFlatTool()); //光平面           
-            face1.SetBoundary(CamInfo.GetPlaneFaces().ToArray());
-            this.Oper.Add(face1);
-            PlanarMillingCreateOperation planar1 = new PlanarMillingCreateOperation(count, tool.GetFinishFlatTool());//光侧面
-            planar1.SetBoundary(new Point3d(0, 0, this.CamInfo.BaseFace.BoxMinCorner.Z), this.CamInfo.BasePlanarPlanarBoundary.GetHoleBoundary().ToArray());
-            this.Oper.Add(planar1);
+
+            SurfaceContourCreateOperation so = new SurfaceContourCreateOperation(count, "BN1.98");
+            so.SetFaces(this.CamInfo.GetAllFaces().ToArray());
+            so.SetSteep(true);
+            this.Oper.Add(so);
             count++;
 
-            FaceMillingCreateOperation face2 = new FaceMillingCreateOperation(count, tool.GetFinishFlatTool()); //光毛刺           
-            face2.SetBoundary(CamInfo.GetPlaneFaces().ToArray());
-            this.Oper.Add(face2);
-            PlanarMillingCreateOperation planar2 = new PlanarMillingCreateOperation(count, tool.GetFinishFlatTool());//光毛刺
-            planar2.SetBoundary(new Point3d(0, 0, this.CamInfo.BaseFace.BoxMinCorner.Z), this.CamInfo.BasePlanarPlanarBoundary.GetHoleBoundary().ToArray());
-            planar2.SetBurringBool(true);
-            this.Oper.Add(planar2);
+            ZLevelMillingCreateOperation zl = new ZLevelMillingCreateOperation(count, "BN0.98");
+            zl.SetFaces(this.CamInfo.GetAllFaces().ToArray());
+            zl.SetCutLevel(Math.Abs(this.CamInfo.BaseFace.BoxMinCorner.Z - 0.05));
+            zl.SetSteep(true);
+            this.Oper.Add(zl);
             count++;
 
 

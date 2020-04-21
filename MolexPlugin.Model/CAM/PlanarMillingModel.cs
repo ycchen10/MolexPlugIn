@@ -90,7 +90,19 @@ namespace MolexPlugin.Model
             operBuilder.Destroy();
             return data;
         }
-
+        /// <summary>
+        /// 设置去毛刺下刀量（5倍）
+        /// </summary>
+        public void SetBurringDepth()
+        {
+            NXOpen.CAM.PlanarMillingBuilder operBuilder;
+            operBuilder = workPart.CAMSetup.CAMOperationCollection.CreatePlanarMillingBuilder(this.Oper);
+            double dep = operBuilder.CutLevel.CommonDepth.Value;
+            operBuilder.CutLevel.CommonDepth.Value = dep * 5;
+            NXOpen.NXObject nXObject1;
+            nXObject1 = operBuilder.Commit();
+            operBuilder.Destroy();
+        }
         public override void SetRegionStartPoints(params Point3d[] pt)
         {
             NXOpen.CAM.PlanarMillingBuilder planarMillingBuilder1;

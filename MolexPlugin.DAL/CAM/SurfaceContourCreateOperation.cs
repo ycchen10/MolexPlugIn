@@ -16,6 +16,7 @@ namespace MolexPlugin.DAL
     public class SurfaceContourCreateOperation : AbstractCreateOperation
     {
         private List<Face> faces = new List<Face>();
+        private bool steep;
         public SurfaceContourCreateOperation(int site, string tool) : base(site, tool)
         {
 
@@ -26,7 +27,8 @@ namespace MolexPlugin.DAL
             this.Oper.Create(this.NameModel.OperName);
             if (faces.Count > 0)
                 (this.Oper as SurfaceContourModel).SetGeometry(faces.ToArray());
-
+            if (steep)
+                (this.Oper as ZLevelMillingModel).SetSteep();
             this.Oper.SetStock(-inter, -inter);
         }
         /// <summary>
@@ -50,6 +52,14 @@ namespace MolexPlugin.DAL
             so.CreateOperationName();
             // so.SetFaces(this.faces.ToArray());
             return so;
+        }
+        /// <summary>
+        /// 设置陡峭角
+        /// </summary>
+        /// <param name="steep"></param>
+        public void SetSteep(bool steep)
+        {
+            this.steep = steep;
         }
     }
 }

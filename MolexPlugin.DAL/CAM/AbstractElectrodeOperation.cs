@@ -88,14 +88,32 @@ namespace MolexPlugin.DAL
            
         }
         /// <summary>
-        /// 创建加工名字
-        /// </summary>
-        public abstract void CreateOperationNameModel();
-        /// <summary>
         /// 创建加工操作
         /// </summary>
-        public abstract void CreateOperation(bool isInter);
+        public void CreateOperation(bool isInter)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            if (workPart.Tag != this.EleModel.PartTag.Tag)
+                PartUtils.SetPartDisplay(this.EleModel.PartTag);
+            this.CreateCamSetup();
+            this.SetWorkpiece();
+            DeleteObject.UpdateObject();
+            foreach (AbstractCreateOperation ao in Oper)
+            {
+                ao.CreateOperation(Cam, GetInter(isInter));
+            }
+        }
+        /// <summary>
+        ///  创建加工名字
+        /// </summary>
+        public void CreateOperationNameModel()
+        {
+            foreach (AbstractCreateOperation ao in Oper)
+            {
+                ao.CreateOperationName();
+            }
 
+        }     
         protected double GetInter(bool isInter)
         {
             if (isInter)

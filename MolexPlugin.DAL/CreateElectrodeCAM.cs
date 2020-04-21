@@ -21,12 +21,15 @@ namespace MolexPlugin.DAL
 
         public AbstractElectrodeOperation EleOper { get; private set; }
 
-        private ElectrodeCAMInfo camInfo;
+        public ElectrodeCAMInfo CamInfo { get; set; }
 
-        public CreateElectrodeCAM(ElectrodeModel model)
+        private string template;
+        public CreateElectrodeCAM(ElectrodeModel model, string template)
         {
             this.EleModel = model;
-            this.camInfo = new ElectrodeCAMInfo(model);
+            this.CamInfo = new ElectrodeCAMInfo(model);
+            this.template = template;
+            EleOper = ElectrodeOperationFactory.CreateOperation(template, model, CamInfo);
         }
         /// <summary>
         /// 创建电极文件夹
@@ -60,7 +63,8 @@ namespace MolexPlugin.DAL
             }
             theUFSession.Modl.CreateSetOfFeature("电极特征", featureTags.ToArray(), featureTags.Count, 1, out groupTag);
 
-            OffsetRegion.Offset(side, out isok, part.Bodies.ToArray()[0].GetFaces());
+            NXObject obj = OffsetRegion.Offset(side, out isok, part.Bodies.ToArray()[0].GetFaces());
+            obj.SetName(side.ToString());
             return isok;
         }
         /// <summary>
@@ -78,31 +82,42 @@ namespace MolexPlugin.DAL
                 inters.Add("R", this.EleModel.EleInfo.CrudeInter);
             return inters;
         }
-
-        private bool CoypeEle(Dictionary<string, double> inters)
+        private string CoypeEle(string filePath, Dictionary<string, double> inters)
         {
             Session theSession = Session.GetSession();
-            //  PartLoadStatus status;
+            PartLoadStatus status;
+            string newElePath = "";
+            if (inters.Count == 1)
+            {
+                newElePath = filePath + EleModel.EleInfo.EleName + ".prt";
+            }
+            else
+            {
+                string key = inters.Keys.ToArray()[0];
+                string newPath = filePath + key + "\\";
+                newElePath = newPath + EleModel.EleInfo.EleName + "-" + key + ".prt";
+
+            }
+            File.Move(EleModel.WorkpiecePath, newElePath);
+            Part dis = theSession.Parts.OpenDisplay(newElePath, out status);
+            this.EleModel.GetModelForPart(dis);
+            return newElePath;
+        }
+        private bool OffsetInter(Dictionary<string, double> inters)
+        {
             double inter = 0;
-            // string newElePath = "";
+
             if (inters.Count == 1)
             {
                 string key = inters.Keys.ToArray()[0];
-                //  newElePath = filePath + eleModel.EleInfo.EleName + ".prt";
+
                 inter = inters[key];
             }
             else
             {
                 string key = inters.Keys.ToArray()[0];
-                //  string newPath = filePath + key + "\\";
-                //  newElePath = newPath + eleModel.EleInfo.EleName + "-" + key + ".prt";
                 inter = inters[key];
             }
-            //  File.Copy(eleModel.WorkpiecePath, newElePath);
-            //  Part dis = theSession.Parts.OpenDisplay(newElePath, out status);
-            //   this.eleModel.GetModelForPart(dis);
-            //   this.EleOper.EleModel = this.eleModel;
-            //   this.EleOper.CamInfo = new ElectrodeCAMInfo(this.eleModel);
             return SetOffsetInter(this.EleModel.PartTag, -inter);
         }
         /// <summary>
@@ -110,12 +125,6 @@ namespace MolexPlugin.DAL
         /// </summary>
         public void CreateOperName()
         {
-            if (camInfo.GetFlatFaces().Count == 0 && camInfo.GetSteepFaces().Count == 0)
-            {
-                this.EleOper = new SimplenessVerticalEleOperation(this.EleModel, this.camInfo);
-                this.EleOper.CreateOperationNameModel();
-            }
-            this.EleOper = new SimplenessVerticalEleOperation(this.EleModel, this.camInfo);
             this.EleOper.CreateOperationNameModel();
         }
         /// <summary>
@@ -126,9 +135,27 @@ namespace MolexPlugin.DAL
             // string newFilePath = CreateEleFile(filePath);
             PartUtils.SetPartDisplay(this.EleModel.PartTag);
             Dictionary<string, double> inters = GetEleInter();
-            bool isok = CoypeEle(inters);
-
+            bool isok = OffsetInter(inters);
             this.EleOper.CreateOperation(isok);
+            EleModel.PartTag.Save(BasePart.SaveComponents.True, BasePart.CloseAfterSave.True);
+        }
+        /// <summary>
+        /// 计算刀路
+        /// </summary>
+        public void SetGenerateToolPath()
+        {
+            Session theSession = Session.GetSession();
+            Part workPart = theSession.Parts.Work;
+            theSession.ApplicationSwitchImmediate("UG_APP_MANUFACTURING");
+            NXOpen.CAM.NCGroup nCGroup1 = (NXOpen.CAM.NCGroup)workPart.CAMSetup.CAMGroupCollection.FindObject("AAA");
+            workPart.CAMSetup.GenerateToolPath(new CAMObject[1] { nCGroup1 });
+        }
+
+        public void CopyEle(string filePath)
+        {
+            Dictionary<string, double> inters = GetEleInter();
+            string file = CreateEleFile(filePath);
+            CoypeEle(file, inters);
         }
     }
 }

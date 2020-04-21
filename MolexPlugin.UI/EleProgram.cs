@@ -37,6 +37,8 @@
 using System;
 using System.IO;
 using NXOpen;
+using NXOpen.UF;
+using NXOpen.Utilities;
 using NXOpen.BlockStyler;
 using MolexPlugin.DAL;
 using MolexPlugin.Model;
@@ -292,9 +294,9 @@ namespace MolexPlugin
 
                 //tree_operInfo.SetOnDefaultActionHandler(new NXOpen.BlockStyler.Tree.OnDefaultActionCallback(OnDefaultActionCallback));
 
-                tree_operInfo.SetIsDropAllowedHandler(new NXOpen.BlockStyler.Tree.IsDropAllowedCallback(IsDropAllowedCallback)); ;
+                // tree_operInfo.SetIsDropAllowedHandler(new NXOpen.BlockStyler.Tree.IsDropAllowedCallback(IsDropAllowedCallback)); ;
 
-                tree_operInfo.SetIsDragAllowedHandler(new NXOpen.BlockStyler.Tree.IsDragAllowedCallback(IsDragAllowedCallback)); ;
+                // tree_operInfo.SetIsDragAllowedHandler(new NXOpen.BlockStyler.Tree.IsDragAllowedCallback(IsDragAllowedCallback)); ;
 
 
                 //------------------------------------------------------------------------------
@@ -360,8 +362,12 @@ namespace MolexPlugin
                     foreach (CreateElectrodeCAM cam in this.eleCams)
                     {
                         cam.CreateOper();
+                        cam.CopyEle(this.file.Path);
+                        if (togCompute.Value)
+                            cam.SetGenerateToolPath();
                     }
                 }
+                this.Dispose();
             }
             catch (Exception ex)
             {
@@ -413,7 +419,7 @@ namespace MolexPlugin
                     ElectrodeModel model = FindEle();
                     if (model != null)
                     {
-                        CreateElectrodeCAM cam = new CreateElectrodeCAM(model);
+                        CreateElectrodeCAM cam = new CreateElectrodeCAM(model, this.list_box_template.GetSelectedItemStrings()[0]);
                         cam.CreateOperName();
                         treeOper.AddOperTree(cam.EleOper);
                         SetEnumProgram();
@@ -522,7 +528,7 @@ namespace MolexPlugin
                         List<Face> faces = new List<Face>();
                         foreach (TaggedObject tg in seleFace.GetSelectedObjects())
                         {
-                            faces.Add(tg as Face);
+                            faces.Add(AskCompFaceToPartFace(tg as Face));
                         }
                         if (newOper is FaceMillingCreateOperation)
                             (newOper as FaceMillingCreateOperation).SetBoundary(faces.ToArray());
@@ -622,6 +628,7 @@ namespace MolexPlugin
                     {
                         m_highlight = ele;
                         m_highlight.Highlight(true);
+                        SetTemplate(new ElectrodeCAMInfo(ele));
                     }
                 }
             }
@@ -696,6 +703,8 @@ namespace MolexPlugin
                 {
                     TreeListMenu operMenu = this.tree_operInfo.CreateMenu();
                     operMenu.AddMenuItem(1, "添加", "add_new_sc");
+                    if (copyOper != null)
+                        operMenu.AddMenuItem(5, "粘贴", "paste");
                     operMenu.AddMenuItem(2, "向上移动", "arrowup_sc");
                     operMenu.AddMenuItem(3, "向下移动", "arrowdown_sc");
                     operMenu.AddMenuItem(4, "删除", "delete");
@@ -705,7 +714,8 @@ namespace MolexPlugin
                 {
                     TreeListMenu operMenu = this.tree_operInfo.CreateMenu();
                     operMenu.AddMenuItem(1, "复制", "copy");
-                    operMenu.AddMenuItem(2, "粘贴", "paste");
+                    if (copyOper != null)
+                        operMenu.AddMenuItem(2, "粘贴", "paste");
                     operMenu.AddMenuItem(3, "向上移动", "arrowup_sc");
                     operMenu.AddMenuItem(4, "向下移动", "arrowdown_sc");
                     operMenu.AddMenuItem(5, "删除", "delete");
@@ -742,6 +752,12 @@ namespace MolexPlugin
                     {
                         AbstractElectrodeOperation eleOper = FindEleOperForNode(node);
                         treeOper.DeleteProgramNode(node, eleOper);
+                    }
+                    if (menuItemID == 5)
+                    {
+                        copyOper.SetProgramName(GetProgramNumber(node.GetColumnDisplayText(0)));
+                        this.treeOper.AddOperation(FindEleOperForNode(node), copyOper, node);
+
                     }
                 }
                 if (treeOper.NodeIsOperation(node))
@@ -795,22 +811,21 @@ namespace MolexPlugin
         //public void OnDefaultActionCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID)
         //{
         //}
-        public Node.DropType IsDropAllowedCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID, NXOpen.BlockStyler.Node targetNode, int targetColumnID)
-        {
-            LogMgr.WriteLog("*******************");
-            LogMgr.WriteLog(node.DisplayText);
-            LogMgr.WriteLog(targetNode.DisplayText);
-            LogMgr.WriteLog("*******************");
-            return Node.DropType.BeforeAndAfter;
-        }
+        //public Node.DropType IsDropAllowedCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID, NXOpen.BlockStyler.Node targetNode, int targetColumnID)
+        //{
+        //    AbstractElectrodeOperation eleOper = FindEleOperForNode(node.ParentNode);
+        //    if (treeOper.NodeIsOperation(targetNode))
+        //        this.treeOper.MoveOperation(eleOper, node, targetNode);
+        //    return Node.DropType.After;
+        //}
 
-        public Node.DragType IsDragAllowedCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID)
-        {
-            if (treeOper.NodeIsOperation(node))
-                return Node.DragType.All;
-            else
-                return Node.DragType.None;
-        }
+        //public Node.DragType IsDragAllowedCallback(NXOpen.BlockStyler.Tree tree, NXOpen.BlockStyler.Node node, int columnID)
+        //{
+        //    if (treeOper.NodeIsOperation(node))
+        //        return Node.DragType.All;
+        //    else
+        //        return Node.DragType.None;
+        //}
         //------------------------------------------------------------------------------
         //ListBox specific callbacks
         //------------------------------------------------------------------------------
@@ -1051,6 +1066,36 @@ namespace MolexPlugin
         {
             int index = Int32.Parse(temp.Substring(1));
             return index;
+        }
+
+        private Face AskCompFaceToPartFace(Face face)
+        {
+            UFSession theUFSession = UFSession.GetUFSession();
+            Tag facetag = theUFSession.Assem.AskPrototypeOfOcc(face.Tag);
+            return NXObjectManager.Get(facetag) as Face;
+
+        }
+
+        private void SetTemplate(ElectrodeCAMInfo camInfo)
+        {
+            List<Face> flat = camInfo.GetFlatFaces();
+            List<Face> steep = camInfo.GetSteepFaces();
+            if (flat.Count == 0 && steep.Count == 0)
+            {
+                this.list_box_template.SelectedItemString = "直电极";
+            }
+            if (flat.Count > 0 && steep.Count == 0)
+            {
+                this.list_box_template.SelectedItemString = "直+等宽";
+            }
+            if (flat.Count == 0 && steep.Count > 0)
+            {
+                this.list_box_template.SelectedItemString = "直+等高";
+            }
+            if (flat.Count > 0 && steep.Count > 0)
+            {
+                this.list_box_template.SelectedItemString = "等宽+等高";
+            }
         }
     }
 }

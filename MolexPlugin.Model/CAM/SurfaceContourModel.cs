@@ -114,7 +114,18 @@ namespace MolexPlugin.Model
             builder1.Commit();
             builder1.Destroy();
         }
-
+        /// <summary>
+        /// 设置陡峭角
+        /// </summary>
+        public void SetSteep()
+        {
+            NXOpen.CAM.SurfaceContourBuilder builder1;
+            builder1 = workPart.CAMSetup.CAMOperationCollection.CreateSurfaceContourBuilder(this.Oper);
+            builder1.DmareaMillingBuilder.AmSteepOption = NXOpen.CAM.DmAmBuilder.SteepOptTypes.NonSteepNonDirectional;
+            builder1.DmareaMillingBuilder.SteepAngle.Value = 55.0;
+            builder1.Commit();
+            builder1.Destroy();
+        }
     }
 
 }

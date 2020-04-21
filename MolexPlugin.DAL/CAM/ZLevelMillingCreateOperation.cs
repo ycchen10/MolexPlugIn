@@ -17,6 +17,7 @@ namespace MolexPlugin.DAL
     {
         private List<Face> faces = new List<Face>();
         private double level = 0;
+        private bool steep;
         public ZLevelMillingCreateOperation(int site, string tool) : base(site, tool)
         {
 
@@ -29,6 +30,8 @@ namespace MolexPlugin.DAL
                 (this.Oper as ZLevelMillingModel).SetGeometry(faces.ToArray());
             if (level != 0)
                 (this.Oper as ZLevelMillingModel).SetCutLevel(level);
+            if(steep)
+                (this.Oper as ZLevelMillingModel).SetSteep();
             this.Oper.SetStock(-inter, -inter);
         }
         /// <summary>
@@ -61,6 +64,14 @@ namespace MolexPlugin.DAL
             // zo.SetFaces(this.faces.ToArray());
             //  zo.SetCutLevel(this.level);
             return zo;
+        }
+        /// <summary>
+        /// 设置陡峭角
+        /// </summary>
+        /// <param name="steep"></param>
+        public void SetSteep(bool steep)
+        {
+            this.steep = steep;
         }
     }
 }

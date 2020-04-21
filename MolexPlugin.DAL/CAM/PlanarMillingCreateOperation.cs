@@ -17,6 +17,7 @@ namespace MolexPlugin.DAL
     {
         private Point3d floorPt = new Point3d(0, 0, 0);
         private List<BoundaryModel> conditions = new List<BoundaryModel>();
+        private bool burring;
         public PlanarMillingCreateOperation(int site, string tool) : base(site, tool)
         {
 
@@ -28,6 +29,10 @@ namespace MolexPlugin.DAL
             if (conditions.Count != 0)
             {
                 (this.Oper as PlanarMillingModel).SetBoundary(floorPt, conditions.ToArray());
+            }
+            if(burring)
+            {
+                (this.Oper as PlanarMillingModel).SetBurringDepth();
             }
             this.Oper.SetStock(-inter, 0.05);
         }
@@ -47,7 +52,15 @@ namespace MolexPlugin.DAL
             string program = "O000" + this.Site.ToString();
             this.NameModel = ElectrodeCAMNameTemplate.AskOperationNameModelOfPlanarMilling(program, this.ToolName);
         }
-
+        /// <summary>
+        /// 设置去毛刺下刀量
+        /// </summary>
+        /// <param name="burring"></param>
+        public void SetBurringBool(bool burring)
+        {
+            this.burring = burring;
+        }
+       
         public override AbstractCreateOperation CopyOperation()
         {
             PlanarMillingCreateOperation po = new PlanarMillingCreateOperation(this.Site, this.ToolName);

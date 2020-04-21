@@ -11,15 +11,15 @@ using MolexPlugin.Model;
 namespace MolexPlugin.DAL
 {
     /// <summary>
-    /// 简单电极（没斜度 直电极）
+    /// 直加等宽
     /// </summary>
-    public class SimplenessVerticalEleOperation : AbstractElectrodeOperation
+    public class PlanarAndZleveEleOperation : AbstractElectrodeOperation
     {
-        public SimplenessVerticalEleOperation(ElectrodeModel ele, ElectrodeCAMInfo info) : base(ele, info)
+        public PlanarAndZleveEleOperation(ElectrodeModel ele, ElectrodeCAMInfo info) : base(ele, info)
         {
             CreateOper();
         }
-      
+
         private void CreateOper()
         {
             int count = 1;
@@ -41,6 +41,12 @@ namespace MolexPlugin.DAL
             PlanarMillingCreateOperation planar1 = new PlanarMillingCreateOperation(count, tool.GetFinishFlatTool());//光侧面
             planar1.SetBoundary(new Point3d(0, 0, this.CamInfo.BaseFace.BoxMinCorner.Z), this.CamInfo.BasePlanarPlanarBoundary.GetHoleBoundary().ToArray());
             this.Oper.Add(planar1);
+            count++;
+
+            ZLevelMillingCreateOperation zl = new ZLevelMillingCreateOperation(count, "BN0.98");
+            zl.SetFaces(this.CamInfo.GetSteepFaces().ToArray());
+            zl.SetCutLevel(Math.Abs(this.CamInfo.BaseFace.BoxMinCorner.Z - 0.05));
+            this.Oper.Add(zl);
             count++;
 
             FaceMillingCreateOperation face2 = new FaceMillingCreateOperation(count, tool.GetFinishFlatTool()); //光毛刺           
