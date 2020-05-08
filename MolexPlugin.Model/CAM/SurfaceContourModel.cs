@@ -27,9 +27,9 @@ namespace MolexPlugin.Model
 
         public override void Create(string name)
         {
-            base.CreateOperation(this.templateOperName, name, this.GroupModel);
-
+             base.CreateOperation(this.templateOperName, name, this.GroupModel);    
         }
+      
         /// <summary>
         /// 设置加工面
         /// </summary>
@@ -99,6 +99,18 @@ namespace MolexPlugin.Model
             builder1.CutParameters.FloorStock.Value = floorStock;
             NXOpen.NXObject nXObject1;
             nXObject1 = builder1.Commit();
+            builder1.Destroy();
+        }
+        /// <summary>
+        /// 设置驱动
+        /// </summary>
+        /// <param name="types"></param>
+        public void SetDriveMethod(NXOpen.CAM.SurfaceContourBuilder.DriveMethodTypes types)
+        {
+            NXOpen.CAM.SurfaceContourBuilder builder1;
+            builder1 = workPart.CAMSetup.CAMOperationCollection.CreateSurfaceContourBuilder(this.Oper);
+            builder1.SetDriveMethod(types);
+            builder1.Commit();
             builder1.Destroy();
         }
         /// <summary>

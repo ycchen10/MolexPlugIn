@@ -241,7 +241,12 @@ namespace MolexPlugin
                 bom = new ElectrodeBomBuilder(newInfo, this.assemble);
                 if (!builders.Exists(a => a.Model[0].EleInfo.EleName == newInfo.EleName))
                     this.builders.Add(bom);
-
+                else
+                {
+                    ElectrodeBomBuilder bu = builders.Find(a => a.Model[0].EleInfo.EleName == newInfo.EleName);
+                    this.builders.Remove(bu);
+                    this.builders.Add(bom);
+                }
             }
         }
     }

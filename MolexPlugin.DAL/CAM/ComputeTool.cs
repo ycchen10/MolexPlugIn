@@ -56,9 +56,11 @@ namespace MolexPlugin.DAL
         /// <returns></returns>
         public string GetTwiceRoughTool()
         {
+            if (width >= 6.0)
+                return "";
             foreach (double k in twice)
             {
-                if ((k + 0.2) <= width)
+                if ((k ) <= width)
                     return "EM" + k.ToString();
             }
             return "";
@@ -71,7 +73,7 @@ namespace MolexPlugin.DAL
         {
             foreach (double k in twice)
             {
-                if ((k + 0.2) <= width)
+                if ((k ) <= width)
                     return "EM" + (k - 0.02).ToString();
             }
             return "EM2.98";
@@ -85,7 +87,7 @@ namespace MolexPlugin.DAL
         {
             foreach (double k in twice)
             {
-                if ((k + 0.2) <= width)
+                if ((k ) <= width)
                     return "BN" + (k - 0.02).ToString();
             }
             return "BN1.98";

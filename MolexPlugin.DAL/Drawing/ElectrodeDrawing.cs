@@ -176,8 +176,11 @@ namespace MolexPlugin.DAL
             {
                 Point3d dimPt = new Point3d(originPt.X + 10.0, originPt.Y + this.draInfo.DisPt.Y * scale + (10 * (i + 1)), 0);
                 NXOpen.Annotations.Dimension dim = Basic.DrawingUtils.DimensionHorizontal(topView, dimPt, workPoint, elePoint[i], ref err);
-                Basic.DrawingUtils.AppendedTextDim(dim, "EDM SETTING");
-                SetDimColor(dim);
+                if (dim != null)
+                {
+                    Basic.DrawingUtils.AppendedTextDim(dim, "EDM SETTING");
+                    SetDimColor(dim);
+                }
                 //Point3d temp = (elePoint[i].Prototype as Point).Coordinates;
                 //if (temp.X != 0)
                 //{
@@ -196,8 +199,11 @@ namespace MolexPlugin.DAL
             {
                 Point3d dimPt = new Point3d(originPt.X - (this.draInfo.DisPt.X * scale + 8 * (i + 1)), originPt.Y + 10, 0);
                 NXOpen.Annotations.Dimension dim = Basic.DrawingUtils.DimensionVertical(topView, dimPt, workPoint, elePoint[i], ref err);
-                Basic.DrawingUtils.AppendedTextDim(dim, "EDM SETTING");
-                SetDimColor(dim);
+                if (dim != null)
+                {
+                    Basic.DrawingUtils.AppendedTextDim(dim, "EDM SETTING");
+                    SetDimColor(dim);
+                }
                 //Point3d temp = (elePoint[i].Prototype as Point).Coordinates;
                 //if (temp.Y != 0)
                 //{
@@ -218,9 +224,13 @@ namespace MolexPlugin.DAL
         {
             string err = "";
             Point3d dimPt = new Point3d(originPt.X - (this.draInfo.DisPt.X * scale + 10), originPt.Y + (this.draInfo.DisPt.X * scale), 0);
+
             NXOpen.Annotations.Dimension dim = Basic.DrawingUtils.DimensionVertical(topView, dimPt, workPoint, elePoint[0], ref err);
-            Basic.DrawingUtils.AppendedTextDim(dim, "EDM SETTING");
-            SetDimColor(dim);
+            if (dim != null)
+            {
+                Basic.DrawingUtils.AppendedTextDim(dim, "EDM SETTING");
+                SetDimColor(dim);
+            }
         }
 
         private void EleTopDimension(DraftingView topView, Point3d originPt, double scale, Face face)
@@ -232,11 +242,15 @@ namespace MolexPlugin.DAL
             Point3d pt1 = new Point3d(originPt.X - (pre[0] * scale / 2 + 10), originPt.Y, 0);
             Point3d pt2 = new Point3d(originPt.X, originPt.Y - (pre[1] * scale / 2 + 10), 0);
             this.draInfo.GetEdge(face, out xEdge, out yEdge);
-
+            if (xEdge.Count == 0 && yEdge.Count == 0)
+                return;
             NXOpen.Annotations.Dimension dim1 = Basic.DrawingUtils.DimensionVertical(topView, pt1, xEdge[0], xEdge[1], ref err);
-            Basic.DrawingUtils.SetDimensionPrecision(dim1, 0);
+            if (dim1 != null)
+                Basic.DrawingUtils.SetDimensionPrecision(dim1, 0);
             NXOpen.Annotations.Dimension dim2 = Basic.DrawingUtils.DimensionHorizontal(topView, pt2, yEdge[0], yEdge[1], ref err);
-            Basic.DrawingUtils.SetDimensionPrecision(dim2, 0);
+            if (dim2 != null)
+                Basic.DrawingUtils.SetDimensionPrecision(dim2, 0);
+
         }
 
         private void EleProViewDimension(DraftingView topView, Point3d originPt, double scale, Face face, Point elePoint)
@@ -247,8 +261,12 @@ namespace MolexPlugin.DAL
             List<Edge> yEdge = new List<Edge>();
             this.draInfo.GetEdge(face, out xEdge, out yEdge);
             Point3d dimPt = new Point3d(originPt.X, originPt.Y - (pre[1] * scale / 2 + 10), 0);
+            if (xEdge.Count == 0)
+                return;
             NXOpen.Annotations.Dimension dim = Basic.DrawingUtils.DimensionVertical(topView, dimPt, xEdge[0], elePoint, ref err);
-            Basic.DrawingUtils.SetDimensionPrecision(dim, 1);
+            if (dim != null)
+                Basic.DrawingUtils.SetDimensionPrecision(dim, 1);
+
         }
 
         private void PointSort(ref List<Point> points, Matrix4 mat, string axisName)

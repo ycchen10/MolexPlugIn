@@ -136,11 +136,15 @@ namespace MolexPlugin.Model
         /// 设置切削层
         /// </summary>
         /// <param name="zLevel"></param>
-        public void SetCutLevel(double zLevel)
+        public void SetCutLevel(Face zLevel)
         {
             NXOpen.CAM.ZLevelMillingBuilder builder1;
             builder1 = workPart.CAMSetup.CAMOperationCollection.CreateZlevelMillingBuilder(this.Oper);
-            builder1.CutLevel.SetRangeDepth(0, zLevel, NXOpen.CAM.CutLevel.MeasureTypes.TopLevel);
+            FaceData face = FaceUtils.AskFaceData(zLevel);
+            builder1.CutLevel.InitializeData();
+            builder1.CutLevel.RangeType = CutLevel.RangeTypes.Single;
+            builder1.CutLevel.TopZc = 0;
+            builder1.CutLevel.SetRangeDepth(0, Math.Abs(face.BoxMinCorner.Z + 0.05), NXOpen.CAM.CutLevel.MeasureTypes.TopLevel);
             try
             {
                 builder1.Commit();

@@ -84,8 +84,9 @@
     <Compile Include="CAM\FaceMillingModel.cs" />
     <Compile Include="CAM\PlanarMillingModel.cs" />
     <Compile Include="CAM\PointToPointModel.cs" />
-    <Compile Include="OperationNameModel.cs" />
+    <Compile Include="CAM\OperationNameModel.cs" />
     <Compile Include="CAM\ProgramModel.cs" />
+    <Compile Include="ProgramNcGroupModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DatabaseModel\Role.cs" />
     <Compile Include="DatabaseModel\UserInfo.cs" />

@@ -50,6 +50,7 @@ namespace MolexPlugin.Model
         protected void CreateOperation(string templateOperName, string name, NCGroupModel groupModel)
         {
             Part workPart = Session.GetSession().Parts.Work;
+            this.OperName = name;
             NXOpen.CAM.Operation operation1;
             try
             {
@@ -80,7 +81,7 @@ namespace MolexPlugin.Model
             data.ToolNCGroup = this.Oper.GetParent(NXOpen.CAM.CAMSetup.View.MachineTool);
             data.OperGroup = this.Oper.GetParent(NXOpen.CAM.CAMSetup.View.ProgramOrder).Name;
             data.Tool = new ToolDataModel(data.ToolNCGroup);
-            data.OperTime = this.Oper.GetToolpathTime() / 1440.0;
+            data.OperTime = this.Oper.GetToolpathTime();
             data.OprtLength = this.Oper.GetToolpathLength();
             string path = PostOperation(this.Oper);
             GetPostData(data, path);
@@ -147,8 +148,11 @@ namespace MolexPlugin.Model
             }
 
             data.CutterCompenstation = text[10];
-            data.Zmax = text[12];
-            data.Zmin = text[11];
+            double res;
+            if (double.TryParse(text[12], out res))
+                data.Zmax = res;
+            if (double.TryParse(text[11], out res))
+                data.Zmin = res;
 
         }
         /// <summary>
@@ -194,5 +198,6 @@ namespace MolexPlugin.Model
                 theSession.CAMSession.PathDisplay.ShowToolPath(this.Oper);
 
         }
+     
     }
 }

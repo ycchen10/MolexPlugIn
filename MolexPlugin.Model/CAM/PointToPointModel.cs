@@ -8,74 +8,45 @@ using NXOpen;
 
 namespace MolexPlugin.Model
 {
-    public class PointToPointModel
+    public class PointToPointModel : AbstractOperationModel
     {
-        NXOpen.CAM.Operation Oper;
 
-        public PointToPointModel(NXOpen.CAM.Operation oper)
+
+        public PointToPointModel(NXOpen.CAM.Operation oper) : base(oper)
         {
-            this.Oper = oper;
+
         }
         /// <summary>
         /// 获取刀路数据
         /// </summary>
-        public virtual OperationData GetOperationData()
+        public override OperationData GetOperationData()
         {
-            OperationData data = new OperationData();
-            data.Oper = this.Oper;
-            data.OperName = this.Oper.Name.ToString();
-            data.ToolNCGroup = this.Oper.GetParent(NXOpen.CAM.CAMSetup.View.MachineTool);
-            data.OperGroup = this.Oper.GetParent(NXOpen.CAM.CAMSetup.View.ProgramOrder).Name;
-            data.Tool = new ToolDataModel(data.ToolNCGroup);
-            data.OperTime = this.Oper.GetToolpathTime() / 1440.0;
-            data.OprtLength = this.Oper.GetToolpathLength();
-            string path = PostOperation(this.Oper);
-            GetPostData(data, path);
+            OperationData data = base.GetOperationData();
+            NXOpen.CAM.PointToPointBuilder operBuilder;
+            operBuilder = workPart.CAMSetup.CAMOperationCollection.CreatePointToPointBuilder(this.Oper);
+            data.Speed = operBuilder.FeedsBuilder.SpindleRpmBuilder.Value;
+            data.Feed = operBuilder.FeedsBuilder.FeedCutBuilder.Value;
+            data.FloorStock = 0;
+            data.SideStock = 0;
+            data.Stepover = 0;
             return data;
         }
-        /// <summary>
-        /// 后处理
-        /// </summary>
-        /// <param name="op"></param>
-        /// <returns></returns>z
-        private string PostOperation(NXOpen.CAM.Operation op)
-        {
 
-            Part workPart = Session.GetSession().Parts.Work;
-            string filePath = System.IO.Path.GetDirectoryName(workPart.FullPath);
-            NXOpen.CAM.Operation[] ops = { op };
-            string postPath = filePath + "\\" + op.Name + ".txt";
-            if (File.Exists(postPath))
-            {
-                File.Delete(postPath);
-            }
-            workPart.CAMSetup.Postprocess(ops, "mill3ax", postPath, NXOpen.CAM.CAMSetup.OutputUnits.Metric);
-            return postPath;
+
+
+        public override void Create(string name)
+        {
+            throw new NotImplementedException();
         }
-        /// <summary>
-        ///获取后处理数据
-        /// </summary>
-        /// <param name="path"></param>
-        private void GetPostData(OperationData data, string path)
+
+        public override void SetRegionStartPoints(params Point3d[] pt)
         {
-            List<string> text = new List<string>();
-            string line;
-            if (File.Exists(path))
-            {
+            throw new NotImplementedException();
+        }
 
-                StreamReader sr = new StreamReader(path);
-                while ((line = sr.ReadLine()) != null)
-                {
-                    text.Add(line);
-                }
-                sr.Close();
-                File.Delete(path);
-            }
-
-            data.CutterCompenstation = text[10];
-            data.Zmax = text[12];
-            data.Zmin = text[11];
-
+        public override void SetStock(double partStock, double floorStock)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -15,8 +15,8 @@ namespace MolexPlugin.DAL
     /// </summary>
     public class ZLevelMillingCreateOperation : AbstractCreateOperation
     {
-        private List<Face> faces = new List<Face>();
-        private double level = 0;
+        public List<Face> Faces { get; private set; } = new List<Face>();
+        private Face levelFace =null;
         private bool steep;
         public ZLevelMillingCreateOperation(int site, string tool) : base(site, tool)
         {
@@ -26,10 +26,10 @@ namespace MolexPlugin.DAL
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfZLevelMilling(this.NameModel, eleCam);
             this.Oper.Create(this.NameModel.OperName);
-            if (faces.Count > 0)
-                (this.Oper as ZLevelMillingModel).SetGeometry(faces.ToArray());
-            if (level != 0)
-                (this.Oper as ZLevelMillingModel).SetCutLevel(level);
+            if (Faces.Count > 0)
+                (this.Oper as ZLevelMillingModel).SetGeometry(Faces.ToArray());
+            if (levelFace != null)
+                (this.Oper as ZLevelMillingModel).SetCutLevel(levelFace);
             if(steep)
                 (this.Oper as ZLevelMillingModel).SetSteep();
             this.Oper.SetStock(-inter, -inter);
@@ -41,15 +41,15 @@ namespace MolexPlugin.DAL
         /// <param name="conditions"></param>
         public void SetFaces(params Face[] faces)
         {
-            this.faces = faces.ToList();
+            this.Faces = faces.ToList();
         }
         /// <summary>
         /// 设置切削层底
         /// </summary>
         /// <param name="level"></param>
-        public void SetCutLevel(double level)
+        public void SetCutLevel(Face level)
         {
-            this.level = level;
+            this.levelFace = level;
         }
         public override void CreateOperationName()
         {

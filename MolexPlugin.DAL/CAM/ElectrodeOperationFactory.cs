@@ -32,6 +32,11 @@ namespace MolexPlugin.DAL
                 case "等高电极":
                     ao = new ZleveEleOperation(ele, info);
                     break;
+                case "User":
+                    ao = new UserDefinedEleOperation(ele, info);
+                    break;
+                default:
+                    break;
             }
             return ao;
         }

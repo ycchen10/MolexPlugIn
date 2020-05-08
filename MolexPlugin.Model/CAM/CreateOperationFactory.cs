@@ -18,7 +18,7 @@ namespace MolexPlugin.Model
         public static AbstractOperationModel GetOperation(NXOpen.CAM.Operation oper)
         {
             int type, subtype;
-            AbstractOperationModel model = null;          
+            AbstractOperationModel model = null;
             UFSession theUFSession = UFSession.GetUFSession();
             theUFSession.Obj.AskTypeAndSubtype(oper.Tag, out type, out subtype);
             switch (subtype)
@@ -43,8 +43,7 @@ namespace MolexPlugin.Model
 
                     break;
                 case 450:
-                    PointToPointModel point = new PointToPointModel(oper);
-
+                    model = new PointToPointModel(oper);
                     break;
                 default:
                     break;

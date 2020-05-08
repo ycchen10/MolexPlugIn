@@ -131,18 +131,22 @@ namespace MolexPlugin.DAL
             Point3d maxPt = pointComp[1].Coordinates;
             this.work.WorkMatr.ApplyPos(ref minPt);
             this.work.WorkMatr.ApplyPos(ref maxPt);
-            if (Math.Abs(minPt.X) > Math.Abs(maxPt.X))
-                min.X = maxPt.X;
-            else
-                min.X = minPt.X;
-            if (Math.Abs(minPt.Y) > Math.Abs(maxPt.Y))
-                min.Y = maxPt.Y;
-            else
-                min.Y = minPt.Y;
-            if (Math.Abs(minPt.Z) > Math.Abs(maxPt.Z))
-                min.Z = maxPt.Z;
-            else
-                min.Z = minPt.Z;
+            //if (Math.Abs(minPt.X) > Math.Abs(maxPt.X))
+            //    min.X = maxPt.X;
+            //else
+            //    min.X = minPt.X;
+            //if (Math.Abs(minPt.Y) > Math.Abs(maxPt.Y))
+            //    min.Y = maxPt.Y;
+            //else
+            //    min.Y = minPt.Y;
+            //if (Math.Abs(minPt.Z) > Math.Abs(maxPt.Z))
+            //    min.Z = maxPt.Z;
+            //else
+            //    min.Z = minPt.Z;
+
+            min.X = minPt.X;
+            min.Y = maxPt.Y;
+            min.Z = maxPt.Z;
             return min;
         }
         /// <summary>

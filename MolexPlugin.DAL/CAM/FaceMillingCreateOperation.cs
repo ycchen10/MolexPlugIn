@@ -15,7 +15,7 @@ namespace MolexPlugin.DAL
     /// </summary>
     public class FaceMillingCreateOperation : AbstractCreateOperation
     {
-        private List<Face> conditions = new List<Face>();
+        public List<Face> Conditions { get; private set; } = new List<Face>();
         public FaceMillingCreateOperation(int site, string tool) : base(site, tool)
         {
 
@@ -24,8 +24,8 @@ namespace MolexPlugin.DAL
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfFaceMilling(this.NameModel, eleCam);
             this.Oper.Create(this.NameModel.OperName);
-            if (conditions.Count != 0)
-                (this.Oper as FaceMillingModel).SetBoundary(conditions.ToArray());
+            if (Conditions.Count != 0)
+                (this.Oper as FaceMillingModel).SetBoundary(Conditions.ToArray());
             this.Oper.SetStock(0.05, -inter);
         }
         /// <summary>
@@ -35,13 +35,13 @@ namespace MolexPlugin.DAL
         /// <param name="conditions"></param>
         public void SetBoundary(params Face[] conditions)
         {
-            this.conditions = conditions.ToList();
+            this.Conditions = conditions.ToList();
         }
 
         private List<BoundaryModel> GetBoundary()
         {
             List<BoundaryModel> models = new List<BoundaryModel>();
-            foreach (Face face in conditions)
+            foreach (Face face in Conditions)
             {
                 PlanarBoundary pb = new PlanarBoundary(face);
                 BoundaryModel model1;
@@ -62,7 +62,7 @@ namespace MolexPlugin.DAL
         {
             FaceMillingCreateOperation fo = new FaceMillingCreateOperation(this.Site, this.ToolName);
             fo.CreateOperationName();
-           // fo.SetBoundary(this.conditions.ToArray());
+            // fo.SetBoundary(this.conditions.ToArray());
             return fo;
         }
     }

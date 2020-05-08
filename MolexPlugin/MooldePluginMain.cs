@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using NXOpen;
 using NXOpen.Utilities;
 using NXOpen.UF;
+using MolexPlugin.DAL;
 
 namespace MolexPlugin
 {
     public class MooldePluginMain
     {
-
         public static int Main(string[] args)
         {
             #region  公共工具
@@ -130,12 +130,31 @@ namespace MolexPlugin
                 new BomCreateForm().Show();
             }
             #endregion
-           // test.ces();
+            // test.ces();
             if (args[0] == "MENU_EleProgram")
             {
                 EleProgram mode = new EleProgram();
                 mode.Show();
             }
+            if (args[0] == "MENU_Program")
+            {
+                CrateUserDefinedOperation.Create();
+            }
+            if (args[0] == "MENU_ExportElectrode")
+            {
+                ExportElectrode ele = new ExportElectrode();
+                ele.Show();
+            }
+            if (args[0] == "MENU_AddProgram")
+            {
+                AddProgram ele = new AddProgram();
+                ele.Show();
+            }
+            if (args[0] == "MENU_PostShopdoc")
+            {
+                PostShopdocCreateForm.Show();
+            }
+
             return 1;
         }
         /// <summary>

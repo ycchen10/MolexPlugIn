@@ -79,7 +79,7 @@ namespace MolexPlugin.DAL
                 this.MinSlope = angle;
                 return;
             }
-            if (this.face.SolidFaceType == Face.FaceType.Cylindrical)
+            if (this.face.SolidFaceType == Face.FaceType.Cylindrical) //圆柱
             {
 
                 this.MaxRadius = Math.Round(this.FaceData.Radius, 3) * this.FaceData.IntNorm;
@@ -87,7 +87,7 @@ namespace MolexPlugin.DAL
                 AskFace(vec);
                 return;
             }
-            if (this.face.SolidFaceType == Face.FaceType.Conical)
+            if (this.face.SolidFaceType == Face.FaceType.Conical)//圆锥
             {
                 this.MaxRadius = Math.Round(this.FaceData.Radius, 3) * this.FaceData.IntNorm;
                 this.MinRadius = Math.Round(this.FaceData.RadData, 3) * this.FaceData.IntNorm;

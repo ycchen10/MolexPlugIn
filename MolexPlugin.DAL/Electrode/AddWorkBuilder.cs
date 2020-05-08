@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NXOpen;
 using NXOpen.UF;
+using NXOpen.Utilities;
 using Basic;
 using MolexPlugin.Model;
 
@@ -36,13 +37,13 @@ namespace MolexPlugin.DAL
                 return false;
             NXOpen.Assemblies.Component workComp = work.Load(asmPart);
             PartUtils.SetPartDisplay(asmPart);
-            PartUtils.SetPartWork(workComp);           
+            PartUtils.SetPartWork(workComp);
             Model.Edm.Load(work.Model.PartTag);
             CartesianCoordinateSystem csys = asmPart.WCS.Save();
             csys.Name = "WORK" + workNumber.ToString();
             csys.Layer = 200;
-            csys.Color = 186;         
-            PartUtils.SetPartDisplay(asmPart);         
+            csys.Color = 186;
+            PartUtils.SetPartDisplay(asmPart);
             singleton.AddWork(work.Model);
             return true;
         }
@@ -57,15 +58,15 @@ namespace MolexPlugin.DAL
         {
             WorkModel work = this.Model.Works.Find(x => x.WorkNumber == workNumber);
             if (work != null)
-            {
-                NXOpen.Assemblies.Component workComp = work.PartTag.OwningComponent;
-                PartUtils.SetPartWork(workComp);
+            {              
+                PartUtils.SetPartWork(work.GetPartComp(asmPart));
                 DeleCsys(workNumber);
                 work.AlterMatr(mat);
-                CartesianCoordinateSystem csys = work.PartTag.WCS.Save();
+                CartesianCoordinateSystem csys = asmPart.WCS.Save();
                 csys.Name = "WORK" + workNumber.ToString();
                 csys.Color = 186;
                 csys.Layer = 200;
+                PartUtils.SetPartDisplay(asmPart);
                 return true;
             }
             return false;
@@ -95,7 +96,13 @@ namespace MolexPlugin.DAL
             theUFSessino.Obj.CycleByName(csysName, ref csys);
             if (csys != Tag.Null)
             {
-                theUFSessino.Obj.DeleteObject(csys);
+                WorkModel work = Model.Works.Find(a => a.WorkNumber == workNumber);
+                if (work != null)
+                {                 
+                    DeleteObject.Delete(NXObjectManager.Get(csys) as NXObject);
+                  
+                }
+
 
             }
         }

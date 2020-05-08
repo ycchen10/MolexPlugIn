@@ -68,6 +68,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MolexPlugin.DAL\MolexPlugin.DAL.csproj">
+      <Project>{85A09F15-1C46-42E8-AC5F-49DD06C2AB91}</Project>
+      <Name>MolexPlugin.DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MolexPlugin.UI\MolexPlugin.UI.csproj">
       <Project>{cfbfe5b3-b2af-41fc-9f36-087dc29dc1f9}</Project>
       <Name>MolexPlugin.UI</Name>

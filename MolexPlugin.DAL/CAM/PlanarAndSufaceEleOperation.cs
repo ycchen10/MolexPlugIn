@@ -44,7 +44,9 @@ namespace MolexPlugin.DAL
             count++;
 
             SurfaceContourCreateOperation so = new SurfaceContourCreateOperation(count, "BN1.98");
-            so.SetFaces(this.CamInfo.GetFlatFaces().ToArray());
+            List<Face> faces = this.CamInfo.GetFlatFaces();
+            if (faces.Count > 0)
+                so.SetFaces(faces.ToArray());
             this.Oper.Add(so);
             count++;
 

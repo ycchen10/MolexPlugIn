@@ -18,7 +18,8 @@ namespace MolexPlugin
         }
 
         public void Create()
-        {           
+        {
+            Basic.CsysUtils.SetWcsToAbs();       
             MoveObjectFactory.CreateMove(this.uiName);
         }
 

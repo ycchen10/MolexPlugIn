@@ -44,8 +44,12 @@ namespace MolexPlugin.DAL
             count++;
 
             ZLevelMillingCreateOperation zl = new ZLevelMillingCreateOperation(count, "BN0.98");
-            zl.SetFaces(this.CamInfo.GetSteepFaces().ToArray());
-            zl.SetCutLevel(Math.Abs(this.CamInfo.BaseFace.BoxMinCorner.Z - 0.05));
+            List<Face> faces = this.CamInfo.GetSteepFaces();
+            if (faces.Count > 0)
+            {
+                zl.SetFaces(faces.ToArray());
+                zl.SetCutLevel(this.CamInfo.BaseFace.Face);
+            }
             this.Oper.Add(zl);
             count++;
 

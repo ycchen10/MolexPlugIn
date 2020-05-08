@@ -81,7 +81,8 @@ namespace MolexPlugin.DAL
         public static AbstractOperationModel CreateOperationOfSurfaceContour(OperationNameModel model, ElectrodeCAM cam)
         {
             NCGroupModel group = GetNcGroupModelOfName(model, cam);
-            return new SurfaceContourModel(group, model.templateName, model.templateOperName);
+            SurfaceContourModel sur = new SurfaceContourModel(group, model.templateName, model.templateOperName);          
+            return sur;
         }
 
         /// <summary>

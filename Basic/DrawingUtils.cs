@@ -404,6 +404,12 @@ namespace Basic
         /// <param name="obj2"></param>
         public static Dimension DimensionHorizontal(DraftingView view, Point3d ori, NXObject obj1, NXObject obj2, ref string errorMsg)
         {
+            if (obj1 == null || obj2 == null)
+            {
+                LogMgr.WriteLog("DrawingUtils:DimensionVertical" + "标注为空");
+                return null;
+            }
+
             Session theSession = Session.GetSession();
             Part workPart = theSession.Parts.Work;
             Part displayPart = theSession.Parts.Display;
@@ -492,6 +498,12 @@ namespace Basic
         /// <param name="obj2"></param>
         public static Dimension DimensionVertical(DraftingView view, Point3d ori, NXObject obj1, NXObject obj2, ref string errorMsg)
         {
+            if (obj1 == null || obj2 == null)
+            {
+                LogMgr.WriteLog("DrawingUtils:DimensionVertical" + "标注为空");
+                return null;
+            }
+               
             Session theSession = Session.GetSession();
             Part workPart = theSession.Parts.Work;
             Part displayPart = theSession.Parts.Display;

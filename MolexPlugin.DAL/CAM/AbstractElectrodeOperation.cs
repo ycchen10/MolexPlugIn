@@ -98,9 +98,10 @@ namespace MolexPlugin.DAL
             this.CreateCamSetup();
             this.SetWorkpiece();
             DeleteObject.UpdateObject();
+            double inter = GetInter(isInter);
             foreach (AbstractCreateOperation ao in Oper)
             {
-                ao.CreateOperation(Cam, GetInter(isInter));
+                ao.CreateOperation(Cam, inter);
             }
         }
         /// <summary>

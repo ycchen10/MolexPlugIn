@@ -146,7 +146,7 @@ namespace MolexPlugin.DAL
             OperationNameModel model = new OperationNameModel()
             {
                 templateName = "electrode",
-                templateOperName = "C1.98",
+                templateOperName = "CQG",
                 ProgramName = program,
                 OperName = tool + "-C-F",
                 PngName = "210.bmp",

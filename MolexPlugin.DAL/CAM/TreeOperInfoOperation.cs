@@ -115,7 +115,7 @@ namespace MolexPlugin.DAL
         /// <summary>
         /// 删除全部Node
         /// </summary>
-        private void DeleteAllNode()
+        public void DeleteAllNode()
         {
             foreach (Node nd in GetProgramNode())
             {
@@ -148,7 +148,7 @@ namespace MolexPlugin.DAL
         public void AddOperation(AbstractElectrodeOperation eleOper, AbstractCreateOperation oper)
         {
             Node proNode = FindNodeForProName(oper.NameModel.ProgramName);
-            Node nextNode1 = proNode.NextNode;
+            Node nextNode1 = proNode.FirstChildNode;
             if (nextNode1 == null)
             {
                 eleOper.Oper.Insert(eleOper.Oper.Count, oper);

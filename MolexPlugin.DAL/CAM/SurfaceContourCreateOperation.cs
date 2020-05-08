@@ -15,7 +15,7 @@ namespace MolexPlugin.DAL
     /// </summary>
     public class SurfaceContourCreateOperation : AbstractCreateOperation
     {
-        private List<Face> faces = new List<Face>();
+        public List<Face> Faces { get; private set; } = new List<Face>();
         private bool steep;
         public SurfaceContourCreateOperation(int site, string tool) : base(site, tool)
         {
@@ -25,10 +25,11 @@ namespace MolexPlugin.DAL
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfSurfaceContour(this.NameModel, eleCam);
             this.Oper.Create(this.NameModel.OperName);
-            if (faces.Count > 0)
-                (this.Oper as SurfaceContourModel).SetGeometry(faces.ToArray());
+            (this.Oper as SurfaceContourModel).SetDriveMethod(SurfaceContourBuilder.DriveMethodTypes.AreaMilling);
+            if (Faces.Count > 0)
+                (this.Oper as SurfaceContourModel).SetGeometry(Faces.ToArray());
             if (steep)
-                (this.Oper as ZLevelMillingModel).SetSteep();
+                (this.Oper as SurfaceContourModel).SetSteep();
             this.Oper.SetStock(-inter, -inter);
         }
         /// <summary>
@@ -38,7 +39,7 @@ namespace MolexPlugin.DAL
         /// <param name="conditions"></param>
         public void SetFaces(params Face[] faces)
         {
-            this.faces = faces.ToList();
+            this.Faces = faces.ToList();
         }
         public override void CreateOperationName()
         {

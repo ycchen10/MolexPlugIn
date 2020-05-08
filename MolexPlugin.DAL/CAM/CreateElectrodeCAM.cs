@@ -64,7 +64,12 @@ namespace MolexPlugin.DAL
             theUFSession.Modl.CreateSetOfFeature("电极特征", featureTags.ToArray(), featureTags.Count, 1, out groupTag);
 
             NXObject obj = OffsetRegion.Offset(side, out isok, part.Bodies.ToArray()[0].GetFaces());
-            obj.SetName(side.ToString());
+            if (isok)
+            {
+                obj.SetName(side.ToString());
+                AttributeUtils.AttributeOperation("Inter", isok, part);
+              
+            }
             return isok;
         }
         /// <summary>
@@ -132,12 +137,21 @@ namespace MolexPlugin.DAL
         /// </summary>
         public void CreateOper()
         {
-            // string newFilePath = CreateEleFile(filePath);
             PartUtils.SetPartDisplay(this.EleModel.PartTag);
-            Dictionary<string, double> inters = GetEleInter();
-            bool isok = OffsetInter(inters);
-            this.EleOper.CreateOperation(isok);
-            EleModel.PartTag.Save(BasePart.SaveComponents.True, BasePart.CloseAfterSave.True);
+            Session theSession = Session.GetSession();
+            try
+            {
+                if (this.EleModel.PartTag.CAMSetup != null)
+                    return;
+            }
+            catch
+            {
+                Dictionary<string, double> inters = GetEleInter();
+                bool isok = OffsetInter(inters);
+                this.EleOper.CreateOperation(isok);
+                theSession.ApplicationSwitchImmediate("UG_APP_MANUFACTURING");
+                EleModel.PartTag.Save(BasePart.SaveComponents.False, BasePart.CloseAfterSave.False);
+            }
         }
         /// <summary>
         /// 计算刀路
@@ -149,6 +163,7 @@ namespace MolexPlugin.DAL
             theSession.ApplicationSwitchImmediate("UG_APP_MANUFACTURING");
             NXOpen.CAM.NCGroup nCGroup1 = (NXOpen.CAM.NCGroup)workPart.CAMSetup.CAMGroupCollection.FindObject("AAA");
             workPart.CAMSetup.GenerateToolPath(new CAMObject[1] { nCGroup1 });
+            EleModel.PartTag.Save(BasePart.SaveComponents.False, BasePart.CloseAfterSave.False);
         }
 
         public void CopyEle(string filePath)

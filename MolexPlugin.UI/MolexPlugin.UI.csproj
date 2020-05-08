@@ -68,9 +68,18 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddProgram.cs" />
     <Compile Include="Electrode\AddEdmAsm.cs" />
     <Compile Include="Electrode\AddWork.cs" />
     <Compile Include="EleProgram.cs" />
+    <Compile Include="ExportElectrode.cs" />
+    <Compile Include="PostShopdoc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PostShopdoc.Designer.cs">
+      <DependentUpon>PostShopdoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PostShopdocCreateForm.cs" />
     <Compile Include="Tool\AnalyzeBodyAndFace.cs" />
     <Compile Include="Electrode\BomCreateForm.cs" />
     <Compile Include="Electrode\BomForm.cs">
@@ -140,6 +149,9 @@
     <EmbeddedResource Include="Electrode\EleStandardSeatForm.resx">
       <DependentUpon>EleStandardSeatForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PostShopdoc.resx">
+      <DependentUpon>PostShopdoc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -149,6 +161,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Resources\SetElecParam.bmp" />
   </ItemGroup>
   <ItemGroup />

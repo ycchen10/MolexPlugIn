@@ -309,6 +309,8 @@ namespace MolexPlugin
 
                 //------------------------------------------------------------------------------
                 #endregion
+
+                this.file.Show = false;
             }
             catch (Exception ex)
             {
@@ -339,6 +341,7 @@ namespace MolexPlugin
                 this.seleFace.Show = false;
                 this.togPost.Show = false;
                 this.enumReferenceTool.Show = false;
+                
             }
             catch (Exception ex)
             {
@@ -356,18 +359,27 @@ namespace MolexPlugin
             try
             {
                 //---- Enter your callback code here -----
+                UserInfoSingleton user = UserInfoSingleton.GetInstance();
+                if (user == null)
+                    return 1;
+
                 if (this.eleCams.Count > 0)
                 {
                     // theSession.Parts.CloseAll(BasePart.CloseModified.CloseModified, null);
                     foreach (CreateElectrodeCAM cam in this.eleCams)
                     {
+                        AttributeUtils.AttributeOperation("CAMUser", user.UserInfo.UserName, cam.EleModel.PartTag);
                         cam.CreateOper();
-                        cam.CopyEle(this.file.Path);
                         if (togCompute.Value)
                             cam.SetGenerateToolPath();
                     }
+
+                    //foreach (CreateElectrodeCAM cam in this.eleCams)
+                    //{
+                    //    cam.CopyEle(this.file.Path);
+                    //}
                 }
-                this.Dispose();
+
             }
             catch (Exception ex)
             {
@@ -423,6 +435,9 @@ namespace MolexPlugin
                         cam.CreateOperName();
                         treeOper.AddOperTree(cam.EleOper);
                         SetEnumProgram();
+                        CreateElectrodeCAM old = this.eleCams.Find(a => a.EleModel.EleInfo.EleName.Equals(model.EleInfo.EleName, StringComparison.CurrentCultureIgnoreCase));
+                        if (old != null)
+                            this.eleCams.Remove(old);
                         this.eleCams.Add(cam);
                     }
 
@@ -439,6 +454,7 @@ namespace MolexPlugin
                     newOper = new TwiceRoughCreateOperation(GetProgramNumber(this.enumProgram.ValueAsString), this.enumTool.ValueAsString);
                     newOper.CreateOperationName();
                     (newOper as TwiceRoughCreateOperation).SetReferencetool(this.enumReferenceTool.ValueAsString);
+                    this.buttAdd.Label = "添加刀路";
                 }
                 else if (block == button_profile)  //2D 光侧
                 {
@@ -446,55 +462,60 @@ namespace MolexPlugin
                     SetEnumTool(this.enumTool, "FinishPlaneTool");
                     this.groupParameter.Enable = true;
                     this.enumReferenceTool.Show = false;
-                    this.seleFace.Show = false;
+                    // this.seleFace.Show = false;
                     this.enumTool.ValueAsString = "EM2.98";
                     newOper = new PlanarMillingCreateOperation(GetProgramNumber(this.enumProgram.ValueAsString), this.enumTool.ValueAsString);
                     newOper.CreateOperationName();
+                    this.buttAdd.Label = "添加刀路";
                 }
                 else if (block == button_boundaries)  //2D 光顶
                 {
                     //---------Enter your code here-----------
                     SetEnumTool(this.enumTool, "FinishPlaneTool");
                     this.groupParameter.Enable = true;
-                    this.seleFace.Show = true;
+                    //this.seleFace.Show = true;
                     this.enumReferenceTool.Show = false;
                     this.enumTool.ValueAsString = "EM2.98";
                     newOper = new FaceMillingCreateOperation(GetProgramNumber(this.enumProgram.ValueAsString), this.enumTool.ValueAsString);
                     newOper.CreateOperationName();
+                    this.buttAdd.Label = "添加刀路";
                 }
                 else if (block == button_zlevel) //等高
                 {
                     //---------Enter your code here-----------
                     SetEnumTool(this.enumTool, "FinishZLevelTool");
                     this.groupParameter.Enable = true;
-                    this.seleFace.Show = true;
+                    // this.seleFace.Show = true;
                     this.enumReferenceTool.Show = false;
                     this.enumTool.ValueAsString = "BN0.98";
                     newOper = new ZLevelMillingCreateOperation(GetProgramNumber(this.enumProgram.ValueAsString), this.enumTool.ValueAsString);
                     newOper.CreateOperationName();
+                    this.buttAdd.Label = "添加刀路";
                 }
                 else if (block == button_fixed) //等宽
                 {
                     //---------Enter your code here-----------
                     SetEnumTool(this.enumTool, "FinishBallTool");
                     this.groupParameter.Enable = true;
-                    this.seleFace.Show = true;
+                    //this.seleFace.Show = true;
                     this.enumReferenceTool.Show = false;
                     this.enumTool.ValueAsString = "BN0.98";
                     newOper = new SurfaceContourCreateOperation(GetProgramNumber(this.enumProgram.ValueAsString), this.enumTool.ValueAsString);
                     newOper.CreateOperationName();
+                    this.buttAdd.Label = "添加刀路";
                 }
                 else if (block == button_flowcut) //清根
                 {
                     //---------Enter your code here-----------
                     SetEnumTool(this.enumTool, "FinishBallTool");
                     this.groupParameter.Enable = true;
-                    this.seleFace.Show = true;
+                    //this.seleFace.Show = true;
                     this.enumReferenceTool.Show = true;
                     this.enumTool.ValueAsString = "BN0.58";
                     this.enumReferenceTool.ValueAsString = "BN0.98";
                     newOper = new FlowCutCreateOperation(GetProgramNumber(this.enumProgram.ValueAsString), this.enumTool.ValueAsString);
                     newOper.CreateOperationName();
+                    this.buttAdd.Label = "添加刀路";
                 }
                 else if (block == enumProgram)
                 {
@@ -624,11 +645,19 @@ namespace MolexPlugin
                     m_highlight.Highlight(false);
                 foreach (ElectrodeModel ele in assemble.Electrodes)
                 {
-                    if (ele.Node.Equals(node))
+                    if (node.Equals(ele.Node))
                     {
                         m_highlight = ele;
                         m_highlight.Highlight(true);
-                        SetTemplate(new ElectrodeCAMInfo(ele));
+                        CreateElectrodeCAM cam = this.eleCams.Find(a => a.EleModel.EleInfo.EleName.Equals(ele.EleInfo.EleName));
+                        if (cam == null)
+                        {
+                            SetTemplate(new ElectrodeCAMInfo(ele));
+                            this.treeOper.DeleteAllNode();
+                        }
+
+                        else
+                            this.treeOper.AddOperTree(cam.EleOper);
                     }
                 }
             }
@@ -931,7 +960,7 @@ namespace MolexPlugin
             {
                 foreach (ElectrodeModel em in assemble.Electrodes)
                 {
-                    if (em.Node.Equals(seleNode[0]))
+                    if (seleNode[0].Equals(em.Node))
                         return em;
                 }
             }
@@ -991,48 +1020,95 @@ namespace MolexPlugin
         /// <param name="ao"></param>
         private void SetToolType(AbstractCreateOperation ao)
         {
-            if (ao is TwiceRoughCreateOperation || ao is RoughCreateOperation)
+
+            if (ao is RoughCreateOperation)
             {
                 SetEnumTool(this.enumTool, "RoughPlaneTool");
+                // this.seleFace.Show = false;
+                this.enumReferenceTool.Show = false;
                 this.seleFace.Show = false;
+                this.buttAdd.Label = "修改参数";
+                return;
+            }
+            if (ao is TwiceRoughCreateOperation)
+            {
+                SetEnumTool(this.enumReferenceTool, "RoughPlaneTool");
+                SetEnumTool(this.enumTool, "RoughPlaneTool");
+                //this.seleFace.Show = false;            
+                this.enumReferenceTool.Show = true;
+                string reTool = (ao as TwiceRoughCreateOperation).ReferenceTool;
+                if (!reTool.Equals(""))
+                    this.enumReferenceTool.ValueAsString = (ao as TwiceRoughCreateOperation).ReferenceTool;
+                this.buttAdd.Label = "修改参数";
                 return;
             }
             if (ao is PlanarMillingCreateOperation
                 || ao is BaseStationCreateOperation)
             {
                 SetEnumTool(this.enumTool, "FinishPlaneTool");
-                this.seleFace.Show = false;
+                // this.seleFace.Show = false;              
                 this.enumReferenceTool.Show = false;
+                this.buttAdd.Label = "修改参数";
                 return;
             }
             if (ao is FaceMillingCreateOperation)
             {
                 SetEnumTool(this.enumTool, "FinishPlaneTool");
-                this.seleFace.Show = true;
                 this.enumReferenceTool.Show = false;
+                // this.seleFace.Show = true;
+                //List<Face> face = (ao as FaceMillingCreateOperation).Conditions;
+                //if (face.Count != 0)
+                //{
+                //    this.seleFace.SetSelectedObjects(AskPartFaceToCompFace(face).ToArray());
+                //}
+                this.buttAdd.Label = "修改参数";
                 return;
             }
             if (ao is ZLevelMillingCreateOperation)
             {
                 SetEnumTool(this.enumTool, "FinishZLevelTool");
-                this.seleFace.Show = true;
+                // this.seleFace.Show = true;
                 this.enumReferenceTool.Show = false;
+                //List<Face> face = (ao as ZLevelMillingCreateOperation).Faces;
+                //if (face.Count != 0)
+                //{
+                //    this.seleFace.SetSelectedObjects(AskPartFaceToCompFace(face).ToArray());
+                //}
+                this.buttAdd.Label = "修改参数";
                 return;
             }
             if (ao is SurfaceContourCreateOperation)
             {
                 SetEnumTool(this.enumTool, "FinishBallTool");
-                this.seleFace.Show = true;
+                // this.seleFace.Show = true;
                 this.enumReferenceTool.Show = false;
+                //List<Face> face = (ao as SurfaceContourCreateOperation).Faces;
+                //if (face.Count != 0)
+                //{
+                //    this.seleFace.SetSelectedObjects(AskPartFaceToCompFace(face).ToArray());
+                //}
+                this.buttAdd.Label = "修改参数";
                 return;
             }
             if (ao is FlowCutCreateOperation)
             {
                 SetEnumTool(this.enumTool, "FinishBallTool");
-                this.seleFace.Show = true;
+                // this.seleFace.Show = true;
                 this.enumReferenceTool.Show = true;
+                //List<Face> face = (ao as FlowCutCreateOperation).Faces;
+                //if (face.Count != 0)
+                //{
+                //    this.seleFace.SetSelectedObjects(AskPartFaceToCompFace(face).ToArray());
+                //}
+                string reTool = (ao as FlowCutCreateOperation).ReferencetoolName;
+                if (!reTool.Equals(""))
+                    this.enumReferenceTool.ValueAsString = (ao as FlowCutCreateOperation).ReferencetoolName;
+                this.buttAdd.Label = "修改参数";
                 return;
             }
+
+
+
         }
         /// <summary>
         /// 查找操作
@@ -1075,7 +1151,18 @@ namespace MolexPlugin
             return NXObjectManager.Get(facetag) as Face;
 
         }
-
+        private List<Face> AskPartFaceToCompFace(List<Face> faces)
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            UFSession theUFSession = UFSession.GetUFSession();
+            List<Face> compFaces = new List<Face>();
+            NXOpen.Assemblies.Component ct = AssmbliesUtils.GetPartComp(workPart, faces[0].OwningPart as Part);
+            foreach (Face fe in faces)
+            {
+                compFaces.Add(AssmbliesUtils.GetNXObjectOfOcc(ct.Tag, fe.Tag) as Face);
+            }
+            return compFaces;
+        }
         private void SetTemplate(ElectrodeCAMInfo camInfo)
         {
             List<Face> flat = camInfo.GetFlatFaces();
@@ -1097,5 +1184,9 @@ namespace MolexPlugin
                 this.list_box_template.SelectedItemString = "等宽+等高";
             }
         }
+
+
+
+
     }
 }

@@ -30,30 +30,31 @@ namespace MolexPlugin
             Part workPart = Session.GetSession().Parts.Work;
             MoldInfoModel mold = new MoldInfoModel(workPart);
             string type = AttributeUtils.GetAttrForString(workPart, "PartType");
-            if (type.Equals("ASM"))
-            {
-                assemble = AssembleSingleton.Instance().GetAssemble(mold.MoldNumber + "-" + mold.WorkpieceNumber);
+            assemble = AssembleSingleton.Instance().GetAssemble(mold.MoldNumber + "-" + mold.WorkpieceNumber);
+            //if (type.Equals("ASM"))
+            //{
+            //    assemble = AssembleSingleton.Instance().GetAssemble(mold.MoldNumber + "-" + mold.WorkpieceNumber);
 
-                foreach (WorkModel work in assemble.Works)
-                {
-                    if (!AttributeUtils.GetAttrForBool(work.PartTag, "Interference"))
-                    {
-                        UI.GetUI().NXMessageBox.Show("提示", NXMessageBox.DialogType.Error, "WORK" + work.WorkNumber.ToString()
-                            + "没有检查电极");
-                        return false;
-                    }
+            //    foreach (WorkModel work in assemble.Works)
+            //    {
+            //        if (!AttributeUtils.GetAttrForBool(work.PartTag, "Interference"))
+            //        {
+            //            UI.GetUI().NXMessageBox.Show("提示", NXMessageBox.DialogType.Error, "WORK" + work.WorkNumber.ToString()
+            //                + "没有检查电极");
+            //            return false;
+            //        }
 
-                }
-                if (assemble.IsAssmbleOk())
+            //    }
+            if (assemble.IsAssmbleOk())
                     return true;
                 else
                     return false;
-            }
-            else
-            {
-                UI.GetUI().NXMessageBox.Show("提示", NXMessageBox.DialogType.Error, "请切换到ASM下");
-                return false;
-            }
+            
+            //else
+            //{
+            //    UI.GetUI().NXMessageBox.Show("提示", NXMessageBox.DialogType.Error, "请切换到ASM下");
+            //    return false;
+            //}
 
         }
         public void Show()

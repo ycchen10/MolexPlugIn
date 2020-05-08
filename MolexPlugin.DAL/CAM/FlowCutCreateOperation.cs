@@ -15,9 +15,9 @@ namespace MolexPlugin.DAL
     /// </summary>
     public class FlowCutCreateOperation : AbstractCreateOperation
     {
-        private List<Face> faces = new List<Face>();
+        public List<Face> Faces { get; private set; } = new List<Face>();
 
-        private string referencetoolName = "";
+        public string ReferencetoolName { get; private set; } = "";
         public FlowCutCreateOperation(int site, string tool) : base(site, tool)
         {
 
@@ -26,12 +26,12 @@ namespace MolexPlugin.DAL
         {
             this.Oper = ElectrodeOperationTemplate.CreateOperationOfSurfaceContour(this.NameModel, eleCam);
             this.Oper.Create(this.NameModel.OperName);
-            if (faces.Count > 0)
-                (this.Oper as SurfaceContourModel).SetGeometry(faces.ToArray());
-            if (referencetoolName != "")
+            if (Faces.Count > 0)
+                (this.Oper as SurfaceContourModel).SetGeometry(Faces.ToArray());
+            if (ReferencetoolName != "")
             {
 
-                (this.Oper as SurfaceContourModel).SetReferenceTool(eleCam.FindTool(referencetoolName) as Tool);
+                (this.Oper as SurfaceContourModel).SetReferenceTool(eleCam.FindTool(ReferencetoolName) as Tool);
             }
             this.Oper.SetStock(-inter, -inter);
         }
@@ -42,7 +42,7 @@ namespace MolexPlugin.DAL
         /// <param name="conditions"></param>
         public void SetFaces(params Face[] faces)
         {
-            this.faces = faces.ToList();
+            this.Faces = faces.ToList();
         }
         /// <summary>
         /// 设置参考刀具
@@ -50,7 +50,7 @@ namespace MolexPlugin.DAL
         /// <param name="toolName"></param>
         public void SetReferencetool(string toolName)
         {
-            this.referencetoolName = toolName;
+            this.ReferencetoolName = toolName;
         }
         public override void CreateOperationName()
         {

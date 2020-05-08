@@ -66,21 +66,24 @@ namespace MolexPlugin
             //    ProgramGroup = (NCGroup)workPart.CAMSetup.CAMGroupCollection.FindObject("O0013"),
             //    ToolGroup = (NCGroup)workPart.CAMSetup.CAMGroupCollection.FindObject("EM5"),
             //};
-            //FaceLoopUtils.LoopList[] list = FaceLoopUtils.AskFaceLoops((Tag)50065);
-            //List<Edge> edges = new List<Edge>();
-            //foreach (Tag t in list[0].EdgeList)
-            //{
-            //    edges.Add(NXObjectManager.Get(t) as Edge);
-            //}
-            //BoundaryModel condition = new BoundaryModel()
-            //{
-            //    BouudaryPt = new Point3d(0, 0, 0),
-            //    Types = BoundarySet.BoundaryTypes.Closed,
-            //    ToolSide = BoundarySet.ToolSideTypes.InsideOrLeft,
-            //    Edges = edges
-            //};
-            //FaceMillingModel model = new FaceMillingModel(groups, "electrode", "TOP", condition);
-            //model.Create("456");
+            //////FaceLoopUtils.LoopList[] list = FaceLoopUtils.AskFaceLoops((Tag)50065);
+            //////List<Edge> edges = new List<Edge>();
+            //////foreach (Tag t in list[0].EdgeList)
+            //////{
+            //////    edges.Add(NXObjectManager.Get(t) as Edge);
+            //////}
+            //////BoundaryModel condition = new BoundaryModel()
+            //////{
+            //////    BouudaryPt = new Point3d(0, 0, 0),
+            //////    Types = BoundarySet.BoundaryTypes.Closed,
+            //////    ToolSide = BoundarySet.ToolSideTypes.InsideOrLeft,
+            //////    Edges = edges
+            //////};
+            //////FaceMillingModel model = new FaceMillingModel(groups, "electrode", "TOP", condition);
+            //////model.Create("456");
+            //SurfaceContourModel model = new SurfaceContourModel(groups, "electrode", "CQG");
+            //model.Create("123");
+
             #endregion
             //string err = "";
             //Face face = NXObjectManager.Get((Tag)73347) as Face;
@@ -123,7 +126,7 @@ namespace MolexPlugin
             //    LogMgr.WriteLog(ar.face.Tag.ToString());
             //}
             // UserInfoSingleton.Serialize();
-            //ControlValue.Serialize();
+            ControlValue.Serialize();   //序列化
 
             //UFSession theUFSession = UFSession.GetUFSession();
 
@@ -135,6 +138,26 @@ namespace MolexPlugin
             //}
             //theUFSession.Modl.CreateSetOfFeature("特征", featureTags.ToArray(), featureTags.Count, 1, out groupTag);
 
+
+            //NXOpen.CAM.Operation Op1 = workPart.CAMSetup.CAMOperationCollection.FindObject("BN1.98-Z-F_INSTANCE");
+            //LogMgr.WriteLog(Op1.GougeCheckStatus.ToString());
+            //LogMgr.WriteLog(Op1.HasOtherInstances.ToString());
+            //LogMgr.WriteLog(Op1.IsDivided.ToString());
+            //LogMgr.WriteLog(Op1.IsFirstOfDivide.ToString());
+            //LogMgr.WriteLog(Op1.IsFirstOfDivide.ToString());
+            //foreach (NXOpen.CAM.Operation op in Op1.GetDividedOperations())
+            //{
+            //    LogMgr.WriteLog(op.Name);
+            //}
+            //if (Op1.GetFirstOfDivide() != null)
+            //    LogMgr.WriteLog(Op1.GetFirstOfDivide().Name);
+          
+            //LogMgr.WriteLog(Op1.GetInProcessFeatureType());
+
+            //foreach (NXOpen.CAM.Operation op in Op1.GetOtherInstances())
+            //{
+            //    LogMgr.WriteLog(op.Name);
+            //}
         }
     }
 }

@@ -35,22 +35,29 @@ namespace MolexPlugin.DAL
             Point[] pt = new Point[2];
             Point3d centerPt = new Point3d();
             Point3d disPt = new Point3d();
-            Body[] bodys = this.workpiece.Bodies.ToArray();
+
+            List<Body> bodys = new List<Body>();
+            foreach (Body body in this.workpiece.Bodies.ToArray())
+            {
+                bodys.Add(AssmbliesUtils.GetNXObjectOfOcc(this.workpieceComp.Tag, body.Tag) as Body);
+            }
+            //  Body[] bodys = this.workpiece.Bodies.ToArray(); 
             Matrix4 invers = this.work.WorkMatr.GetInversMatrix();
             CartesianCoordinateSystem csys = BoundingBoxUtils.CreateCoordinateSystem(this.work.WorkMatr, invers);//坐标
-            BoundingBoxUtils.GetBoundingBoxInLocal(bodys, csys, this.work.WorkMatr, ref centerPt, ref disPt);
+            BoundingBoxUtils.GetBoundingBoxInLocal(bodys.ToArray(), csys, this.work.WorkMatr, ref centerPt, ref disPt);
             this.CenterPt = centerPt;
             this.DisPt = disPt;
             Point3d minPt = new Point3d(centerPt.X - disPt.X, centerPt.Y - disPt.Y, centerPt.Z - disPt.Z);
             Point3d maxPt = new Point3d(centerPt.X + disPt.X, centerPt.Y + disPt.Y, centerPt.Z + disPt.Z);
+
             invers.ApplyPos(ref maxPt);
             invers.ApplyPos(ref minPt);
-            PartUtils.SetPartWork(workpieceComp);
+            // PartUtils.SetPartWork(workpieceComp);
             pt[0] = PointUtils.CreatePoint(minPt);
             theUFSession.Obj.SetLayer(pt[0].Tag, 254);
             pt[1] = PointUtils.CreatePoint(maxPt);
             theUFSession.Obj.SetLayer(pt[1].Tag, 254);
-            PartUtils.SetPartWork(null);
+            // PartUtils.SetPartWork(null);
             return pt;
         }
         /// <summary>
@@ -84,8 +91,12 @@ namespace MolexPlugin.DAL
         public Point[] GetPointOcc()
         {
             Point[] ptComp = new Point[2];
-            ptComp[0] = AssmbliesUtils.GetNXObjectOfOcc(workpieceComp.Tag, poin[0].Tag) as Point;
-            ptComp[1] = AssmbliesUtils.GetNXObjectOfOcc(workpieceComp.Tag, poin[1].Tag) as Point;
+            //ptComp[0] = AssmbliesUtils.GetNXObjectOfOcc(workpieceComp.Tag, poin[0].Tag) as Point;
+            //ptComp[1] = AssmbliesUtils.GetNXObjectOfOcc(workpieceComp.Tag, poin[1].Tag) as Point;
+
+            ptComp[0] = poin[0];
+            ptComp[1] = poin[1];
+
             return ptComp;
         }
 

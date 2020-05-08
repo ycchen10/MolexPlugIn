@@ -57,7 +57,7 @@ namespace MolexPlugin.DAL
         {
             TwiceRoughCreateOperation to = new TwiceRoughCreateOperation(this.Site, this.ToolName);
             to.CreateOperationName();
-            // to.SetReferencetool(this.ReferenceTool);
+            to.SetReferencetool(this.ReferenceTool);
             return to;
         }
     }
