@@ -503,7 +503,7 @@ namespace Basic
                 LogMgr.WriteLog("DrawingUtils:DimensionVertical" + "标注为空");
                 return null;
             }
-               
+
             Session theSession = Session.GetSession();
             Part workPart = theSession.Parts.Work;
             Part displayPart = theSession.Parts.Display;
@@ -930,15 +930,46 @@ namespace Basic
                 NXOpen.NXObject nXObject1;
                 nXObject1 = linearDimensionBuilder1.Commit();
             }
-            catch(NXException ex)
+            catch (NXException ex)
             {
-                LogMgr.WriteLog("DrawingUtils:SetDimensionPrecision" + ex.Message);            
+                LogMgr.WriteLog("DrawingUtils:SetDimensionPrecision" + ex.Message);
             }
             finally
             {
                 linearDimensionBuilder1.Destroy();
             }
-       
+
+        }
+        /// <summary>
+        /// 设置视图线框颜色源
+        /// </summary>
+        /// <param name="option"></param>
+        /// <param name="views"></param>
+        public static void SetWireframeColorSource(NXOpen.Preferences.GeneralWireframeColorSourceOption option, params View[] views)
+        {
+            NXOpen.Session theSession = NXOpen.Session.GetSession();
+            NXOpen.Part workPart = theSession.Parts.Work;
+            NXOpen.Drawings.EditViewSettingsBuilder editViewSettingsBuilder1;
+            editViewSettingsBuilder1 = workPart.SettingsManager.CreateDrawingEditViewSettingsBuilder(views);
+            NXOpen.Drafting.BaseEditSettingsBuilder[] editsettingsbuilders1 = new NXOpen.Drafting.BaseEditSettingsBuilder[1];
+            editsettingsbuilders1[0] = editViewSettingsBuilder1;
+            workPart.SettingsManager.ProcessForMultipleObjectsSettings(editsettingsbuilders1);
+            editViewSettingsBuilder1.ViewStyle.ViewStyleGeneral.WireframeColorSource = option;
+            editViewSettingsBuilder1.ViewStyle.ViewStyleVisibleLines.VisibleColor = workPart.Colors.Find("Background");
+            try
+            {
+                NXOpen.NXObject nXObject1;
+                nXObject1 = editViewSettingsBuilder1.Commit();
+            }
+            catch (NXException ex)
+            {
+                LogMgr.WriteLog("DrawingUtils:SetWireframeColorSource" + ex.Message);
+            }
+            finally
+            {
+                editViewSettingsBuilder1.Destroy();
+            }
+
         }
     }
 }

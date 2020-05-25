@@ -69,6 +69,7 @@ namespace MolexPlugin.DAL
             Point3d projectedElePt2 = new Point3d(projectedElePt1.X - (pre[0] * eleScale / 2 + pre[1] * eleScale / 2 + 30), projectedElePt1.Y, 0);
 
             DraftingView topEleView = Basic.DrawingUtils.CreateView("TOP", eleOrigin, eleScale, draInfo.DraModel.Eles[0].EleMatr, draInfo.GetEleHideComp());
+            Basic.DrawingUtils.SetWireframeColorSource(NXOpen.Preferences.GeneralWireframeColorSourceOption.FromFace, topEleView);
             DraftingView proEleView1 = Basic.DrawingUtils.CreateProjectedView(topEleView, projectedElePt1, eleScale);
             DraftingView proEleView2 = Basic.DrawingUtils.CreateProjectedView(proEleView1, projectedElePt2, eleScale);
 

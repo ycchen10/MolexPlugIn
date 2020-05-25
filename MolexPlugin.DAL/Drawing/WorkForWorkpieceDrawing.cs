@@ -89,15 +89,16 @@ namespace MolexPlugin.DAL
         private void OtherWorkpieceDrawing(List<WorkpieceInfo> otherPart, WorkpieceInfo hostInfo, double scale)
         {
             int count = (int)Math.Floor(340 / (2 * hostInfo.DisPt.X * scale + 40));
+            List<WorkpieceInfo> other = otherPart.OrderBy(a => a.workpiece.Name).ToList();
             int temp = 0;
-            for (int i = 0; i < otherPart.Count; i++)
+            for (int i = 0; i < other.Count; i++)
             {
                 List<WorkpieceInfo> infos = new List<WorkpieceInfo>();
                 for (int k = 0; k < count; k++)
                 {
-                    if (k + i < otherPart.Count)
+                    if (k + i < other.Count)
                     {
-                        infos.Add(otherPart[k + i]);                     
+                        infos.Add(other[k + i]);
                     }
                     else
                     {
@@ -106,7 +107,7 @@ namespace MolexPlugin.DAL
                 }
                 temp++;
                 OtherWorkpieceView(infos, scale);
-                i = temp * count;
+                i = temp * count - 1;
             }
         }
         /// <summary>

@@ -106,7 +106,8 @@ namespace MolexPlugin.DAL
 
         private void AlterElectrode(ElectrodeInfo newEleInfo, ElectrodeModel model)
         {
-            Part workPart = Session.GetSession().Parts.Work;
+            // Part workPart = Session.GetSession().Parts.Work;
+            PartUtils.SetPartDisplay(work.PartTag);
             double[] temp = new double[3];
             for (int i = 0; i < 3; i++)
             {
@@ -114,17 +115,20 @@ namespace MolexPlugin.DAL
             }
             Point3d oldPt = new Point3d(temp[0], temp[1], temp[2]);
             Point3d newPt = new Point3d(newEleInfo.EleSetValue[0], newEleInfo.EleSetValue[1], newEleInfo.EleSetValue[2]);
-            newEleInfo.Positioning = model.EleInfo.Positioning;
+            Point3d dis = GetSingleToothDis(newEleInfo, model.EleInfo, oldPt);
+            //  newEleInfo.Positioning = model.EleInfo.Positioning;
+            string pos = model.EleInfo.Positioning;
+           
             model.EleInfo = newEleInfo;
             newEleInfo.SetAttribute(model.PartTag);
-
+            AttributeUtils.AttributeOperation("Positioning", pos, model.PartTag);
             if (!UMathUtils.IsEqual(oldPt, newPt))
             {
-                NXOpen.Assemblies.Component ct = AssmbliesUtils.GetPartComp(workPart, model.PartTag);
+                NXOpen.Assemblies.Component ct = AssmbliesUtils.GetPartComp(work.PartTag, model.PartTag);
                 PartUtils.SetPartWork(ct);
                 Vector3d move = new Vector3d(0, 0, 0);
-                move.X = newPt.X - oldPt.X;
-                move.Y = newPt.Y - oldPt.Y;
+                move.X = newPt.X - oldPt.X - dis.X;
+                move.Y = newPt.Y - oldPt.Y - dis.Y;
 
                 Body[] bodys = model.PartTag.Bodies.ToArray();
                 if (bodys.Length > 1)
@@ -171,6 +175,7 @@ namespace MolexPlugin.DAL
                 AlterElectrode(info, ele);
             }
             AlterDrawing();
+            AlterWorkDrawing();
             PartUtils.SetPartDisplay(asm);
         }
 
@@ -198,15 +203,8 @@ namespace MolexPlugin.DAL
 
         public void AlterDrawing()
         {
-            ElectrodeModel ele = null;
-
-            foreach (ElectrodeModel em in Model)
-            {
-                if (em.EleInfo.Positioning == "")
-                    ele = em;
-            }
-            string dwgName = ele.EleInfo.EleName + "_dwg";
-            string path = ele.WorkpieceDirectoryPath + ele.EleInfo.EleName + "_dwg.prt";
+            string dwgName = Model[0].EleInfo.EleName + "_dwg";
+            string path = Model[0].WorkpieceDirectoryPath + Model[0].EleInfo.EleName + "_dwg.prt";
             Part dwg = null;
             foreach (Part part in Session.GetSession().Parts)
             {
@@ -232,10 +230,52 @@ namespace MolexPlugin.DAL
                 PartUtils.SetPartDisplay(dwg);
                 foreach (NXOpen.Drawings.DrawingSheet sh in dwg.DrawingSheets)
                 {
-                   
+
                     Basic.DrawingUtils.UpdateViews(sh);
                 }
             }
+        }
+        /// <summary>
+        /// 更新work零件明细表
+        /// </summary>
+        private void AlterWorkDrawing()
+        {
+            Part workPart = Session.GetSession().Parts.Work;
+            UFSession theUFSession = UFSession.GetUFSession();
+            if (!workPart.Equals(work.PartTag))
+            {
+                NXOpen.Assemblies.Component ct = AssmbliesUtils.GetPartComp(workPart, work.PartTag);
+                PartUtils.SetPartWork(ct);
+            }
+            theUFSession.Plist.UpdateAllPlists();
+            PartUtils.SetPartWork(null);
+        }
+        /// <summary>
+        /// 获取单齿设定的距离
+        /// </summary>
+        /// <param name="newInfo"></param>
+        /// <param name="oldInfo"></param>
+        /// <returns></returns>
+        private Point3d GetSingleToothDis(ElectrodeInfo newInfo, ElectrodeInfo oldInfo, Point3d oldPt)
+        {
+            Point3d newPt = new Point3d(newInfo.EleSetValue[0], newInfo.EleSetValue[1], newInfo.EleSetValue[2]);
+            if (newInfo.PitchXNum > 0)
+            {
+                newPt.X = newPt.X - newInfo.PitchX * (newInfo.PitchXNum - 1) / 2;
+            }
+            if (newInfo.PitchYNum > 0)
+            {
+                newPt.Y = newPt.Y - newInfo.PitchY * (newInfo.PitchYNum - 1) / 2;
+            }
+            if (newInfo.PitchXNum > 0)
+            {
+                oldPt.X = oldPt.X - oldInfo.PitchX * (oldInfo.PitchXNum - 1) / 2;
+            }
+            if (newInfo.PitchYNum > 0)
+            {
+                oldPt.Y = oldPt.Y - oldInfo.PitchY * (oldInfo.PitchYNum - 1) / 2;
+            }
+            return new Point3d(newPt.X - oldPt.X, newPt.Y - oldPt.Y, newPt.Z - oldPt.Z);
         }
     }
 }

@@ -90,6 +90,7 @@
     <Compile Include="BooleanUtils.cs" />
     <Compile Include="BoundingBoxUtils.cs" />
     <Compile Include="CAMUtils.cs" />
+    <Compile Include="ClearanceAnalysisUtils.cs" />
     <Compile Include="DeleteObject.cs" />
     <Compile Include="ClassItem.cs" />
     <Compile Include="CsysUtils.cs" />

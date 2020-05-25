@@ -130,7 +130,7 @@ namespace MolexPlugin
                 new BomCreateForm().Show();
             }
             #endregion
-            // test.ces();
+           //  test.ces();
             if (args[0] == "MENU_EleProgram")
             {
                 EleProgram mode = new EleProgram();

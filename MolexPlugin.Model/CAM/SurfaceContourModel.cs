@@ -27,9 +27,9 @@ namespace MolexPlugin.Model
 
         public override void Create(string name)
         {
-             base.CreateOperation(this.templateOperName, name, this.GroupModel);    
+            base.CreateOperation(this.templateOperName, name, this.GroupModel);
         }
-      
+
         /// <summary>
         /// 设置加工面
         /// </summary>
@@ -138,7 +138,18 @@ namespace MolexPlugin.Model
             builder1.Commit();
             builder1.Destroy();
         }
-    }
+        /// <summary>
+        /// 设置部距
+        /// </summary>
+        public void SetDmarea(double value)
+        {
+            NXOpen.CAM.SurfaceContourBuilder builder1;
+            builder1 = workPart.CAMSetup.CAMOperationCollection.CreateSurfaceContourBuilder(this.Oper);
+            builder1.DmareaMillingBuilder.StepoverBuilder.DistanceBuilder.Value = value;
+            builder1.Commit();
+            builder1.Destroy();
+        }
 
+    }
 }
 

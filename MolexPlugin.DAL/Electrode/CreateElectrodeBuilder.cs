@@ -111,6 +111,11 @@ namespace MolexPlugin.DAL
 
         public void CreateEle(ElectrodeInfo eleInfo)
         {
+            UserInfoSingleton user = UserInfoSingleton.GetInstance();
+            if (user.UserInfo == null)
+            {
+                return;
+            }
             this.eleInfo = eleInfo;
             this.eleInfo.EleHeadDis[0] = Math.Round(this.head.DisPt.X, 3);
             this.eleInfo.EleHeadDis[1] = Math.Round(this.head.DisPt.Y, 3);
@@ -118,6 +123,8 @@ namespace MolexPlugin.DAL
             Matrix4 workMat = this.model.Work.WorkMatr;
             double zHeight = setValue.GetZHeight(eleInfo.Extrudewith);
             Matrix4 mat = setValue.GetEleMatr(eleInfo.Preparation, GetCenter());
+            this.model.Work.MoldInfo.CreatedDate = DateTime.Now.ToString("yyyy-MM-dd");
+            this.model.Work.MoldInfo.CreatorName = user.UserInfo.UserName;
             ElectrodePart elePart = new ElectrodePart(eleInfo, this.model.Work.MoldInfo, this.head, mat);
 
             elePart.CreateElectrode(eleInfo.ZDatum, zHeight, Expression);

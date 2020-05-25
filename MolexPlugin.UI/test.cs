@@ -115,49 +115,85 @@ namespace MolexPlugin
 
             //Part part = NXObjectManager.Get((Tag)44873) as Part;
             //AssmbliesUtils.WaveAssociativeBodys(part.Bodies.ToArray());
+            {
+                //ElectrodeModel ele = new ElectrodeModel();
+                //ele.GetModelForPart(workPart);
+                //AnalyzeElectrode analyze = new AnalyzeElectrode(ele);
+                //double min = analyze.GetMinDis();
+                //AnalyzeBuilder builder = analyze.AnalyzeBody();
+                //foreach(AnalyzeFaceSlopeAndRadius ar in builder.AnalyzeFaces)
+                //{
+                //    LogMgr.WriteLog(ar.face.Tag.ToString());
+                //}
+                // UserInfoSingleton.Serialize();
+                // ControlValue.Serialize();   //序列化
 
-            //ElectrodeModel ele = new ElectrodeModel();
-            //ele.GetModelForPart(workPart);
-            //AnalyzeElectrode analyze = new AnalyzeElectrode(ele);
-            //double min = analyze.GetMinDis();
-            //AnalyzeBuilder builder = analyze.AnalyzeBody();
-            //foreach(AnalyzeFaceSlopeAndRadius ar in builder.AnalyzeFaces)
-            //{
-            //    LogMgr.WriteLog(ar.face.Tag.ToString());
-            //}
-            // UserInfoSingleton.Serialize();
-            ControlValue.Serialize();   //序列化
+                //UFSession theUFSession = UFSession.GetUFSession();
 
-            //UFSession theUFSession = UFSession.GetUFSession();
-
-            //List<Tag> featureTags = new List<Tag>();
-            //Tag groupTag = Tag.Null;
-            //foreach (NXOpen.Features.Feature fe in workPart.Features)
-            //{
-            //    featureTags.Add(fe.Tag);
-            //}
-            //theUFSession.Modl.CreateSetOfFeature("特征", featureTags.ToArray(), featureTags.Count, 1, out groupTag);
+                //List<Tag> featureTags = new List<Tag>();
+                //Tag groupTag = Tag.Null;
+                //foreach (NXOpen.Features.Feature fe in workPart.Features)
+                //{
+                //    featureTags.Add(fe.Tag);
+                //}
+                //theUFSession.Modl.CreateSetOfFeature("特征", featureTags.ToArray(), featureTags.Count, 1, out groupTag);
 
 
-            //NXOpen.CAM.Operation Op1 = workPart.CAMSetup.CAMOperationCollection.FindObject("BN1.98-Z-F_INSTANCE");
-            //LogMgr.WriteLog(Op1.GougeCheckStatus.ToString());
-            //LogMgr.WriteLog(Op1.HasOtherInstances.ToString());
-            //LogMgr.WriteLog(Op1.IsDivided.ToString());
-            //LogMgr.WriteLog(Op1.IsFirstOfDivide.ToString());
-            //LogMgr.WriteLog(Op1.IsFirstOfDivide.ToString());
-            //foreach (NXOpen.CAM.Operation op in Op1.GetDividedOperations())
-            //{
-            //    LogMgr.WriteLog(op.Name);
-            //}
-            //if (Op1.GetFirstOfDivide() != null)
-            //    LogMgr.WriteLog(Op1.GetFirstOfDivide().Name);
-          
-            //LogMgr.WriteLog(Op1.GetInProcessFeatureType());
+                //NXOpen.CAM.Operation Op1 = workPart.CAMSetup.CAMOperationCollection.FindObject("BN1.98-Z-F_INSTANCE");
+                //LogMgr.WriteLog(Op1.GougeCheckStatus.ToString());
+                //LogMgr.WriteLog(Op1.HasOtherInstances.ToString());
+                //LogMgr.WriteLog(Op1.IsDivided.ToString());
+                //LogMgr.WriteLog(Op1.IsFirstOfDivide.ToString());
+                //LogMgr.WriteLog(Op1.IsFirstOfDivide.ToString());
+                //foreach (NXOpen.CAM.Operation op in Op1.GetDividedOperations())
+                //{
+                //    LogMgr.WriteLog(op.Name);
+                //}
+                //if (Op1.GetFirstOfDivide() != null)
+                //    LogMgr.WriteLog(Op1.GetFirstOfDivide().Name);
 
-            //foreach (NXOpen.CAM.Operation op in Op1.GetOtherInstances())
-            //{
-            //    LogMgr.WriteLog(op.Name);
-            //}
+                //LogMgr.WriteLog(Op1.GetInProcessFeatureType());
+
+                //foreach (NXOpen.CAM.Operation op in Op1.GetOtherInstances())
+                //{
+                //    LogMgr.WriteLog(op.Name);
+                //}
+            }
+            //干涉
+            {
+
+                MoldInfoModel moldInfo = new MoldInfoModel(workPart);
+                string name = moldInfo.MoldNumber + "-" + moldInfo.WorkpieceNumber;
+                AssembleModel assm = AssembleSingleton.Instance().GetAssemble(name);
+                NXOpen.Assemblies.Component workpiecesCt = AssmbliesUtils.GetPartComp(workPart, assm.Workpieces[0]);
+                List<NXOpen.Assemblies.Component> eleCts = new List<NXOpen.Assemblies.Component>();
+                foreach (ElectrodeModel model in assm.Electrodes)
+                {
+                    eleCts.Add(AssmbliesUtils.GetPartComp(workPart, model.PartTag));
+                }
+                NXOpen.Assemblies.ClearanceSet set = ClearanceAnalysisUtils.CreateClearanceAnalysis("123", workpiecesCt, eleCts.ToArray());
+                foreach (NXOpen.Assemblies.Component ct in eleCts)
+                {
+                    InterferenceData data = ClearanceAnalysisUtils.GetInterenceData(set, workpiecesCt, ct);
+                    LogMgr.WriteLog(ct.Name);
+                    LogMgr.WriteLog("Type          " + data.Type.ToString());
+                    LogMgr.WriteLog("Text          " + data.Text);
+                    LogMgr.WriteLog("Depth         " + data.Depth.ToString());
+                    LogMgr.WriteLog("Config        " + data.Config.ToString());
+                    LogMgr.WriteLog("InterfNum     " + data.InterfNum.ToString());
+                    LogMgr.WriteLog("DepthResult   " + data.DepthResult.ToString());
+                    LogMgr.WriteLog("InterfBodies  " + data.InterfBodies.Count.ToString());
+                    foreach (DisplayableObject ot in data.InterfBodies)
+                    {
+                        LogMgr.WriteLog(ot.Tag.ToString());
+                    }
+                }
+
+
+
+
+
+            }
         }
     }
 }
