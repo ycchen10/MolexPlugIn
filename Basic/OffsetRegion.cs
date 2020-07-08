@@ -19,8 +19,10 @@ namespace Basic
         public static NXObject Offset(double side, out bool isok, params Face[] faces)
         {
             isok = true;
+           
             Session theSession = Session.GetSession();
             Part workPart = theSession.Parts.Work;
+            Session.UndoMarkId mark = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Offset");
             NXOpen.Features.AdmOffsetRegion nullNXOpen_Features_AdmOffsetRegion = null;
             NXOpen.Features.AdmOffsetRegionBuilder admOffsetRegionBuilder1;
             admOffsetRegionBuilder1 = workPart.Features.CreateAdmOffsetRegionBuilder(nullNXOpen_Features_AdmOffsetRegion);
@@ -36,6 +38,7 @@ namespace Basic
             {
 
                 nXObject1 = admOffsetRegionBuilder1.Commit();
+               
                 return nXObject1;
 
             }
@@ -43,12 +46,17 @@ namespace Basic
             {
                 isok = false;
                 LogMgr.WriteLog("OffsetRegion:Offset:" + ex.Message);
+                
                 return null;
             }
             finally
             {
                 admOffsetRegionBuilder1.Destroy();
-
+                if(!isok)
+                {
+                    theSession.UndoToMark(mark, "Offset");
+                }
+                theSession.DeleteUndoMark(mark, "Offset");
             }
         }
 

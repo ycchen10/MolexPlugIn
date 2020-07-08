@@ -48,7 +48,7 @@ namespace MolexPlugin.DAL
             List<WorkpieceInfo> otherPart = new List<WorkpieceInfo>();
             foreach (Part part in this.assemble.Workpieces)
             {
-                if (workpiece.Equals(part.Name))
+                if (workpiece.Replace("-","").Equals(part.Name.Replace("-","")))
                     info = new WorkpieceInfo(part, work);
                 else
                     otherPart.Add(new WorkpieceInfo(part, this.work));

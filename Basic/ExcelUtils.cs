@@ -182,6 +182,7 @@ namespace Basic
             style.BorderLeft = BorderStyle.Thin;
             style.BorderRight = BorderStyle.Thin;
             style.BorderTop = BorderStyle.Thin;
+            style.WrapText = true;
             style.SetFont(font);
             return style;
         }

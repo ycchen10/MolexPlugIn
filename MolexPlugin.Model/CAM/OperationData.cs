@@ -8,12 +8,16 @@ using NXOpen.UF;
 
 namespace MolexPlugin.Model
 {
-    public class OperationData
+    public class OperationData : IEquatable<OperationData>
     {
         /// <summary>
         /// 刀具路径
         /// </summary>
         public NXOpen.CAM.Operation Oper { get; set; }
+        /// <summary>
+        /// 过切检查
+        /// </summary>
+        public bool Check { get; set; }
         /// <summary>
         /// 刀路名
         /// </summary>
@@ -83,6 +87,14 @@ namespace MolexPlugin.Model
         /// </summary>
         public string ToolLengthNumber { get; set; }
 
-       
+        public bool Equals(OperationData other)
+        {
+            if (this.Tool.ToolName.Equals(other.Tool.ToolName, StringComparison.CurrentCultureIgnoreCase) &&
+                Math.Round(this.OperTime, 7) == Math.Round(other.OperTime, 7) &&
+                Math.Round(this.OprtLength, 7) == Math.Round(other.OprtLength, 7))
+                return true;
+            else
+                return false;
+        }
     }
 }

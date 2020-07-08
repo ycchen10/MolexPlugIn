@@ -36,6 +36,9 @@ namespace Basic
             {
                 NXOpen.NXObject nXObject1;
                 nXObject1 = fileNew1.Commit();
+                SetPartDisplay(nXObject1 as Part);
+                Part workPart = theSession.Parts.Work;
+                workPart.Preferences.Modeling.DistanceToleranceData = 0.001;
                 return nXObject1;
             }
             catch (Exception ex)

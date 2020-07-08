@@ -32,7 +32,7 @@ namespace MolexPlugin.DAL
         public void CreateExcel()
         {
             string dllPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            string excelTemplatePath = dllPath.Replace("application\\", "Cofigure\\ShopDoc_Template.xlsx");
+            string excelTemplatePath = dllPath.Replace("application\\", "Cofigure\\ShopDoc_Template-test.xlsx");
             string path = part.FullPath;
             path = System.IO.Path.GetDirectoryName(path) + "\\" + part.Name + ".xlsx";
 
@@ -43,19 +43,19 @@ namespace MolexPlugin.DAL
             }
             IFont font = workbook.CreateFont();
             font.FontName = "微软雅黑";
-            font.FontHeightInPoints = 10;
+            font.FontHeightInPoints = 8;
             ICellStyle style = ExcelUtils.SetCellStyle(workbook, font);
             ICellStyle styleDate = ExcelUtils.SetCellStyle(workbook, font);
             styleDate.DataFormat = 21;
             ISheet sheet = workbook.GetSheetAt(0);
 
-            if (PostPartInfo.IsPartInfo(part) && !PostPartInfo.IsPartElectrode(part))
+            if (PostPartInfo.IsPartInfo(part))
             {
                 SetMoldInfoToExcel(new MoldInfoModel(part), sheet, style);
             }
             if (PostPartInfo.IsPartElectrode(part))
             {
-                SetEleInfo(sheet, style, new PostElectrodenfo(part));
+                SetEleMoldInfoToExcel( new PostElectrodenfo(part),sheet,style);
             }
             string name = AttributeUtils.GetAttrForString(part, "CAMUser");
 
@@ -71,18 +71,38 @@ namespace MolexPlugin.DAL
             fs.Close();
             workbook.Close();
         }
-
+        /// <summary>
+        /// 设置模具
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="sheet"></param>
+        /// <param name="style"></param>
         private void SetMoldInfoToExcel(MoldInfoModel model, ISheet sheet, ICellStyle style)
         {
             ExcelUtils.SetValue(sheet, style, 3, 0, model.MoldNumber);
             ExcelUtils.SetValue(sheet, style, 3, 2, model.WorkpieceNumber);
-            ExcelUtils.SetValue(sheet, style, 3, 4, model.EditionNumber);
+            ExcelUtils.SetValue(sheet, style, 3, 5, model.EditionNumber);
        
+        }
+        /// <summary>
+        /// 设置电极
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="sheet"></param>
+        /// <param name="style"></param>
+        private void SetEleMoldInfoToExcel(PostElectrodenfo eleInfo, ISheet sheet, ICellStyle style)
+        {
+            ElectrodeModel model = eleInfo.GetElectrodeModel();
+            ExcelUtils.SetValue(sheet, style, 3, 0, model.MoldInfo.MoldNumber);
+            ExcelUtils.SetValue(sheet, style, 2, 2, "电极名");
+            ExcelUtils.SetValue(sheet, style, 3, 2, model.EleInfo.EleName);
+            ExcelUtils.SetValue(sheet, style, 3, 5, "A");
+
         }
         private void SetUser(string name, ISheet sheet, ICellStyle style)
         {
-            ExcelUtils.SetValue(sheet, style, 2, 7, name);
-            ExcelUtils.SetValue(sheet, style, 3, 7, DateTime.Now.ToShortDateString());
+            ExcelUtils.SetValue(sheet, style, 2, 9, name);
+            ExcelUtils.SetValue(sheet, style, 3, 9, DateTime.Now.ToShortDateString());
             ExcelUtils.SetValue(sheet, style, 4, 2, part.FullPath);
         }
         private void SetEleInfo(ISheet sheet, ICellStyle style, PostElectrodenfo eleInfo)

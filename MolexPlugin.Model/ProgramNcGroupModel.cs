@@ -176,14 +176,26 @@ namespace MolexPlugin.Model
                         newData.Add(od);
                 }
                 else
-                    newData.Add(od);
+                {
+                    bool isok = false;
+                    foreach (OperationData op in newData)
+                    {
+                        if (op.Equals(od))
+                        {
+                            isok = true;
+                            break;
+                        }
+                    }
+                    if (!isok)
+                        newData.Add(od);
+                }
+
             }
             return newData;
         }
-     
+
         private DateTime GetDateTimeBySeconds(double seconds)
         {
-          
             return DateTime.FromOADate(seconds);
         }
     }

@@ -50,7 +50,7 @@ namespace MolexPlugin
             foreach (NCGroup np in model.GetProgram())
             {
                 ProgramNcGroupModel nc = new ProgramNcGroupModel(np);
-                if (!nc.IsOperation() && nc.IsOperationEqualTool())
+                if (!nc.IsOperation() || !nc.IsOperationEqualTool())
                 {
                     theUI.NXMessageBox.Show("错误", NXMessageBox.DialogType.Error, np.Name + "错误");
                     return false;

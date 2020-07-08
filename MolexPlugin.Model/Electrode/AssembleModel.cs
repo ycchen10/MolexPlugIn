@@ -157,7 +157,7 @@ namespace MolexPlugin.Model
             string name = this.Asm.MoldInfo.MoldNumber + "-" + this.Asm.MoldInfo.WorkpieceNumber + this.Asm.MoldInfo.EditionNumber;
             foreach (Part part in Workpieces)
             {
-                if (part.Name.Equals(name))
+                if (part.Name.Replace("-", "").Equals(name.Replace("-", "")))
                     workpiecePart = part;
             }
             if (workpiecePart == null)

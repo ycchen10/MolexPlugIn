@@ -48,7 +48,7 @@ namespace MolexPlugin.Model
 
         public override void GetAssembleName()
         {
-            this.AssembleName = this.MoldInfo.MoldNumber + "-" + this.MoldInfo.WorkpieceNumber + this.MoldInfo.EditionNumber;
+            this.AssembleName = this.MoldInfo.MoldNumber + "-" + this.MoldInfo.WorkpieceNumber + "-" + this.MoldInfo.EditionNumber;
         }
 
         public override void GetModelForPart(Part part)

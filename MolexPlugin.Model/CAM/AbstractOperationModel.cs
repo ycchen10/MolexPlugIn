@@ -77,7 +77,12 @@ namespace MolexPlugin.Model
         {
             OperationData data = new OperationData();
             data.Oper = this.Oper;
-            data.OperName = this.Oper.Name.ToString();
+            data.Check = this.Oper.GougeCheckStatus;
+            string name = this.Oper.Name;
+            if (name.Length >= 10)
+                data.OperName = this.Oper.Name.Substring(0, 10);
+            else
+                data.OperName = this.Oper.Name;
             data.ToolNCGroup = this.Oper.GetParent(NXOpen.CAM.CAMSetup.View.MachineTool);
             data.OperGroup = this.Oper.GetParent(NXOpen.CAM.CAMSetup.View.ProgramOrder).Name;
             data.Tool = new ToolDataModel(data.ToolNCGroup);
@@ -198,6 +203,6 @@ namespace MolexPlugin.Model
                 theSession.CAMSession.PathDisplay.ShowToolPath(this.Oper);
 
         }
-     
+
     }
 }

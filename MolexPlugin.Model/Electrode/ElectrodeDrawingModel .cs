@@ -34,7 +34,7 @@ namespace MolexPlugin.Model
             this.Eles = eles;
             this.PartType = "Drawing";
             this.EleInfo = eles[0].EleInfo;
-            this.MoldInfo = work.MoldInfo;
+            this.MoldInfo = eles[0].MoldInfo;
             GetAssembleName();
             this.WorkpieceDirectoryPath = work.WorkpieceDirectoryPath;
             this.WorkpiecePath = work.WorkpieceDirectoryPath + this.AssembleName + ".prt";

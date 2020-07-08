@@ -19,6 +19,7 @@ namespace MolexPlugin
         public static void ces()
         {
             Part workPart = Session.GetSession().Parts.Work;
+            UFSession theUFSession = UFSession.GetUFSession();
             #region
             //UFSession theUFSession = UFSession.GetUFSession();
             //Body body1 = NXObjectManager.Get((Tag)75937) as Body;
@@ -125,8 +126,8 @@ namespace MolexPlugin
                 //{
                 //    LogMgr.WriteLog(ar.face.Tag.ToString());
                 //}
-                // UserInfoSingleton.Serialize();
-                // ControlValue.Serialize();   //序列化
+               // UserInfoSingleton.Serialize();
+              //  ControlValue.Serialize();   //序列化
 
                 //UFSession theUFSession = UFSession.GetUFSession();
 
@@ -160,6 +161,7 @@ namespace MolexPlugin
                 //}
             }
             //干涉
+            /*
             {
 
                 MoldInfoModel moldInfo = new MoldInfoModel(workPart);
@@ -188,11 +190,35 @@ namespace MolexPlugin
                         LogMgr.WriteLog(ot.Tag.ToString());
                     }
                 }
+            }*/
+            /*两条直线的交点
+             {
+                 Tag curve1 = (Tag)88706;
+                 Tag curve2 = (Tag)89774;
+                 double[] data;
+                 int number;
+                 theUFSession.Modl.IntersectCurveToCurve(curve1, curve2, out number, out data);
+                 LogMgr.WriteLog(number.ToString());
+                int j = 0;
+                foreach(double k in data)
+                {
+                    LogMgr.WriteLog(j.ToString()+"************"+k.ToString());
+                    j++;
+                }
+             }*/
 
+            //{
+            //    Tag temp = (Tag)62137;
+            //    int type;
+            //    int subtype;
+            //    theUFSession.Obj.AskTypeAndSubtype(temp, out type, out subtype);
+            //    LogMgr.WriteLog(type.ToString());
+            //    LogMgr.WriteLog(subtype.ToString());
+            //}
 
-
-
-
+            foreach(Body bdy in workPart.Bodies)
+            {
+                LogMgr.WriteLog(bdy.Tag.ToString());
             }
         }
     }

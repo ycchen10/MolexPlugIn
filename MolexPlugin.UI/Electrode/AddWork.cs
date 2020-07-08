@@ -390,9 +390,10 @@ namespace MolexPlugin
             if (this.selePart.GetSelectedObjects().Length != 0)
             {
                 Part part = (this.selePart.GetSelectedObjects()[0] as NXOpen.Assemblies.Component).Prototype as Part;
-                if (!part.Name.Equals(info.MoldNumber + "-" + info.WorkpieceNumber + info.EditionNumber))
+                string name = AttributeUtils.GetAttrForString(part, "PartType");
+                if (name.Equals("Workpiece", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    return UFConstants.UF_UI_SEL_REJECT;
+                    return UFConstants.UF_UI_SEL_ACCEPT;
                 }
                 if (selectedObject is Face)
                 {

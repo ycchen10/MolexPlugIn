@@ -57,32 +57,82 @@ namespace MolexPlugin.Model
             this.ToolName = np.Name;
 
             double toolDia;
-            theUFSession.Param.AskDoubleValue(np.Tag, UFConstants.UF_PARAM_TL_DIAMETER, out toolDia);
-            this.ToolDia = toolDia;
+            try
+            {
+                theUFSession.Param.AskDoubleValue(np.Tag, UFConstants.UF_PARAM_TL_DIAMETER, out toolDia);
+                this.ToolDia = toolDia;
+            }
+            catch
+            {
+                this.ToolDia = 0;
+            }
+
 
             double toolLowerRad;
-            theUFSession.Param.AskDoubleValue(np.Tag, UFConstants.UF_PARAM_TL_COR1_RAD, out toolLowerRad);
-            this.ToolLowerRad = toolLowerRad;
+            try
+            {
+                theUFSession.Param.AskDoubleValue(np.Tag, UFConstants.UF_PARAM_TL_COR1_RAD, out toolLowerRad);
+                this.ToolLowerRad = toolLowerRad;
+            }
+            catch
+            {
+                this.ToolLowerRad = 0;
+            }
 
             double toolLength;
-            theUFSession.Param.AskDoubleValue(np.Tag, UFConstants.UF_PARAM_TL_HEIGHT, out toolLength);
-            this.ToolLength = toolLength;
+            try
+            {
+                theUFSession.Param.AskDoubleValue(np.Tag, UFConstants.UF_PARAM_TL_HEIGHT, out toolLength);
+                this.ToolLength = toolLength;
+            }
+            catch
+            {
+                this.ToolLength = 0;
+            }
 
             double fluteLength;
-            theUFSession.Param.AskDoubleValue(np.Tag, UFConstants.UF_PARAM_TL_FLUTE_LN, out fluteLength);
-            this.FluteLength = fluteLength;
+            try
+            {
+                theUFSession.Param.AskDoubleValue(np.Tag, UFConstants.UF_PARAM_TL_FLUTE_LN, out fluteLength);
+                this.FluteLength = fluteLength;
+            }
+            catch
+            {
+                this.FluteLength = 0;
+            }
 
             int toolNumber;
-            theUFSession.Param.AskIntValue(np.Tag, UFConstants.UF_PARAM_TL_NUMBER, out toolNumber);
-            this.ToolNumber = toolNumber;
+            try
+            {
+                theUFSession.Param.AskIntValue(np.Tag, UFConstants.UF_PARAM_TL_NUMBER, out toolNumber);
+                this.ToolNumber = toolNumber;
+            }
+            catch
+            {
+                this.ToolNumber = 0;
+            }
 
             int adiust;
-            theUFSession.Param.AskIntValue(np.Tag, UFConstants.UF_PARAM_TL_ADJ_REG, out adiust);
-            this.AdiustRegister = adiust;
+            try
+            {
+                theUFSession.Param.AskIntValue(np.Tag, UFConstants.UF_PARAM_TL_ADJ_REG, out adiust);
+                this.AdiustRegister = adiust;
+            }
+            catch
+            {
+                this.AdiustRegister = 0;
+            }
 
             int cutcom;
-            theUFSession.Param.AskIntValue(np.Tag, UFConstants.UF_PARAM_TL_CUTCOM_REG, out cutcom);
-            this.CutcomRegister = cutcom;
+            try
+            {
+                theUFSession.Param.AskIntValue(np.Tag, UFConstants.UF_PARAM_TL_CUTCOM_REG, out cutcom);
+                this.CutcomRegister = cutcom;
+            }
+            catch
+            {
+                this.CutcomRegister = 0;
+            }
         }
 
     }

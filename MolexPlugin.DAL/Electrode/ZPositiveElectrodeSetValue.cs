@@ -49,7 +49,7 @@ namespace MolexPlugin.DAL
             vecY.Z = -vecY.Z;
             Matrix4 mat = new Matrix4();
             mat.Identity();
-            mat.TransformToZAxis(center, workMat.GetXAxis(), vecY);      
+            mat.TransformToZAxis(center, workMat.GetXAxis(), vecY);
             return mat;
         }
 
@@ -59,7 +59,7 @@ namespace MolexPlugin.DAL
         {
             double preX = Math.Ceiling(2 * this.head.DisPt.X + Math.Abs((xNumber - 1) * x)) + 2;
             double preY = Math.Ceiling(2 * this.head.DisPt.Y + Math.Abs((yNumber - 1) * y)) + 2;
-            double preZ = Math.Ceiling(2 * this.head.DisPt.Z) + 20;
+            double preZ = Math.Ceiling(Math.Abs(this.head.CenterPt.Z - this.head.DisPt.Z)) + 20;
             if (zDatum)
             {
                 if (preX >= preY)
@@ -76,7 +76,7 @@ namespace MolexPlugin.DAL
 
         public override Point3d GetSingleHeadSetValue()
         {
-            return new Point3d(Math.Round(head.CenterPt.X,3), Math.Round(head.CenterPt.Y,3), Math.Round(head.CenterPt.Z - head.DisPt.Z, 3));
+            return new Point3d(Math.Round(head.CenterPt.X, 3), Math.Round(head.CenterPt.Y, 3), Math.Round(head.CenterPt.Z - head.DisPt.Z, 3));
         }
 
         public override double GetZHeight(double exp)

@@ -259,7 +259,7 @@ namespace Basic
         /// <param name="rad"></param>
         public static void GetSweptSlope(Face sweptFace, Vector3d vec, out double[] slope, out double[] rad)
         {
-            rad = new double[2] { 99999, 99999 };
+            rad = new double[2] { 99999, -99999 };
             slope = new double[2] { 99999, -99999 };
 
             double faceArae = GetFaceArea(sweptFace);
