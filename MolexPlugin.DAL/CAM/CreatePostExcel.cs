@@ -55,7 +55,7 @@ namespace MolexPlugin.DAL
             }
             if (PostPartInfo.IsPartElectrode(part))
             {
-                SetEleMoldInfoToExcel( new PostElectrodenfo(part),sheet,style);
+                SetEleMoldInfoToExcel(new PostElectrodenfo(part), sheet, style);
             }
             string name = AttributeUtils.GetAttrForString(part, "CAMUser");
 
@@ -82,7 +82,7 @@ namespace MolexPlugin.DAL
             ExcelUtils.SetValue(sheet, style, 3, 0, model.MoldNumber);
             ExcelUtils.SetValue(sheet, style, 3, 2, model.WorkpieceNumber);
             ExcelUtils.SetValue(sheet, style, 3, 5, model.EditionNumber);
-       
+
         }
         /// <summary>
         /// 设置电极
@@ -110,7 +110,7 @@ namespace MolexPlugin.DAL
 
             ElectrodeModel model = eleInfo.GetElectrodeModel();
             ExcelUtils.SetValue(sheet, style, 3, 0, model.MoldInfo.MoldNumber);
-            ExcelUtils.SetValue(sheet, style, 3, 2, model.EleInfo.EleName);           
+            ExcelUtils.SetValue(sheet, style, 3, 2, model.EleInfo.EleName);
             if (model.EleInfo.CrudeInter != 0)
                 ExcelUtils.SetValue(sheet, style, 3, 12, model.EleInfo.CrudeInter);
             if (model.EleInfo.DuringInter != 0)
@@ -134,12 +134,13 @@ namespace MolexPlugin.DAL
                 int oldRow = row;
                 ProgramNcGroupModel model = new ProgramNcGroupModel(np);
                 List<OperationData> datas = model.GetOperationData();
+                List<OperationData> other = model.GetOperationFiltrationOrher(datas);
                 if (row > 20)
                 {
                     IRow iRow = sheet.GetRow(row);
-                    ExcelUtils.InsertRow(sheet, row, datas.Count, iRow);
+                    ExcelUtils.InsertRow(sheet, row, other.Count, iRow);
                 }
-                foreach (OperationData data in model.GetOperationFiltrationOrher(datas))
+                foreach (OperationData data in other)
                 {
                     ExcelUtils.SetValue(sheet, style, row, 2, data.OperName);//程序名
                     if (!datas[0].CutterCompenstation.Equals(""))
@@ -168,13 +169,13 @@ namespace MolexPlugin.DAL
 
                 ExcelUtils.SetValue(sheet, style, oldRow, 0, np.Name);
                 ExcelUtils.SetValue(sheet, style, oldRow, 1, datas[0].Tool.ToolName);
-                if (datas[0].Tool.ToolNumber != 0)
+                if (other[0].Tool.ToolNumber != 0)
                 {
-                    ExcelUtils.SetValue(sheet, style, oldRow, 3, "T" + datas[0].Tool.ToolNumber.ToString()); //刀号             
-                    ExcelUtils.SetValue(sheet, style, oldRow, 4, "H" + datas[0].Tool.ToolNumber.ToString()); //刀长号
+                    ExcelUtils.SetValue(sheet, style, oldRow, 3, "T" + other[0].Tool.ToolNumber.ToString()); //刀号             
+                    ExcelUtils.SetValue(sheet, style, oldRow, 4, "H" + other[0].Tool.ToolNumber.ToString()); //刀长号
                 }
                 double zMin, zMax;
-                model.GetOperationZMinAndZMax(datas, out zMin, out zMax);
+                model.GetOperationZMinAndZMax(other, out zMin, out zMax);
                 ExcelUtils.SetValue(sheet, style, oldRow, 11, Math.Ceiling(Math.Abs(zMin))); //伸出长              
                 ExcelUtils.SetValue(sheet, style, oldRow, 12, Math.Ceiling(Math.Abs(zMin))); //首下长            
                 ExcelUtils.SetValue(sheet, style, oldRow, 13, zMax.ToString("f3")); //最小值            
@@ -186,6 +187,6 @@ namespace MolexPlugin.DAL
             sheet.ForceFormulaRecalculation = true; //刷新表格
         }
 
-       
+
     }
 }

@@ -32,7 +32,7 @@ namespace MolexPlugin.DAL
             string workpieceName = ele.MoldInfo.MoldNumber + "-" + ele.MoldInfo.WorkpieceNumber + ele.MoldInfo.EditionNumber;
             foreach (Part part in workpiecePart)
             {
-                if (part.Name.Equals(workpieceName))
+                if (part.Name.Replace("-", "").Equals(workpieceName.Replace("-", "")))
                 {
                     workpiece = part;
                 }
