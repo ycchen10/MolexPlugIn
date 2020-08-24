@@ -34,7 +34,7 @@ namespace MolexPlugin
         private void ShowForm()
         {
 
-            EleStandardSeatForm form = new EleStandardSeatForm(model);
+            EleStandardSeatForm form = new EleStandardSeatForm(model);         
             IntPtr intPtr = NXOpenUI.FormUtilities.GetDefaultParentWindowHandle();
             NXOpenUI.FormUtilities.ReparentForm(form);
             NXOpenUI.FormUtilities.SetApplicationIcon(form);

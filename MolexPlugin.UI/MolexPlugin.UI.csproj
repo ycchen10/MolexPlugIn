@@ -69,6 +69,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddProgram.cs" />
+    <Compile Include="Electrode\AlterEleName.cs" />
+    <Compile Include="Electrode\CopyAsm.cs" />
     <Compile Include="Electrode\AddEdmAsm.cs" />
     <Compile Include="Electrode\AddWork.cs" />
     <Compile Include="EleProgram.cs" />

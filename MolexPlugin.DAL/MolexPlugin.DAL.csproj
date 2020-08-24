@@ -163,6 +163,8 @@
     <Compile Include="Drawing\WorkpieceInfo.cs" />
     <Compile Include="CAM\SimplenessVerticalEleOperation.cs" />
     <Compile Include="CAM\TreeOperInfoOperation.cs" />
+    <Compile Include="ReplaceAssmblies.cs" />
+    <Compile Include="ReplacePart.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Basic\Basic.csproj">

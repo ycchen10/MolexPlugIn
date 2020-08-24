@@ -10,7 +10,7 @@ namespace Basic
     /// <summary>
     /// 最大边界盒
     /// </summary>
-    public class BoundingBoxUtils:ClassItem
+    public class BoundingBoxUtils : ClassItem
     {
         /// <summary>
         /// 最大外形
@@ -25,8 +25,8 @@ namespace Basic
             Session theSession = Session.GetSession();
             Part workPart = theSession.Parts.Work;
             NXOpen.UF.UFSession theUFSession = NXOpen.UF.UFSession.GetUFSession();
-            Tag temp=Tag.Null;
-            if(cs!=null)
+            Tag temp = Tag.Null;
+            if (cs != null)
             {
                 temp = cs.Tag;
             }
@@ -34,13 +34,13 @@ namespace Basic
             {
                 cs = workPart.WCS.CoordinateSystem;
             }
-            
-            if(nxobj[0]==null)
+
+            if (nxobj[0] == null)
             {
                 LogMgr.WriteLog("BoundingBoxUtils.GetBoundingBoxInLocal 传入参数为空！");
                 return;
             }
-            double[] minCorner = new double[3];            
+            double[] minCorner = new double[3];
             double[,] directions = new double[3, 3];
             double[] distances = new double[3];
             double[] box = new double[6];
@@ -144,7 +144,10 @@ namespace Basic
             }
             catch (Exception ex)
             {
-                return workPart.CoordinateSystems.CreateCoordinateSystem(ori, xVec, yVec);
+                LogMgr.WriteLog("BoundingBoxUtils.CreateCoordinateSystem 矩阵不是正交！" + ex.Message);
+                CartesianCoordinateSystem cas = workPart.CoordinateSystems.CreateCoordinateSystem(ori, xVec, yVec);
+                cas.Blank();
+                return cas;
             }
         }
 

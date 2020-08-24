@@ -93,8 +93,16 @@ namespace MolexPlugin.Model
         {
             Tag[] elePartOccsTag;
             NXOpen.UF.UFSession theUFSession = NXOpen.UF.UFSession.GetUFSession();
-            theUFSession.Assem.AskOccsOfPart(parent.Tag, this.PartTag.Tag, out elePartOccsTag);
-            return NXOpen.Utilities.NXObjectManager.Get(elePartOccsTag[0]) as NXOpen.Assemblies.Component;
+            try
+            {
+                theUFSession.Assem.AskOccsOfPart(parent.Tag, this.PartTag.Tag, out elePartOccsTag);
+                return NXOpen.Utilities.NXObjectManager.Get(elePartOccsTag[0]) as NXOpen.Assemblies.Component;
+            }
+            catch
+            {
+                return null;
+            }
+
         }
 
         public void Highlight(bool highlight)

@@ -29,10 +29,9 @@ namespace Basic
             double[] dir = { vec.X, vec.Y, vec.Z };
             double[] mat = new double[16];
             theUFSession.Mtx4.Identity(mat);
-            int res = 0;
-            int count = 0;
+            int res = 0;          
             theUFSession.Modl.TraceARay(1, bodyTag, origin, dir, mat, 0, out res, out info);
-            return count;
+            return res;
         }
         /// <summary>
         /// 面上任意一点做射线

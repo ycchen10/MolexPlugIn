@@ -478,5 +478,49 @@ namespace Basic
             objOccTag = theUFSession.Assem.FindOccurrence(partOcc, obj);
             return NXObjectManager.Get(objOccTag) as NXObject;
         }
+
+        /// <summary>
+        /// 替换组件
+        /// </summary>
+        /// <param name="ct"></param>
+        /// <param name="partPath"></param>
+        /// <param name="newName"></param>
+        public static bool ReplaceComp(NXOpen.Assemblies.Component ct, string partPath, string newName)
+        {
+            Part workPart = theSession.Parts.Work;
+            NXOpen.Assemblies.ReplaceComponentBuilder replaceComponentBuilder1;
+            replaceComponentBuilder1 = workPart.AssemblyManager.CreateReplaceComponentBuilder();
+            replaceComponentBuilder1.ReplaceAllOccurrences = true;
+
+            replaceComponentBuilder1.ComponentNameType = NXOpen.Assemblies.ReplaceComponentBuilder.ComponentNameOption.AsSpecified;
+            bool added1;
+            added1 = replaceComponentBuilder1.ComponentsToReplace.Add(ct);
+            replaceComponentBuilder1.ComponentName = newName;
+
+            replaceComponentBuilder1.ReplacementPart = partPath;
+
+            replaceComponentBuilder1.SetComponentReferenceSetType(NXOpen.Assemblies.ReplaceComponentBuilder.ComponentReferenceSet.Maintain, null);
+
+            NXOpen.PartLoadStatus partLoadStatus1;
+            partLoadStatus1 = replaceComponentBuilder1.RegisterReplacePartLoadStatus();
+            try
+            {
+                NXOpen.NXObject nXObject1;
+                nXObject1 = replaceComponentBuilder1.Commit();
+                return true;
+            }
+            catch (NXException ex)
+            {
+
+                LogMgr.WriteLog("AssmbliesUtils:MakeUnique:         " + ex.Message);
+                return false;
+            }
+            finally
+            {
+                replaceComponentBuilder1.Destroy();
+
+            }
+
+        }
     }
 }

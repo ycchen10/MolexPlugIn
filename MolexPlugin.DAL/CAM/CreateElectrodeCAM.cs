@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NXOpen;
+using NXOpen.Utilities;
 using NXOpen.UF;
 using NXOpen.CAM;
 using Basic;
@@ -68,7 +69,7 @@ namespace MolexPlugin.DAL
             {
                 obj.SetName(side.ToString());
                 AttributeUtils.AttributeOperation("Inter", isok, part);
-              
+
             }
             return isok;
         }
@@ -129,7 +130,7 @@ namespace MolexPlugin.DAL
         /// 创建名字
         /// </summary>
         public void CreateOperName()
-        {
+        {        
             this.EleOper.CreateOperationNameModel();
         }
         /// <summary>

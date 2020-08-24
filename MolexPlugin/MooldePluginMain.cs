@@ -125,6 +125,15 @@ namespace MolexPlugin
             {
                 new ElectrodeDrawingCreateForm().Show();
             }
+            if (args[0] == "MENU_AlterEleName")
+            {
+                new AlterEleName().Show();
+            }
+            
+            if (args[0] == "MENU_CopyAsm")
+            {
+                new CopyAsm().Show();
+            }
             if (args[0] == "MENU_Bom")
             {
                 new BomCreateForm().Show();

@@ -747,7 +747,7 @@ namespace Basic
         /// </summary>
         /// <param name="baseView"></param>
         /// <param name="comp"></param>
-        public static void HideComponent(NXOpen.Drawings.DraftingView baseView, params NXOpen.Assemblies.Component[] comp)
+     /*   public static void HideComponent(NXOpen.Drawings.DraftingView baseView, params NXOpen.Assemblies.Component[] comp)
         {
             Part workPart = Session.GetSession().Parts.Work;
             NXOpen.Assemblies.HideComponentBuilder hideComponentBuilder1;
@@ -768,6 +768,26 @@ namespace Basic
             finally
             {
                 hideComponentBuilder1.Destroy();
+            }
+        }*/
+        public static void HideComponent(NXOpen.Drawings.DraftingView baseView, params NXOpen.Assemblies.Component[] hiddenComp)
+        {
+            Part workPart = theSession.Parts.Work;
+            NXOpen.Drawings.BaseViewBuilder baseViewBuilder1;
+            baseViewBuilder1 = workPart.DraftingViews.CreateBaseViewBuilder(baseView as BaseView);
+            baseViewBuilder1.HiddenObjects.Objects.Add(hiddenComp);
+            try
+            {
+                NXOpen.NXObject nXObject1;
+                nXObject1 = baseViewBuilder1.Commit();
+            }
+            catch (Exception ex)
+            {
+                LogMgr.WriteLog("DrawingUtils:HideComponent" + ex.Message);
+            }
+            finally
+            {
+                baseViewBuilder1.Destroy();
             }
         }
 
